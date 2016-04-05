@@ -1,7 +1,8 @@
 ---
 layout: post
-title:  "Bread Bondage"
+title:  "Bread Bondage, Woven Net"
 date:   2016-03-28 22:55:48 -0400
+categories: bread
 ---
 Dough Experiment 5
 
