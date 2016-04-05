@@ -16,23 +16,23 @@ How do we interact with carcass-like forms? Does consuming them manifest "carniv
 Using cotton string, I crocheted a small hollow tube and stuffed the dough within it, then tied both ends of the tube shut. Hanging the net within the oven as it baked caused the dough to expand out even the smallest holes toward the bottom. Unfortunately, a large chunk of extruded bread fell off the bottom of the vertical loaf, as there was nothing holding it in place.
 
 
-![img](/assets/pork_3.jpg)
+![img](/assets/pork_3.JPG)
 
-![img](/assets/pork_4.jpg)
+![img](/assets/pork_4.JPG)
 
-![img](/assets/pork_2.jpg)
+![img](/assets/pork_2.JPG)
 
-![img](/assets/pork_1.jpg)
+![img](/assets/pork_1.JPG)
 
 
 The success of this loaf as opposed to the prior woven net can be attributed to engaging the bread in "bondage" following a first 1.5 hour rise. In the previous experiment, the dough escaped bondage in the first rise, since it has less plasticity.
 
 
-![img](/assets/pork_5.jpg)
+![img](/assets/pork_5.JPG)
 
-![img](/assets/pork_6.jpg)
+![img](/assets/pork_6.JPG)
 
-![img](/assets/pork_7.jpg)
+![img](/assets/pork_7.JPG)
 
 
 The process of inflicting the dough with a corset-like apparatus to maximize its crust, paired with its slow release—a snipping away of the string to reach the fluff within its body—reveals the pleasure-driven and hedonistic qualities of filling our face with enormous quantities of delicious foods.
