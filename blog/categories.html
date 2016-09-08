@@ -5,6 +5,14 @@ title: Categories
 
 <div >
 
+  <div>
+    {% for tag in site.categories %}
+    <a href="#{{ tag[0] | slugify }}">{{ tag[0] }}</a>
+    {% endfor %}
+  </div>
+  <p></p>
+  <hr/>
+
   <div >
     {% for tag in site.categories %}
     <h2 id="{{ tag[0] | slugify }}" >{{ tag[0] }}</h2>
