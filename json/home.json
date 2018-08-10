@@ -1,0 +1,36 @@
+{
+	"homeFolderName" : "assets/home",
+	"imgExt" : "jpg",
+	"projects" : [
+		{
+			"projectID" : "005",
+			"title" : "Dio (Consummation)",
+			"widthPercent" : 0.5, 
+			"url" : "http://ben-snell.com"
+		},
+		{
+			"projectID" : "004",
+			"title" : "G53, DMS",
+			"widthPercent" : 0.4,
+			"url" : "http://ben-snell.com"
+		},
+		{
+			"projectID" : "003",
+			"title" : "Jenny's Dreams",
+			"widthPercent" : 0.3,
+			"url" : "http://ben-snell.com"
+		},
+		{
+			"projectID" : "002",
+			"title" : "LIDAR Photography",
+			"widthPercent" : 0.7,
+			"url" : "http://ben-snell.com"
+		},
+		{
+			"projectID" : "001",
+			"title" : "G53, UR5",
+			"widthPercent" : 0.4,
+			"url" : "http://ben-snell.com"
+		}
+	]
+}
