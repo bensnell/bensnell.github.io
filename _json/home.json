@@ -1,36 +1,31 @@
 {
-	"homeFolderName" : "assets/home",
+	"homeFolderName" : "_assets/home",
 	"imgExt" : "jpg",
 	"projects" : [
 		{
 			"projectID" : "005",
 			"title" : "Dio (Consummation)\n\\ On becoming one's dreams.\n2018",
-			"widthPercent" : 0.5, 
-			"url" : "http://ben-snell.com"
+			"url" : "http://ben-snell.com/dio"
 		},
 		{
 			"projectID" : "004",
 			"title" : "G53, DMS\n\\ On mechanical signatures, fingerprints.\n2018",
-			"widthPercent" : 0.4,
-			"url" : "http://ben-snell.com"
+			"url" : "http://ben-snell.com/g53-dms"
 		},
 		{
 			"projectID" : "003",
 			"title" : "Jenny's Dreams\n\\ On originality and authorship.\n2018",
-			"widthPercent" : 0.3,
-			"url" : "http://ben-snell.com"
+			"url" : "http://ben-snell.com/jenny"
 		},
 		{
 			"projectID" : "002",
 			"title" : "LIDAR Photography\n\\ On intertwinedness of observer and observed.\n2016",
-			"widthPercent" : 0.7,
-			"url" : "http://ben-snell.com"
+			"url" : "http://ben-snell.com/lidar-photography"
 		},
 		{
 			"projectID" : "001",
 			"title" : "G53, UR5\n\\ On mechanical signatures, fingerprints.\n2015",
-			"widthPercent" : 0.4,
-			"url" : "http://ben-snell.com"
+			"url" : "http://ben-snell.com/g53-ur5"
 		}
 	]
 }
