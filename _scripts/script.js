@@ -280,7 +280,7 @@ $( window ).on("load", function() {
 	// For each project ...
     $.each(projects, function(index, element) {
 
-    	// As soon as the image is loaded, fade it and its text in
+    	// Once this image finishes loading, lay it out on the page and begin loading the next image
     	$( element["img"] ).on(
     		"load",
     		function () {
@@ -370,14 +370,24 @@ $( window ).on("load", function() {
     				}
     			}
 
+    			if (index <= projects.length-2) {
+    				console.log("here", index, projects.length-2, projects[index+1]);
+    				// setTimeout( function() {
+						$( projects[index+1]["img"] ).attr( 'src', $( projects[index+1]["img"] ).attr( 'src-tmp' ) );
+					// }, index * delayMs);
+	    			
+	    		}
+
     			// Increment the offset amount
     			// offsetTopPx += imgH + vertSpacingPx;
 		});
 
 		// Now, load the image on a timeout
-    	setTimeout( function() {
-				$( element["img"] ).attr( 'src', $( element["img"] ).attr( 'src-tmp' ) );
-			}, index * delayMs);
+		if (index == 0) {
+	    	setTimeout( function() {
+					$( element["img"] ).attr( 'src', $( element["img"] ).attr( 'src-tmp' ) );
+				}, index * delayMs);
+	    }
 
     });
 
