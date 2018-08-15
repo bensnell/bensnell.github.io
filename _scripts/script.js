@@ -374,7 +374,7 @@ $( window ).on("load", function() {
     				console.log("here", index, projects.length-2, projects[index+1]);
     				// setTimeout( function() {
 						$( projects[index+1]["img"] ).attr( 'src', $( projects[index+1]["img"] ).attr( 'src-tmp' ) );
-					// }, index * delayMs);
+					// }, index * delayMs); 
 	    			
 	    		}
 
