@@ -42,7 +42,7 @@ function loadPage(pageID) {
 	console.log("Loading page " + pageID);
 
 }
-
+ 
 // Fadeout all async elements
 function fadeOut() {
 	// For all async elements
