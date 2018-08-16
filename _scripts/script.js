@@ -104,7 +104,8 @@ function loadURL(toUrl) {
 $( document ).ready(function() {
 
 	// Document Object Model (DOM) is now ready
-	console.log( "window ready" );
+	var thisTime = new Date();
+	console.log( "window ready at " + thisTime.getTime() );
 
 	// Load fonts we're using
 	// 					NAME 			FILENAME
@@ -192,7 +193,8 @@ var windowW = $( window ).width();
 $( window ).on("load", function() {
 
 	// All assets have loaded
-    console.log( "window loaded" );
+	var thisTime = new Date();
+    console.log( "window loaded at " + thisTime.getTime() );
 
     // ========================
 	// ====== VARIABLES =======
