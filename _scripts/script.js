@@ -45,18 +45,17 @@ function loadPage(pageID) {
  
 // Fadeout all async elements
 function fadeOut() {
-	// For all async elements
+	var fadeOutMs = 200;
 	$( ".asyncLoad" ).each( function(index, element) {
 		// Fade them out
-		$( element ).fadeOut(200);
+		$( element ).fadeOut( fadeOutMs );
 		// Delete them after this much time
-		setTimeout( function() { $( element ).remove(); }, 200);
+		setTimeout( function() { $( element ).remove(); }, fadeOutMs );
 	});
 }
 
 // load new page if the forward or back button is pressed
 $( window ).on('popstate', function() {
-
 	// Get the current url
 	var url = window.location.href;
 	// Parse the specific page
@@ -70,7 +69,6 @@ $( window ).on('popstate', function() {
 });
 
 function loadURL(toUrl) {
-
 	// Check if new page is within this domain
 	if (toUrl.includes(domainKey)) {
 		// Get the page ID
@@ -204,7 +202,8 @@ $( window ).on("load", function() {
     // Amount of slide
     var slideAmt = 0.7;
     // Consecutive delay of img loading
-	var delayMs = 350;
+	var delayLoadingMs = 250; // 350
+	var delayDisplayMs = 150; // 200
 
 	// Margin Sizes (fractions of width)
 	var marginTopFrac = 0.13; // 0.075 // 0.13 // 0.169
@@ -274,7 +273,7 @@ $( window ).on("load", function() {
 	// ==== LOAD PROJECTS =====
 	// ========================
 
-
+	// Create the foundation for an image layout
 	var layout = new ColumnLayout(2, (1 - (marginSideFrac*2+marginBetweenFrac)) * windowW / 2.0, marginBetweenPx, 1);
 
 	// For each project ...
@@ -282,8 +281,7 @@ $( window ).on("load", function() {
 	var prevDoneLayout = null;
     $.each(projects, function(index, element) {
 
-    	// Promises 
-
+    	// Make promises 
     	var thisDoneLoading = $.Deferred();
     	$( element["img"] ).on( "load", function () { thisDoneLoading.resolve(); });
 
@@ -381,111 +379,28 @@ $( window ).on("load", function() {
 				}
 			}
 
-			thisDoneAnimating.resolve();
-		};
+			thisDoneAnimating.resolve(); };
 
 		// When this image is done loading and the previous image is done laying out, lay this out
 		$.when( thisDoneLoading, prevDoneLayout ).done( layoutImage ).promise();
 
 		// When this image is done laying out, animate it after a brief pause
-		$.when( thisDoneLayout ).done( function() {
-			setTimeout( animateImage, 200 );
-		}).promise();
-
-
-
-
-		// // When this image is done loading and the prior image has finished animating, animate this image
-		// if (prevDoneAnimating == null) { // only wait for the first image to be loaded
-		// 	prevDoneAnimating = $.Deferred();
-		// 	$.when(thisDoneLoading).done( function() {
-		// 		$( element["img"] ).fadeIn({queue: false, duration: fadeMs}); 
-		// 		$( element["img"] ).animate({top: "-="+moveAmtPx}, moveMs, "easeOutCubic");
-		// 		prevDoneAnimating.resolve();
-		// 	}).promise();
-		// } else { // for second and following images, make sure previous
-		// 	$.when(thisDoneLoading).done( function() {
-		// 		$( element["img"] ).fadeIn({queue: false, duration: fadeMs}); 
-		// 		$( element["img"] ).animate({top: "-="+moveAmtPx}, moveMs, "easeOutCubic");
-		// 		prevDoneAnimating.resolve();
-		// 	}).promise();
-		// }
-
-		
+		$.when( thisDoneLayout ).done( function() { setTimeout( animateImage, delayDisplayMs ); }).promise();
 
 		// Stagger image loading so everything loads faster
-		// if (index == 0) {
-    	setTimeout( function() {
-				$( element["img"] ).attr( 'src', $( element["img"] ).attr( 'src-tmp' ) );
-			}, index * delayMs);
-	    // }
+		var startLoading = function() { $( element["img"] ).attr( 'src', $( element["img"] ).attr( 'src-tmp' ) ); };
+    	setTimeout( startLoading, index * delayLoadingMs);
 
-
+    	// Save these promises
 	    prevDoneLayout = thisDoneLayout;
 	    prevDoneAnimating = thisDoneAnimating;
     });
-
-    // Now, create functions to delay the loading 
-
-    // console.log(item);
-			// $( item ).attr( 'src', $( item ).attr( 'src-tmp' ) );
-
-
-
-
-
-	// Now, set the jquery attributes to fade in on loading
-	// $( '.asyncLoad' ).each( function(){
-
-	// 	// Fade durations
-	// 	var fadeMs = 740;
-	// 	var moveMs = 750;
-	// 	// Number of pixels of upward movement on loading
-	// 	var moveAmtFraction = 0.12;
-		
-	// 	// Set attributes
-		
-
-	// 	// Once the image is done loading...
-	// 	$( this ).bind( 
- //        	"load", 
- //        	function () { 
-
-        		// Get the size
-    //     		var targetWidth = 0.5 * $( window ).width();
-				// var targetHeight = $( this ).attr("height") * targetWidth / $( this ).attr("width");
-				// // Resize
-				// $( this ).attr("width", targetWidth);
-				// $( this ).attr("height", targetHeight);
-
-
-				// // Find the move amount based on the screen size
-				// moveAmt = moveAmtFraction * $( window ).width();
-
-				// // Set the position
-				// $( this ).css("top", 100 + moveAmt);
-				// $( this ).css("left", 100);
-
-
-				// // Fade in 
-				// $( this ).fadeIn({queue: false, duration: fadeMs}); 
-
-				// And animate
-				// $( this ).animate({top: "-="+moveAmt}, moveMs, "easeOutCubic");
-				
-        	// }
-        // );		
-
-        // Load the images by setting "src" to "data-src"
-        // $( this ).attr( 'src', $( this ).attr( 'src-tmp' ) );
-    // } );
     
 });
 
 $( window ).scroll( function() {
 
 	var hiddenFrac = 0.05;
-
 
 	var hiddenPx = hiddenFrac * windowW;
     // if ( $(window).scrollTop() > hiddenPx/4 && $( menu["logo"] ).is(":visible") && !$(menu["logo"]).is(':animated') ) {
