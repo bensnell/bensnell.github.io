@@ -278,117 +278,151 @@ $( window ).on("load", function() {
 	var layout = new ColumnLayout(2, (1 - (marginSideFrac*2+marginBetweenFrac)) * windowW / 2.0, marginBetweenPx, 1);
 
 	// For each project ...
+	var prevDoneAnimating = null;
+	var prevDoneLayout = null;
     $.each(projects, function(index, element) {
 
-    	// Once this image finishes loading, lay it out on the page and begin loading the next image
-    	$( element["img"] ).on(
-    		"load",
-    		function () {
+    	// Promises 
 
-				var origRect = layout.getImagePosition($( element["img"] ).width(), $( element["img"] ).height());
-				var thisRect = origRect.getCopy();
-				// transform this rectangle into the screen's coordinate system
-				thisRect.transform(windowL + marginSidePx, marginTopPx);
+    	var thisDoneLoading = $.Deferred();
+    	$( element["img"] ).on( "load", function () { thisDoneLoading.resolve(); });
 
-				// Set the image attributes
-				$( element["img"] ).attr("width", thisRect.w);
-				$( element["img"] ).attr("height", thisRect.h);				
-				$( element["img"] ).css("top", thisRect.y + moveAmtPx);
-				$( element["img"] ).css("left", thisRect.x); 
-				$( element["img"] ).css("z-index", 0);
+    	var thisDoneLayout = $.Deferred();
+		var layoutImage = function() {
 
-				// Set the text attributes
-				$( element["txt"] ).css("font-size", fontSizePx);
-				$( element["txt"] ).css("top", thisRect.b() - fontSizePx*0.5);
-				$( element["txt"] ).css("left", thisRect.x);
-				$( element["txt"] ).css("letter-spacing", (titleLetterSpacing/2*fontSizePx) + "px"); // .1993
-				$( element["txt"] ).css("z-index", 0);
+			var origRect = layout.getImagePosition($( element["img"] ).width(), $( element["img"] ).height());
+			var thisRect = origRect.getCopy();
+			// transform this rectangle into the screen's coordinate system
+			thisRect.transform(windowL + marginSidePx, marginTopPx);
 
-				// On hovering over the image, show the text below it
-				// (this has been extensively tested -- this works really well!)
-				$( element["img"] ).mouseenter( function() {
-					if (element["timeout"]) {
-			    		for (var i = 0; i < element["timeout"].length; i++) clearTimeout(element["timeout"][i]);
-			    		element["timeout"] = [];
-			    	} else element["timeout"] = [];
-					$( element["txt"] ).stop(true, false).fadeIn({queue: false, duration: fadeMs*0.8});
-			    });
-			    $( element["img"] ).mouseleave( function() {
-			    	if (element["timeout"]) {
-			    		for (var i = 0; i < element["timeout"].length; i++) clearTimeout(element["timeout"][i]);
-			    		element["timeout"] = [];
-			    	} else element["timeout"] = [];
-			    	var to = setTimeout( function() {
-			    		$( element["txt"] ).stop(true, false).fadeOut({queue: false, duration: fadeMs});
-					}, 2500);
-					element["timeout"].push(to);
-			    });
+			// Set the image attributes
+			$( element["img"] ).attr("width", thisRect.w);
+			$( element["img"] ).attr("height", thisRect.h);				
+			$( element["img"] ).css("top", thisRect.y + moveAmtPx);
+			$( element["img"] ).css("left", thisRect.x); 
+			$( element["img"] ).css("z-index", 0);
 
-				// Fade in the image and text and animate them
-				$( element["img"] ).fadeIn({queue: false, duration: fadeMs}); 
-				$( element["img"] ).animate({top: "-="+moveAmtPx}, moveMs, "easeOutCubic");
-				// $( element["txt"] ).fadeIn({queue: false, duration: fadeMs}); 
-				// $( element["txt"] ).animate({top: "-="+moveAmtPx}, moveMs, "easeOutCubic");
+			// Set the text attributes
+			$( element["txt"] ).css("font-size", fontSizePx);
+			$( element["txt"] ).css("top", thisRect.b() - fontSizePx*0.5);
+			$( element["txt"] ).css("left", thisRect.x);
+			$( element["txt"] ).css("letter-spacing", (titleLetterSpacing/2*fontSizePx) + "px"); // .1993
+			$( element["txt"] ).css("z-index", 0);
 
-    			// Load logo text
-    			if (index == 0) {
-    				var logo = menu["logo"];
-    				$( logo ).css("font-size", titleSizePx);
-    				$( logo ).css("letter-spacing", (titleLetterSpacing*titleSizePx) + "px"); // .1993
-    				$( logo ).css("line-height", titleLineHeight);
-    				$( logo ).css("top", -titleSizePx*(1-titleTopOffset)); // top
-    				// $( logo ).css("top", windowH/2 - $(logo).height()/2 * 4); // center
-    				$( logo ).css("left", windowL + windowW/2 - $( logo ).width()/2 * 1.14); // center
-    				// $( logo ).css("left", windowL + titleSizePx*titleLeftOffset);
-    				// $( logo ).css("left", windowL + marginSideFrac*windowW);
-    				$( logo ).css("z-index", bTitleAbove * 2 -1);
-					// $( logo ).style.textAlign = "center";
-    				// $( logo ).css("text-align", "center");
-    				$( logo ).css("position", "absolute");
-    				// $( logo ).css("position", "fixed");
-    				$( logo ).fadeIn({queue: false, duration: fadeMs}); 
-    			}
-    			if (index == 0) {
-    				var menuItems = ["about", "inquire"]
-    				var menuSizeFraction = 0.4;
-    				for (var i = 0; i < menuItems.length; i++) {
-    					var item = menu[menuItems[i]];
-	    				// $( item ).css("text-align", "right");
-	    				$( item ).css("font-size", titleSizePx * menuSizeFraction);
-	    				// $( item ).css("bottom", -titleSizePx * 0.1);
-	    				console.log();
-	    				$( item ).css("top", $(menu["logo"]).offset().top + $(menu["logo"]).height() - titleSizePx*0.3 + $(item).height() * i); //-titleSizePx*(1-titleTopOffset)); //+ 10 + $( item ).height()*i
-	    				var scrollBarWidth = 15;
-	    				// $( item ).css("left", origWindowW - scrollBarWidth - $(item).width() - titleSizePx*titleLeftOffset/2);
-	    				// $( item ).css("left", $( window ).width() * 0.7);
-	    				$( item ).css("left", windowL + marginSideFrac*windowW);
-	    				$( item ).css("z-index", bTitleAbove * 2 -1);
-	    				// $( item ).css("position", "fixed");
-	    				$( item ).css("position", "absolute");
-	    				$( item ).css("line-height", titleLineHeight);
-	    				$( item ).fadeIn({queue: false, duration: fadeMs}); 
-    				}
-    			}
+			// On hovering over the image, show the text below it
+			// (this has been extensively tested -- this works really well!)
+			$( element["img"] ).mouseenter( function() {
+				if (element["timeout"]) {
+		    		for (var i = 0; i < element["timeout"].length; i++) clearTimeout(element["timeout"][i]);
+		    		element["timeout"] = [];
+		    	} else element["timeout"] = [];
+				$( element["txt"] ).stop(true, false).fadeIn({queue: false, duration: fadeMs*0.8});
+		    });
+		    $( element["img"] ).mouseleave( function() {
+		    	if (element["timeout"]) {
+		    		for (var i = 0; i < element["timeout"].length; i++) clearTimeout(element["timeout"][i]);
+		    		element["timeout"] = [];
+		    	} else element["timeout"] = [];
+		    	var to = setTimeout( function() {
+		    		$( element["txt"] ).stop(true, false).fadeOut({queue: false, duration: fadeMs});
+				}, 2500);
+				element["timeout"].push(to);
+		    });
 
-    			if (index <= projects.length-2) {
-    				console.log("here", index, projects.length-2, projects[index+1]);
-    				// setTimeout( function() {
-						$( projects[index+1]["img"] ).attr( 'src', $( projects[index+1]["img"] ).attr( 'src-tmp' ) );
-					// }, index * delayMs); 
-	    			
-	    		}
+		    // flag layout as complete
+		    thisDoneLayout.resolve(); };
 
-    			// Increment the offset amount
-    			// offsetTopPx += imgH + vertSpacingPx;
-		});
+		var thisDoneAnimating = $.Deferred();
+		var animateImage = function() {
 
-		// Now, load the image on a timeout
-		if (index == 0) {
-	    	setTimeout( function() {
-					$( element["img"] ).attr( 'src', $( element["img"] ).attr( 'src-tmp' ) );
-				}, index * delayMs);
-	    }
+			$( element["img"] ).fadeIn({queue: false, duration: fadeMs}); 
+			$( element["img"] ).animate({top: "-="+moveAmtPx}, moveMs, "easeOutCubic");
 
+			// $( element["txt"] ).fadeIn({queue: false, duration: fadeMs}); 
+			// $( element["txt"] ).animate({top: "-="+moveAmtPx}, moveMs, "easeOutCubic");
+
+			// Load logo text
+			if (index == 0) {
+				var logo = menu["logo"];
+				$( logo ).css("font-size", titleSizePx);
+				$( logo ).css("letter-spacing", (titleLetterSpacing*titleSizePx) + "px"); // .1993
+				$( logo ).css("line-height", titleLineHeight);
+				$( logo ).css("top", -titleSizePx*(1-titleTopOffset)); // top
+				// $( logo ).css("top", windowH/2 - $(logo).height()/2 * 4); // center
+				$( logo ).css("left", windowL + windowW/2 - $( logo ).width()/2 * 1.14); // center
+				// $( logo ).css("left", windowL + titleSizePx*titleLeftOffset);
+				// $( logo ).css("left", windowL + marginSideFrac*windowW);
+				$( logo ).css("z-index", bTitleAbove * 2 -1);
+				// $( logo ).style.textAlign = "center";
+				// $( logo ).css("text-align", "center");
+				$( logo ).css("position", "absolute");
+				// $( logo ).css("position", "fixed");
+				$( logo ).fadeIn({queue: false, duration: fadeMs}); 
+			}
+			if (index == 0) {
+				var menuItems = ["about", "inquire"]
+				var menuSizeFraction = 0.4;
+				for (var i = 0; i < menuItems.length; i++) {
+					var item = menu[menuItems[i]];
+    				// $( item ).css("text-align", "right");
+    				$( item ).css("font-size", titleSizePx * menuSizeFraction);
+    				// $( item ).css("bottom", -titleSizePx * 0.1);
+    				console.log();
+    				$( item ).css("top", $(menu["logo"]).offset().top + $(menu["logo"]).height() - titleSizePx*0.3 + $(item).height() * i); //-titleSizePx*(1-titleTopOffset)); //+ 10 + $( item ).height()*i
+    				var scrollBarWidth = 15;
+    				// $( item ).css("left", origWindowW - scrollBarWidth - $(item).width() - titleSizePx*titleLeftOffset/2);
+    				// $( item ).css("left", $( window ).width() * 0.7);
+    				$( item ).css("left", windowL + marginSideFrac*windowW);
+    				$( item ).css("z-index", bTitleAbove * 2 -1);
+    				// $( item ).css("position", "fixed");
+    				$( item ).css("position", "absolute");
+    				$( item ).css("line-height", titleLineHeight);
+    				$( item ).fadeIn({queue: false, duration: fadeMs}); 
+				}
+			}
+
+			thisDoneAnimating.resolve();
+		};
+
+		// When this image is done loading and the previous image is done laying out, lay this out
+		$.when( thisDoneLoading, prevDoneLayout ).done( layoutImage ).promise();
+
+		// When this image is done laying out, animate it after a brief pause
+		$.when( thisDoneLayout ).done( function() {
+			setTimeout( animateImage, 200 );
+		}).promise();
+
+
+
+
+		// // When this image is done loading and the prior image has finished animating, animate this image
+		// if (prevDoneAnimating == null) { // only wait for the first image to be loaded
+		// 	prevDoneAnimating = $.Deferred();
+		// 	$.when(thisDoneLoading).done( function() {
+		// 		$( element["img"] ).fadeIn({queue: false, duration: fadeMs}); 
+		// 		$( element["img"] ).animate({top: "-="+moveAmtPx}, moveMs, "easeOutCubic");
+		// 		prevDoneAnimating.resolve();
+		// 	}).promise();
+		// } else { // for second and following images, make sure previous
+		// 	$.when(thisDoneLoading).done( function() {
+		// 		$( element["img"] ).fadeIn({queue: false, duration: fadeMs}); 
+		// 		$( element["img"] ).animate({top: "-="+moveAmtPx}, moveMs, "easeOutCubic");
+		// 		prevDoneAnimating.resolve();
+		// 	}).promise();
+		// }
+
+		
+
+		// Stagger image loading so everything loads faster
+		// if (index == 0) {
+    	setTimeout( function() {
+				$( element["img"] ).attr( 'src', $( element["img"] ).attr( 'src-tmp' ) );
+			}, index * delayMs);
+	    // }
+
+
+	    prevDoneLayout = thisDoneLayout;
+	    prevDoneAnimating = thisDoneAnimating;
     });
 
     // Now, create functions to delay the loading 
