@@ -135,6 +135,7 @@ $( document ).ready(function() {
 									fontTitle,
 									element[3]);
 		menu[ element[0] ] = para;
+		console.log("menu element added: " + element[0]);
 	});
 
 	// Change the height of the canvas to fit all elements
@@ -174,10 +175,11 @@ $( document ).ready(function() {
 		    element["img"] = img;
 
 
-
 		    // Text
 			element["txtID"] = "txt" + element["projectID"];
 			element["txt"] = getTextElement( element["txtID"], element["title"], element["url"], fontBody, "#000000");
+
+			console.log("project image and text added for: " + element["projectID"]);
     	});
 	});
 
@@ -281,12 +283,16 @@ $( window ).on("load", function() {
 	var prevDoneLayout = null;
     $.each(projects, function(index, element) {
 
+    	console.log("project loading: " + element["projectID"]);
+
     	// Make promises 
     	var thisDoneLoading = $.Deferred();
     	$( element["img"] ).on( "load", function () { thisDoneLoading.resolve(); });
 
     	var thisDoneLayout = $.Deferred();
 		var layoutImage = function() {
+
+			console.log("laying out: " + element["projectID"]);
 
 			var origRect = layout.getImagePosition($( element["img"] ).width(), $( element["img"] ).height());
 			var thisRect = origRect.getCopy();
