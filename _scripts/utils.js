@@ -209,7 +209,6 @@ function getTextElement(id, text, url, font, color) {
 	var _text = document.createTextNode( text );
 	para.appendChild(_text);
 	para.setAttribute("class", "asyncLoad");
-	// $( para ).wrap( $('<a>',{ href: thisURL }));
 	if (url != "") $( para ).click( function() { loadURL( url ); });
 	$( para ).hover( function() { $( para ).css('cursor','pointer'); });
 	$( para ).css("position", "absolute");
@@ -217,4 +216,17 @@ function getTextElement(id, text, url, font, color) {
 	document.body.style = "white-space: pre;"
 	document.body.appendChild(para);
 	return para;
+}
+
+function getImageElement(id, path, url) {
+	var img = document.createElement("IMG");
+    img.setAttribute("id", id);
+    img.setAttribute("src-tmp", path);
+    img.setAttribute("class", "asyncLoad");
+	if (url != "") $( img ).click( function() { loadURL( url ); });
+	$( img ).hover( function() { $( img ).css('cursor','pointer'); });
+	$( img ).css("display", "none");
+	$( img ).css("position", "absolute");
+    document.body.appendChild(img);
+    return img;
 }
