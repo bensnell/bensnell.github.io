@@ -213,7 +213,7 @@ function isArray(a){
 function onTap(element, url) {
 	if (url != "") {
 		var load = function() { loadURL( url ); };
-		$( element ).on("click touch", load );
+		$( element ).on("click tap", load );
 		// $( element ).click( load );
 		// $( element ).on("touch", load );
 	}
