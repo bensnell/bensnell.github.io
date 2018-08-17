@@ -392,7 +392,7 @@ function showProject() {
 	// Choose whether to load the next image set once the entire previous 
 	// image set is loaded, or only once the first image in the previous 
 	// image set has loaded
-	var bWaitForEntireSet = true;
+	// var bWaitForEntireSet = true;
 
 	var bAnimate = false;
 	var moveFrac = 0.4; // compared to home
@@ -411,7 +411,8 @@ function showProject() {
 	// Draw all images and load text with the first image set
 	var prevDoneAnimating = null;
 	var prevDoneLayout = null;
-	var topOffset = 0; // doesn't include top margin
+	var topOffsets = [0]; // offsets (not including the top margin) for each image set
+	// var topOffset = 0; // doesn't include top margin
 	$.each(project["images"], function(index, _element) {
 
 		var element = isArray(_element) ? _element : [_element];
@@ -419,27 +420,21 @@ function showProject() {
 		// Loading promises
 		var thisDoneLoading = [];
 		$.each(element, function(i, e) {
-
-			if (bWaitForEntireSet || i==0) {
-				var def = $.Deferred(); 
-				thisDoneLoading.push(def);
-				$( e["img"] ).on("load", function() { def.resolve(); });
-			}
+			var def = $.Deferred(); thisDoneLoading.push(def);
+			$( e["img"] ).on("load", function() { def.resolve(); });
 		});
 		
 		// Layout promises
-		var thisDoneLayout = $.Deferred(); // only one needed per set
-		var layoutImage = function() {
+		var thisDoneLayout = $.Deferred();
+		$.each(element, function(i, e) {
 
-			$.each(element, function(i, e) {
+			var layoutImage = function() {
 
 				// Set the x, y, w, h
 				var ix = w.windowL + w.marginSidePx;
-				var iy = topOffset + w.marginTopPx;
+				var iy = topOffsets[index] + w.marginTopPx;
 				var iw = imgWidthPx;
-				console.log($(e["img"]).height(), $(e["img"]).width(), iw);
 				var ih = $(e["img"]).height() / $(e["img"]).width() * iw;
-				console.log(index, i, ix, iy, iw, ih);
 
 				$( e["img"] ).css("left", ix); 
 				$( e["img"] ).css("top", iy + (bAnimate ? w.moveAmtPx : 0));
@@ -450,46 +445,34 @@ function showProject() {
 				$( e["img"] ).css("z-index", -i);
 
 				// If it's the first, set a promise
-				if (i == (element.length-1)) {
-					topOffset += $(element[0]["img"]).height() + imgVertMarginPx;
+				if (i == 0) {
+					// if (index != 0) {
+						// console.log(
+						topOffsets.push( topOffsets[topOffsets.length-1] + ih + imgVertMarginPx );
+					// }
 					thisDoneLayout.resolve();
 				}
-			});
-		}
-
+			}
+			
+			var promises = [ thisDoneLoading[i], (i==0 ? prevDoneLayout : thisDoneLayout) ];
+			$.when( ... promises ).done( layoutImage ).promise();
+		});
+		
 		// Animation Promises
 		var thisDoneAnimating = $.Deferred();
-		var animateImage = function() {
-
-			// should only the first one in a set be animated in?
-			$.each(element, function(i, e) {
-				if (i == 0) {
-					$( e["img"] ).fadeIn({queue: false, duration: w.fadeMs*moveFrac}); 
-					if (bAnimate) $( e["img"] ).animate({top: "-="+w.moveAmtPx}, w.moveMs*moveFrac, "easeOutCubic");
-				}
-
-				if (index == 0 && i == 0) showMenuItems();
-			});
-
+		var animateFirstImage = function() {
+			$( element[0]["img"] ).fadeIn({queue: false, duration: w.fadeMs*moveFrac}); 
+			if (bAnimate) $( element[0]["img"] ).animate({top: "-="+w.moveAmtPx}, w.moveMs*moveFrac, "easeOutCubic");
+			showMenuItems();
 			thisDoneAnimating.resolve(); 
 		};
-
-		// When this image is done loading and the previous image is done laying out, lay this out
-		$.when( ... thisDoneLoading, prevDoneLayout ).done( layoutImage ).promise();
-
-		// When this image is done laying out, animate it after a brief pause
-		// $.each(element, function(i, e) {
-		// 	if (i == 0) 
-		// }
-		$.when( thisDoneLayout ).done( function() { setTimeout( animateImage, w.delayDisplayMs ); }).promise();
+		$.when( thisDoneLayout ).done( function() { setTimeout( animateFirstImage, w.delayDisplayMs ); }).promise();
 
 		// Stagger image loading so everything loads faster
-		var startLoading = function() { 
-			$.each(element, function(i, e) {
-				$( e["img"] ).attr( 'src', $( e["img"] ).attr( 'src-tmp' ) ); 
-			});
-		};
-    	setTimeout( startLoading, index * w.delayLoadingMs);
+		$.each(element, function(i, e) {
+			var startLoading = function() { $( e["img"] ).attr( 'src', $( e["img"] ).attr( 'src-tmp' ) ); };
+			setTimeout( startLoading, index*w.delayLoadingMs + i*w.delayLoadingMs/(element.length+1) );
+		});
 
     	// Save these promises
 	    prevDoneLayout = thisDoneLayout;
