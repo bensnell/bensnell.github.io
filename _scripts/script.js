@@ -44,25 +44,16 @@ function getPage(url) {
 	}
 	return pageID;
 }
-
 function getThisPage() {
 
 	return getPage(window.location.href);
 }
-
 // Get the prefix for any path in the relative directory
 function pathPrefix() {
 
 	return getThisPage()=="home" ? "" : "../";
 }
 
-// load a specific page within this domain (no fadeout!)
-function loadPage(pageID) {
-
-	console.log("Loading page " + pageID);
-
-}
- 
 // Fadeout all async elements
 function fadeOut() {
 	var fadeOutMs = 200;
@@ -74,56 +65,8 @@ function fadeOut() {
 	});
 }
 
-// load new page if the forward or back button is pressed
-$( window ).on('popstate', function() {
-	// Get the current url
-	var url = window.location.href;
-	// Parse the specific page
-	var pageID = getPage(url);
-	console.log("History changed to " + pageID);
-	// todo: Check if this page exists
-	// Fadeout
-	fadeOut();
-	// Load this page
-	loadPage(pageID);
-});
-
-function loadURL(toUrl) {
-	// Check if new page is within this domain
-	if (toUrl.includes(domainKey)) {
-		// Get the page ID
-		var pageID = getPage(toUrl);
-		// Change the state of the page
-		console.log("From " + getThisPage() + " --> " + pageID);
-		if (getThisPage() == "home") {
-			if (pageID == "home") return;
-			else history.pushState( {}, "", pageID );
-		} else {
-			if (pageID == "home") history.pushState( {}, "", "../");
-			else history.pushState( {}, "", "../"+pageID);
-		}
-		console.log("Page changed to " + pageID);
-		// Fade out
-		fadeOut();
-		// Load this page 
-		loadPage(pageID);
-
-	} else {
-		// fade out
-		fadeOut();
-		// load an external url
-		window.location.href = toUrl;		
-	}
-}
-
-// function resizeCanvas() {
-//     console.log("Canvas resized");
-// }
-
-// Promises that must be fulfilled in all init functions
-var initDefs = []
-
 function loadFonts() {	
+	// should this include a deferred promise to ensure font is loaded?
 	$.each(fonts, function(index, element) {
 
 		if (element[0] == fontTitle || element[0] == fontBody) {
@@ -133,23 +76,22 @@ function loadFonts() {
 		}
 	}); 
 	console.log("fonts loaded");
+	return null;
 }
 
-// initialize, but do not yet show, menu items
+// Prepare images and text to be displayed
 function initMenuItems() {
 	$.each(menuElems, function(index, element) {
-		// var def = $.Deferred(); initDefs.push(def);
 		var para = getTextElement(	element[0],
 									element[1],
 									mainURL + (element[2]=="" ? "" : "/"+element[2]),
 									fontTitle,
 									element[3]);
 		menu[ element[0] ] = para;
-		// def.resolve();
 	});
 	console.log("menu items init");
+	return null;
 }
-
 function initHome() {
 
 	var loadHomeItems = function(data) {
@@ -158,8 +100,6 @@ function initHome() {
 
     	// Iterate through all projects to create an image and text box for each one
     	$.each(projects, function(index, element) {
-
-    		// var def = $.Deferred(); initDefs.push(def);
 
     		// Image
     		element["imgID"] = "img" + element["projectID"];
@@ -171,63 +111,57 @@ function initHome() {
 			element["txt"] = getTextElement( element["txtID"], element["title"], element["url"], fontBody, "#000000");
 
 			console.log("project image and text added for: " + element["projectID"]);
-			// def.resolve();
     	});
 	};
 
 	// Parse the JSON with home's layout data
 	var jsonPath = pathPrefix()+"_json/home.json";
-	var def = $.Deferred(); initDefs.push(def);
+	var def = $.Deferred();
     $.get(jsonPath, loadHomeItems).done( function() { def.resolve(); });
-
 	console.log("home init");
+	return def;
 }
-
 function initAbout() {
 
 	console.log("about init");
+	return null;
 }
-
 function initProject() {
 
 	console.log("project init");
+	return null;
 }
-
-function initPageSpecificItems() {
-	var thisPageID = getThisPage();
-	if (thisPageID == "home") {
-		initHome();
-	} else if (thisPageID == "about") {
-		initAbout();
+function initPageSpecificItems(pageID) {
+	if (pageID == "home") {
+		return initHome();
+	} else if (pageID == "about") {
+		return initAbout();
 	} else {
-		initProject();
+		return initProject();
 	}
-	console.log("page specific items init");
+	// console.log("page specific items init");
+	return null;
 }
-
-var initDone = $.Deferred();
-function init() {
-
-	loadFonts();
-
-	initMenuItems(); 
-
-	initPageSpecificItems();
-
-	$.when(... initDefs).done( function() { initDone.resolve() });
+function init(pageID, promise) {
+	var defs = [];
+	// defs.push(loadFonts());
+	defs.push(initMenuItems());
+	defs.push(initPageSpecificItems(pageID));
+	$.when(... defs).done( function() { console.log("promise"); promise.resolve(); });
 	console.log("init complete");
 }
 
-// call this when the first image is shown
+// Display Images and Text
 function showMenuItems() {
 
+	// call this when the first image is shown
 	var logo = menu["logo"];
 	$( logo ).css("font-size", w.titleSizePx);
 	$( logo ).css("letter-spacing", (w.titleLetterSpacing*w.titleSizePx) + "px"); // .1993
 	$( logo ).css("line-height", w.titleLineHeight);
 	$( logo ).css("top", -w.titleSizePx*(1-w.titleTopOffset)); // top
 	// $( logo ).css("top", windowH/2 - $(logo).height()/2 * 4); // center
-	$( logo ).css("left", w.windowL + w.windowW/2 - $( logo ).width()/2 * 1.14); // center
+	$( logo ).css("left", w.windowL + w.windowW/2 - $( logo ).width()/2); // center
 	// $( logo ).css("left", windowL + titleSizePx*titleLeftOffset);
 	// $( logo ).css("left", windowL + marginSideFrac*windowW);
 	$( logo ).css("z-index", w.bTitleAbove * 2 -1);
@@ -258,11 +192,10 @@ function showMenuItems() {
 
 	console.log("menu items show");
 };
-
-// load all projects
 function showHome() {
 
 	// Create the foundation for an image layout
+	console.log(w.marginSideFrac, w.marginBetweenFrac, w.windowW, (1 - (w.marginSideFrac*2+w.marginBetweenFrac)) * w.windowW / 2.0);
 	var layout = new ColumnLayout(2, (1 - (w.marginSideFrac*2+w.marginBetweenFrac)) * w.windowW / 2.0, w.marginBetweenPx, 1);
 
 	// For each project ...
@@ -358,40 +291,80 @@ function showHome() {
 
 	console.log("home show");
 };
-
 function showAbout() {
 
 	console.log("about show");
 };
-
 function showProject() {
 
 	console.log("project show");
 };
-
-function showAllItems() {
-	var thisPageID = getThisPage();
-	if (thisPageID == "home") {
+function showAllItems(pageID) {
+	if (pageID == "home") {
 		showHome();
-	} else if (thisPageID == "about") {
+	} else if (pageID == "about") {
 		showAbout();
 	} else {
 		showProject();
 	}
 	console.log("all items show");
-}
-
-function show() {
+};
+function show(pageID) {
 
 	// recompute all parameters
 	w.recompute();
+	console.log(w.windowW, w.windowL);
 
 	// show all items
-	showAllItems();
+	showAllItems(pageID);
 
 	console.log("show complete");
+};
+
+// load a specific page within this domain (no fadeout!)
+function loadPage(pageID="") {
+
+	// Get the pageID if not specified
+	if (pageID=="") pageID = getThisPage();
+	console.log("this pageID is: " + pageID);
+
+	// First, initialize all elements
+	var initDone = $.Deferred();
+	init(pageID, initDone);
+
+	// When all items have been initialized, show all items
+	$.when( initDone ).done( function(){console.log("initDone is complete"); return show(pageID);} ).promise();
+
+	console.log("Loading page " + pageID);
 }
 
+function loadURL(toUrl) {
+	// Check if new page is within this domain
+	if (toUrl.includes(domainKey)) {
+		// Get the page ID
+		var pageID = getPage(toUrl);
+		// Change the state of the page
+		console.log("From " + getThisPage() + " --> " + pageID);
+		if (getThisPage() == "home") {
+			if (pageID == "home") return;
+			else history.pushState( {}, "", pageID );
+		} else {
+			if (pageID == "home") history.pushState( {}, "", "../");
+			else history.pushState( {}, "", "../"+pageID);
+		}
+		console.log("Page changed to " + pageID);
+		// Fade out
+		fadeOut();
+		// Load this page 
+		loadPage(pageID);
+
+	} else {
+		// fade out
+		fadeOut();
+		// load an external url
+		window.location.href = toUrl;		
+	}
+}
 
 var windowReady = $.Deferred();
 $( document ).ready(function() { console.log("window ready"); windowReady.resolve(); });
@@ -399,36 +372,46 @@ $( document ).ready(function() { console.log("window ready"); windowReady.resolv
 var windowLoaded = $.Deferred();
 $( window ).on("load", function() { windowLoaded.resolve(); console.log("window loaded"); });
 
-// When the window is ready, initialize fonts, menu items, and page-specific items
-$.when( windowReady, windowLoaded ).done( init ).promise();
+// When the window is ready, initialize fonts and load the page
+$.when( windowReady, windowLoaded ).done( loadFonts, loadPage ).promise();
 
-// When all items have been initialized, show (and load) all items
-$.when( initDone ).done( show ).promise();
-// $.when.apply($, initDefs).done( show ).promise();
-	
-
-	
-
-
-$( window ).scroll( function() {
-
-	var hiddenFrac = 0.05;
-
-	var hiddenPx = hiddenFrac * w.windowW;
-    // if ( $(window).scrollTop() > hiddenPx/4 && $( menu["logo"] ).is(":visible") && !$(menu["logo"]).is(':animated') ) {
-    //     // Fade out
-    //     $( menu["logo"] ).fadeOut({queue: false, duration: 300}); 
-    // }
-    // if ( $(window).scrollTop() <= hiddenPx && $( menu["logo"] ).is(":hidden") && !$(menu["logo"]).is(':animated') ) {
-    //     // Fade in
-    //     $( menu["logo"] ).fadeIn({queue: false, duration: 800}); 
-    // }
+// load new page if the forward or back button is pressed
+$( window ).on('popstate', function() {
+	// Get the current url
+	var url = window.location.href;
+	// Parse the specific page
+	var pageID = getPage(url);
+	console.log("History changed to " + pageID);
+	// todo: Check if this page exists
+	// Fadeout and delete all elements
+	fadeOut();
+	// Load this page
+	loadPage(pageID);
 });
 
-$( window ).on( "resize", function() {
 
-    console.log( "window resized" );
 
-    // resizeCanvas();
 
-});
+
+// $( window ).scroll( function() {
+
+// 	// var hiddenFrac = 0.05;
+
+// 	// var hiddenPx = hiddenFrac * w.windowW;
+//     // if ( $(window).scrollTop() > hiddenPx/4 && $( menu["logo"] ).is(":visible") && !$(menu["logo"]).is(':animated') ) {
+//     //     // Fade out
+//     //     $( menu["logo"] ).fadeOut({queue: false, duration: 300}); 
+//     // }
+//     // if ( $(window).scrollTop() <= hiddenPx && $( menu["logo"] ).is(":hidden") && !$(menu["logo"]).is(':animated') ) {
+//     //     // Fade in
+//     //     $( menu["logo"] ).fadeIn({queue: false, duration: 800}); 
+//     // }
+// });
+
+// $( window ).on( "resize", function() {
+
+//     console.log( "window resized" );
+
+//     // resizeCanvas();
+
+// });

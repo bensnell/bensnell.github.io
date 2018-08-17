@@ -16,7 +16,7 @@ function Params() {
 	// Margin Sizes (fractions of width)
 	this.marginTopFrac = 0.13; // 0.075 // 0.13 // 0.169
 	this.vertSpacingFrac = 0.050;
-	this.marginSideFrac = 0.085;
+	this.marginSideFracOrig = 0.085;
 	this.marginBetweenFrac = 0.05;
 
 	// Image sizes
@@ -59,6 +59,7 @@ function Params() {
 	this.offsetTopPx = null;
 	this.fontSizePx = null;
 	this.titleSizePx = null;
+	this.marginSideFrac = null;
 
 	this.recompute = function() {
 
@@ -83,7 +84,7 @@ function Params() {
 		// Change the margin depending on the window size
 		var minWidth = 375;
 		var maxWidth = 1042;
-		t.marginSideFrac *= map(t.windowW, minWidth, maxWidth, 0, 1, true);
+		t.marginSideFrac = t.marginSideFracOrig * map(t.windowW, minWidth, maxWidth, 0, 1, true);
 		t.marginSideFrac = Math.max(t.marginSideFrac, 0.01);
 		t.marginSidePx = t.windowW * t.marginSideFrac;
 		t.marginBetweenPx = t.windowW * t.marginBetweenFrac;

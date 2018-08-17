@@ -2,6 +2,8 @@
 
 function ColumnLayout(nCols, colWidth, colMargin, indexOffset) {
 
+	console.log(colWidth, colMargin);
+
     this.nCols = nCols;
     this.colWidth = colWidth;
     this.colMargin = colMargin;
