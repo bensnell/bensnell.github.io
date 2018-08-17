@@ -395,7 +395,9 @@ function showProject() {
 	// var bWaitForEntireSet = true;
 
 	var bAnimate = false;
-	var moveFrac = 0.4; // compared to home
+	var moveFrac = 0.6; // compared to home
+	var delayFrac = 0.7;
+
 
 	// Determine how wide to make the images and how wide to make the text
 	var img2textWidthFrac = 0.65;
@@ -407,6 +409,8 @@ function showProject() {
 	var imgWidthPx = w.f2p( imgWidthFrac );
 	var marginPx = w.f2p( marginFrac );
 	var imgVertMarginPx = w.f2p( imgVertMarginFrac );
+	var delayLoadingMs = w.delayLoadingMs * delayFrac;
+	var delayDisplayMs = w.delayDisplayMs * delayFrac;
 
 	// Draw all images and load text with the first image set
 	var prevDoneAnimating = null;
@@ -466,12 +470,12 @@ function showProject() {
 			showMenuItems();
 			thisDoneAnimating.resolve(); 
 		};
-		$.when( thisDoneLayout ).done( function() { setTimeout( animateFirstImage, w.delayDisplayMs ); }).promise();
+		$.when( thisDoneLayout ).done( function() { setTimeout( animateFirstImage, delayDisplayMs ); }).promise();
 
 		// Stagger image loading so everything loads faster
 		$.each(element, function(i, e) {
 			var startLoading = function() { $( e["img"] ).attr( 'src', $( e["img"] ).attr( 'src-tmp' ) ); };
-			setTimeout( startLoading, index*w.delayLoadingMs + i*w.delayLoadingMs/(element.length+1) );
+			setTimeout( startLoading, index*delayLoadingMs + i*delayLoadingMs/(element.length+1) );
 		});
 
     	// Save these promises
