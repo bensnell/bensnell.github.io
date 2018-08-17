@@ -138,32 +138,28 @@ function loadFonts() {
 // initialize, but do not yet show, menu items
 function initMenuItems() {
 	$.each(menuElems, function(index, element) {
-		var def = $.Deferred(); initDefs.push(def);
+		// var def = $.Deferred(); initDefs.push(def);
 		var para = getTextElement(	element[0],
 									element[1],
 									mainURL + (element[2]=="" ? "" : "/"+element[2]),
 									fontTitle,
 									element[3]);
 		menu[ element[0] ] = para;
-		def.resolve();
+		// def.resolve();
 	});
 	console.log("menu items init");
 }
 
 function initHome() {
 
-	// Parse the JSON with home's layout data
-    $.get(pathPrefix()+"_json/home.json", function(data) {
+	var loadHomeItems = function(data) {
     	// Store the json data for later use
     	projects = data["projects"];
 
     	// Iterate through all projects to create an image and text box for each one
-    	for (var i = 0; i < projects.length; i++) {
+    	$.each(projects, function(index, element) {
 
-    		var index = i;
-    		var element = projects[i];
-
-			var def = $.Deferred(); initDefs.push(def);
+    		// var def = $.Deferred(); initDefs.push(def);
 
     		// Image
     		element["imgID"] = "img" + element["projectID"];
@@ -175,27 +171,15 @@ function initHome() {
 			element["txt"] = getTextElement( element["txtID"], element["title"], element["url"], fontBody, "#000000");
 
 			console.log("project image and text added for: " + element["projectID"]);
-			def.resolve();    		
-    	}
-
-
-   //  	$.each(projects, function(index, element) {
-
-   //  		var def = $.Deferred(); initDefs.push(def);
-
-   //  		// Image
-   //  		element["imgID"] = "img" + element["projectID"];
-   //  		var imgPath = pathPrefix() + data["homeFolderName"] + "/" + element["projectID"] + "." + data["imgExt"];
-   //  		element["img"] = getImageElement( element["imgID"], imgPath, element["url"] );
-
-		 //    // Text
-			// element["txtID"] = "txt" + element["projectID"];
-			// element["txt"] = getTextElement( element["txtID"], element["title"], element["url"], fontBody, "#000000");
-
-			// console.log("project image and text added for: " + element["projectID"]);
 			// def.resolve();
-   //  	});
-	});
+    	});
+	};
+
+	// Parse the JSON with home's layout data
+	var jsonPath = pathPrefix()+"_json/home.json";
+	var def = $.Deferred(); initDefs.push(def);
+    $.get(jsonPath, loadHomeItems).done( function() { def.resolve(); });
+
 	console.log("home init");
 }
 
