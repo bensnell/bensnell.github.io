@@ -9,6 +9,10 @@ var domainKey = "ben-snell";	// used to check if we're in my domain
 
 // Stores all projects for home
 var projects;
+// Stores a dictionary of pageID's  and projectID's
+var dict = {};
+// Stores images for a project
+var project = {};
 
 // Stores the logo at the top of the page
 var menu = {};
@@ -66,7 +70,7 @@ function fadeOut() {
 }
 
 function loadFonts() {	
-	// should this include a deferred promise to ensure font is loaded?
+	// should this include a deferred promise to ensure font is loaded? (what if the font isn't accessible?)
 	$.each(fonts, function(index, element) {
 
 		if (element[0] == fontTitle || element[0] == fontBody) {
@@ -77,6 +81,18 @@ function loadFonts() {
 	}); 
 	console.log("fonts loaded");
 	return null;
+}
+
+// parse reference data to use later on
+function parseHomeData(data) {
+
+	// Save projects
+	projects = data["projects"];
+
+	// Parse projects into an accessible dictionary
+	$.each(projects, function(index, element) {
+		dict[ getPage(element["url"]) ] = element["projectID"];
+	});
 }
 
 // Prepare images and text to be displayed
@@ -95,8 +111,9 @@ function initMenuItems() {
 function initHome() {
 
 	var loadHomeItems = function(data) {
-    	// Store the json data for later use
-    	projects = data["projects"];
+    	
+    	// parse and store this data
+    	parseHomeData(data);
 
     	// Iterate through all projects to create an image and text box for each one
     	$.each(projects, function(index, element) {
@@ -144,7 +161,7 @@ function initPageSpecificItems(pageID) {
 }
 function init(pageID, promise) {
 	var defs = [];
-	// defs.push(loadFonts());
+	// defs.push(loadFonts()); // should only happen once, not every time something is initialized
 	defs.push(initMenuItems());
 	defs.push(initPageSpecificItems(pageID));
 	$.when(... defs).done( function() { console.log("promise"); promise.resolve(); });
