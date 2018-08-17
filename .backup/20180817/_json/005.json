@@ -1,0 +1,12 @@
+{
+	"title" : "Dio (Consummation)",
+	"description" : "Dio died for us, in order to absolve us of sin.",
+	"date" : "2018",
+
+	"globalExt" : "jpg",
+	"numDigits" : 3,
+	"images" : [
+		[2, 3, 4 ],
+		[5, 1]
+	]
+}

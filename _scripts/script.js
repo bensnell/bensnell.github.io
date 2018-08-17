@@ -173,10 +173,16 @@ function initProject(pageID) {
     	var loadProjectJson = function(data) { 
 
     		// store all image ids
-    		project["images"] = data["images"].map(function(e) { return pad(e, data["numDigits"], "0"); });
+    		project["images"] = data["images"].map(function(e) { 
+    			if (isArray(e)) return e.map(function(e) { return pad(e, data["numDigits"], "0"); });
+    			else { return pad(e, data["numDigits"], "0"); }
+    		});
 
     		// store all image paths
-    		project["images"] = project["images"].map(function(e) { return {"id" : e, "path" : (pathPrefix()+"_assets/"+projectID+"/"+e+"."+data["globalExt"])}; }); 
+    		project["images"] = project["images"].map(function(e) { 
+    			if (isArray(e)) return e.map(function(e) { return {"id" : e, "path" : (pathPrefix()+"_assets/"+projectID+"/"+e+"."+data["globalExt"])}; });
+    			else return {"id" : e, "path" : (pathPrefix()+"_assets/"+projectID+"/"+e+"."+data["globalExt"])}; 
+    		}); 
 
     		// store text
     		project["text"] = [ {"id" : "title", "content" : data["title"]}, 
@@ -198,9 +204,16 @@ function initProject(pageID) {
 		});
 
 		$.each(project["images"], function(index, element) {
-			element["img"] = getImageElement(element["id"], element["path"], "", ["async"], false);
+			if (isArray(element)) {
+				$.each(element, function(i, e) {
+					e["img"] = getImageElement(e["id"], e["path"], "", ["async"], false);
+				});
+			} else {
+				element["img"] = getImageElement(element["id"], element["path"], "", ["async"], false);
+			}
 			// console.log("init img " + element["id"]);
 		});
+		console.log(project);
 
 		elementsLoaded.resolve();
 	});
@@ -379,7 +392,7 @@ function showProject() {
 	// Choose whether to load the next image set once the entire previous 
 	// image set is loaded, or only once the first image in the previous 
 	// image set has loaded
-	var bWaitForEntireSet = false;
+	var bWaitForEntireSet = true;
 
 	var bAnimate = false;
 	var moveFrac = 0.4; // compared to home
@@ -424,7 +437,9 @@ function showProject() {
 				var ix = w.windowL + w.marginSidePx;
 				var iy = topOffset + w.marginTopPx;
 				var iw = imgWidthPx;
+				console.log($(e["img"]).height(), $(e["img"]).width(), iw);
 				var ih = $(e["img"]).height() / $(e["img"]).width() * iw;
+				console.log(index, i, ix, iy, iw, ih);
 
 				$( e["img"] ).css("left", ix); 
 				$( e["img"] ).css("top", iy + (bAnimate ? w.moveAmtPx : 0));
@@ -435,8 +450,8 @@ function showProject() {
 				$( e["img"] ).css("z-index", -i);
 
 				// If it's the first, set a promise
-				if (i==0) {
-					topOffset += ih + imgVertMarginPx;
+				if (i == (element.length-1)) {
+					topOffset += $(element[0]["img"]).height() + imgVertMarginPx;
 					thisDoneLayout.resolve();
 				}
 			});
@@ -448,8 +463,10 @@ function showProject() {
 
 			// should only the first one in a set be animated in?
 			$.each(element, function(i, e) {
-				$( e["img"] ).fadeIn({queue: false, duration: w.fadeMs*moveFrac}); 
-				if (bAnimate) $( e["img"] ).animate({top: "-="+w.moveAmtPx}, w.moveMs*moveFrac, "easeOutCubic");
+				if (i == 0) {
+					$( e["img"] ).fadeIn({queue: false, duration: w.fadeMs*moveFrac}); 
+					if (bAnimate) $( e["img"] ).animate({top: "-="+w.moveAmtPx}, w.moveMs*moveFrac, "easeOutCubic");
+				}
 
 				if (index == 0 && i == 0) showMenuItems();
 			});
@@ -461,6 +478,9 @@ function showProject() {
 		$.when( ... thisDoneLoading, prevDoneLayout ).done( layoutImage ).promise();
 
 		// When this image is done laying out, animate it after a brief pause
+		// $.each(element, function(i, e) {
+		// 	if (i == 0) 
+		// }
 		$.when( thisDoneLayout ).done( function() { setTimeout( animateImage, w.delayDisplayMs ); }).promise();
 
 		// Stagger image loading so everything loads faster
@@ -572,6 +592,9 @@ $( window ).on('popstate', function() {
 	// Load this page
 	loadPage(pageID);
 });
+
+
+
 
 
 
