@@ -210,12 +210,15 @@ function isArray(a){
 	return Array.isArray(a);
 }
 
+// Log dragging to check if a touchend if a drag or a tap
+var bDrag = false;
+$( window ).on("touchstart", function(){ bDrag = false; });
+$( window ).on("touchmove", function(){ bDrag = true; });
+
 function onTap(element, url) {
 	if (url != "") {
-		var load = function() { loadURL( url ); };
-		$( element ).on("tap", load );
-		// $( element ).click( load );
-		// $( element ).on("touch", load );
+		var load = function() { if (!bDrag) loadURL( url ); };
+		$( element ).on("click touchend", load );
 	}
 }
 
