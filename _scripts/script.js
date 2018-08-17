@@ -158,9 +158,12 @@ function initHome() {
     	projects = data["projects"];
 
     	// Iterate through all projects to create an image and text box for each one
-    	$.each(projects, function(index, element) {
+    	for (var i = 0; i < projects.length; i++) {
 
-    		var def = $.Deferred(); initDefs.push(def);
+    		var index = i;
+    		var element = projects[i];
+
+			var def = $.Deferred(); initDefs.push(def);
 
     		// Image
     		element["imgID"] = "img" + element["projectID"];
@@ -172,8 +175,26 @@ function initHome() {
 			element["txt"] = getTextElement( element["txtID"], element["title"], element["url"], fontBody, "#000000");
 
 			console.log("project image and text added for: " + element["projectID"]);
-			def.resolve();
-    	});
+			def.resolve();    		
+    	}
+
+
+   //  	$.each(projects, function(index, element) {
+
+   //  		var def = $.Deferred(); initDefs.push(def);
+
+   //  		// Image
+   //  		element["imgID"] = "img" + element["projectID"];
+   //  		var imgPath = pathPrefix() + data["homeFolderName"] + "/" + element["projectID"] + "." + data["imgExt"];
+   //  		element["img"] = getImageElement( element["imgID"], imgPath, element["url"] );
+
+		 //    // Text
+			// element["txtID"] = "txt" + element["projectID"];
+			// element["txt"] = getTextElement( element["txtID"], element["title"], element["url"], fontBody, "#000000");
+
+			// console.log("project image and text added for: " + element["projectID"]);
+			// def.resolve();
+   //  	});
 	});
 	console.log("home init");
 }
