@@ -2,8 +2,6 @@
 
 function ColumnLayout(nCols, colWidth, colMargin, indexOffset) {
 
-	console.log(colWidth, colMargin);
-
     this.nCols = nCols;
     this.colWidth = colWidth;
     this.colMargin = colMargin;
@@ -161,7 +159,7 @@ function ColumnLayout(nCols, colWidth, colMargin, indexOffset) {
   			center = lastRect.y + lastRect.h;
   		}
 	  	var radius = this.searchRadiusMult * this.colWidth;
-	  	while (iters <= this.maxIters) {
+	  	while (iters <= this.maxIters && this.rects.length != 0) { // only complete if not first rect
 
 	  		// Choose n samples and find the likelihood at each
 	  		// The radius is relative to the last offset

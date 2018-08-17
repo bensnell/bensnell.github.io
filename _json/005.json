@@ -6,9 +6,10 @@
 	"globalExt" : "jpg",
 	"numDigits" : 3,
 	"images" : [
-		1,
 		2,
 		3,
-		4
-	],
+		4,
+		5,
+		1
+	]
 }

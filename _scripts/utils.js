@@ -206,6 +206,10 @@ function emptyDict(_dict) {
 	return Object.keys(_dict).length === 0;
 }
 
+function isArray(a){
+	return Array.isArray(a);
+}
+
 function onTap(element, url) {
 	if (url != "") {
 		var load = function() { loadURL( url ); };
@@ -214,13 +218,18 @@ function onTap(element, url) {
 	}
 }
 
-function getTextElement(id, text, url, font, color) {
+function elementExists(id) {
+	return document.getElementById(id) != null;
+}
+
+function getTextElement(id, text, url, font, color, classes = []) {
 	var para = document.createElement( "P" );
 	para.setAttribute( "id", id );
 	para.setAttribute( "style", "display: none; font-family: " + font );
 	var _text = document.createTextNode( text );
 	para.appendChild(_text);
-	para.setAttribute("class", "asyncLoad");
+	$.each(classes, function(index, element) { para.classList.add(element); });
+	// console.log(para.classList);
 	onTap( para, url );
 	$( para ).hover( function() { $( para ).css('cursor','pointer'); });
 	$( para ).css("position", "absolute");
@@ -230,13 +239,13 @@ function getTextElement(id, text, url, font, color) {
 	return para;
 }
 
-function getImageElement(id, path, url) {
+function getImageElement(id, path, url, classes = [], bCursorOnHover = true) {
 	var img = document.createElement("IMG");
     img.setAttribute("id", id);
     img.setAttribute("src-tmp", path);
-    img.setAttribute("class", "asyncLoad");
+    $.each(classes, function(index, element) { img.classList.add(element); });
     onTap( img, url );
-	$( img ).hover( function() { $( img ).css('cursor','pointer'); });
+	if (bCursorOnHover) $( img ).hover( function() { $( img ).css('cursor','pointer'); });
 	$( img ).css("display", "none");
 	$( img ).css("position", "absolute");
     document.body.appendChild(img);

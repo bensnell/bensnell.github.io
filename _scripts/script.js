@@ -13,9 +13,11 @@ var projects;
 var dict = {};
 // Stores images for a project
 var project = {};
+// NOTE: jsons CANNOT have commas at the end of their last element (otherwise they will not be parsed)
 
 // Stores the logo at the top of the page
 var menu = {};
+var bKeepMenu = true;
 //				     ID 		TEXT 			URL_SUFFIX 		HEX_COLOR
 var menuElems = [ 	["logo", 	"Ben Snell", 	"", 			"#000000"],
 					["about", 	"\\ about", 	"about", 		"#999999"],
@@ -61,7 +63,10 @@ function pathPrefix() {
 // Fadeout all async elements
 function fadeOut() {
 	var fadeOutMs = 200;
-	$( ".asyncLoad" ).each( function(index, element) {
+
+	var elems = bKeepMenu ? $( ".async" ) : $( ".async, .menu" );
+
+	elems.each( function(index, element) {
 		// Fade them out
 		$( element ).fadeOut( fadeOutMs );
 		// Delete them after this much time
@@ -79,7 +84,7 @@ function loadFonts() {
 			font.load();
 		}
 	}); 
-	console.log("fonts loaded");
+	// console.log("fonts loaded");
 	return null;
 }
 
@@ -99,15 +104,21 @@ function parseHomeData(data) {
 
 // Prepare images and text to be displayed
 function initMenuItems() {
+
 	$.each(menuElems, function(index, element) {
-		var para = getTextElement(	element[0],
-									element[1],
-									mainURL + (element[2]=="" ? "" : "/"+element[2]),
-									fontTitle,
-									element[3]);
-		menu[ element[0] ] = para;
+
+		// if (!elementExists(element[0])) {
+		if (!bKeepMenu || !elementExists(element[0])) {
+			var para = getTextElement(	element[0],
+										element[1],
+										mainURL + (element[2]=="" ? "" : "/"+element[2]),
+										fontTitle,
+										element[3],
+										["menu"]);
+			menu[ element[0] ] = para;
+		}
 	});
-	console.log("menu items init");
+	// console.log("menu items init");
 	return null;
 }
 function initHome() {
@@ -123,13 +134,13 @@ function initHome() {
     		// Image
     		element["imgID"] = "img" + element["projectID"];
     		var imgPath = pathPrefix() + data["homeFolderName"] + "/" + element["projectID"] + "." + data["imgExt"];
-    		element["img"] = getImageElement( element["imgID"], imgPath, element["url"] );
+    		element["img"] = getImageElement( element["imgID"], imgPath, element["url"], ["async"]);
 
 		    // Text
 			element["txtID"] = "txt" + element["projectID"];
-			element["txt"] = getTextElement( element["txtID"], element["title"], element["url"], fontBody, "#000000");
+			element["txt"] = getTextElement( element["txtID"], element["title"], element["url"], fontBody, "#000000", ["async"]);
 
-			console.log("project image and text added for: " + element["projectID"]);
+			// console.log("project image and text added for: " + element["projectID"]);
     	});
 	};
 
@@ -137,12 +148,12 @@ function initHome() {
 	var jsonPath = pathPrefix()+"_json/home.json";
 	var def = $.Deferred();
     $.get(jsonPath, loadHomeItems).done( function() { def.resolve(); });
-	console.log("home init");
+	// console.log("home init");
 	return def;
 }
 function initAbout() {
 
-	console.log("about init");
+	// console.log("about init");
 	return null;
 }
 function initProject(pageID) {
@@ -157,52 +168,45 @@ function initProject(pageID) {
     var projectJsonLoaded = $.Deferred();
     $.when( dictLoaded ).done( function() {
 
-    	console.log("dict has been loaded!!!!!");
     	var projectID = dict[pageID];
-    	console.log(dict);
     	var projectJsonPath = pathPrefix() + "_json/" + projectID + ".json";
-    	console.log(projectJsonPath);
-    	
     	var loadProjectJson = function(data) { 
 
     		// store all image ids
-    		project["imgIDs"] = data["images"].map(function(e) { return pad(e, data["numDigits"], "0"); });
+    		project["images"] = data["images"].map(function(e) { return pad(e, data["numDigits"], "0"); });
 
     		// store all image paths
-    		project["imgPaths"] = project["imgIDs"].map(function(e) { return pathPrefix()+"_assets/"+projectID+"/"+e+"."+data["globalExt"]; }); 
+    		project["images"] = project["images"].map(function(e) { return {"id" : e, "path" : (pathPrefix()+"_assets/"+projectID+"/"+e+"."+data["globalExt"])}; }); 
 
     		// store text
-    		project["title"] = data["title"];
-    		project["description"] = data["description"];
-    		project["date"] = data["date"];
-
-    		console.log(project);
+    		project["text"] = [ {"id" : "title", "content" : data["title"]}, 
+    							{"id" : "description", "content" : data["description"]},
+    							{"id" : "date", "content" : data["date"]} ];
     	};
 
     	// load the json
-		$.get(projectJsonPath, loadProjectJson).done( function() { console.log("hereeee"); projectJsonLoaded.resolve(); });    	
+		$.get(projectJsonPath, loadProjectJson).done( function() { projectJsonLoaded.resolve(); });    	
 	});
 
 	// When the json entry is retrieved, initialize its entries
-	// $.when( projectJsonLoaded ).done( function() {
+	var elementsLoaded = $.Deferred();
+	$.when( projectJsonLoaded ).done( function() {
 
+		$.each(project["text"], function(index, element) {
+			element["txt"] = getTextElement(element["id"], element["content"], "", fontBody, "#000000", ["async"]);
+			// console.log("init txt " + element["id"]);
+		});
 
+		$.each(project["images"], function(index, element) {
+			element["img"] = getImageElement(element["id"], element["path"], "", ["async"], false);
+			// console.log("init img " + element["id"]);
+		});
 
+		elementsLoaded.resolve();
+	});
 
-
-
-
-
-	// });
-
-
-
-
-
-
-
-	console.log("project init");
-	return null;
+	// console.log("project init");
+	return elementsLoaded;
 }
 function initPageSpecificItems(pageID) {
 	if (pageID == "home") {
@@ -220,12 +224,15 @@ function init(pageID, promise) {
 	// defs.push(loadFonts()); // should only happen once, not every time something is initialized
 	defs.push(initMenuItems());
 	defs.push(initPageSpecificItems(pageID));
-	$.when(... defs).done( function() { console.log("promise"); promise.resolve(); });
-	console.log("init complete");
+	$.when(... defs).done( function() { promise.resolve(); });
+	// console.log("init complete");
 }
 
 // Display Images and Text
 function showMenuItems() {
+
+	// If we're keeping the menu, don't change it
+	if (bKeepMenu && $( "#"+menuElems[0][0] ).is(":visible")) return;
 
 	// call this when the first image is shown
 	var logo = menu["logo"];
@@ -263,12 +270,11 @@ function showMenuItems() {
 		$( item ).fadeIn({queue: false, duration: w.fadeMs}); 
 	}
 
-	console.log("menu items show");
+	// console.log("menu items show");
 };
 function showHome() {
 
 	// Create the foundation for an image layout
-	console.log(w.marginSideFrac, w.marginBetweenFrac, w.windowW, (1 - (w.marginSideFrac*2+w.marginBetweenFrac)) * w.windowW / 2.0);
 	var layout = new ColumnLayout(2, (1 - (w.marginSideFrac*2+w.marginBetweenFrac)) * w.windowW / 2.0, w.marginBetweenPx, 1);
 
 	// For each project ...
@@ -276,7 +282,7 @@ function showHome() {
 	var prevDoneLayout = null;
     $.each(projects, function(index, element) {
 
-    	console.log("project loading: " + element["projectID"]);
+    	// console.log("project loading: " + element["projectID"]);
 
     	// Make promises 
     	var thisDoneLoading = $.Deferred();
@@ -285,7 +291,7 @@ function showHome() {
     	var thisDoneLayout = $.Deferred();
 		var layoutImage = function() {
 
-			console.log("laying out: " + element["projectID"]);
+			// console.log("laying out: " + element["projectID"]);
 
 			var origRect = layout.getImagePosition($( element["img"] ).width(), $( element["img"] ).height());
 			var thisRect = origRect.getCopy();
@@ -362,15 +368,115 @@ function showHome() {
 	    prevDoneAnimating = thisDoneAnimating;
     });
 
-	console.log("home show");
+	// console.log("home show");
 };
 function showAbout() {
 
-	console.log("about show");
+	// console.log("about show");
 };
 function showProject() {
 
-	console.log("project show");
+	// Choose whether to load the next image set once the entire previous 
+	// image set is loaded, or only once the first image in the previous 
+	// image set has loaded
+	var bWaitForEntireSet = false;
+
+	var bAnimate = false;
+	var moveFrac = 0.4; // compared to home
+
+	// Determine how wide to make the images and how wide to make the text
+	var img2textWidthFrac = 0.65;
+	var marginFrac = 0.05;
+	var imgVertMarginFrac = 0.025;
+	
+	var imgWidthFrac = (1-(w.marginSideFrac*2+marginFrac)) * img2textWidthFrac;
+	var textWidthFrac = (1-(w.marginSideFrac*2+marginFrac)) * (1-img2textWidthFrac);
+	var imgWidthPx = w.f2p( imgWidthFrac );
+	var marginPx = w.f2p( marginFrac );
+	var imgVertMarginPx = w.f2p( imgVertMarginFrac );
+
+	// Draw all images and load text with the first image set
+	var prevDoneAnimating = null;
+	var prevDoneLayout = null;
+	var topOffset = 0; // doesn't include top margin
+	$.each(project["images"], function(index, _element) {
+
+		var element = isArray(_element) ? _element : [_element];
+
+		// Loading promises
+		var thisDoneLoading = [];
+		$.each(element, function(i, e) {
+
+			if (bWaitForEntireSet || i==0) {
+				var def = $.Deferred(); 
+				thisDoneLoading.push(def);
+				$( e["img"] ).on("load", function() { def.resolve(); });
+			}
+		});
+		
+		// Layout promises
+		var thisDoneLayout = $.Deferred(); // only one needed per set
+		var layoutImage = function() {
+
+			$.each(element, function(i, e) {
+
+				// Set the x, y, w, h
+				var ix = w.windowL + w.marginSidePx;
+				var iy = topOffset + w.marginTopPx;
+				var iw = imgWidthPx;
+				var ih = $(e["img"]).height() / $(e["img"]).width() * iw;
+
+				$( e["img"] ).css("left", ix); 
+				$( e["img"] ).css("top", iy + (bAnimate ? w.moveAmtPx : 0));
+				$( e["img"] ).attr("width", iw);
+				$( e["img"] ).attr("height", ih);
+
+				// Lastly, set the priority of sets overlapping (higher numbers = further above)
+				$( e["img"] ).css("z-index", -i);
+
+				// If it's the first, set a promise
+				if (i==0) {
+					topOffset += ih + imgVertMarginPx;
+					thisDoneLayout.resolve();
+				}
+			});
+		}
+
+		// Animation Promises
+		var thisDoneAnimating = $.Deferred();
+		var animateImage = function() {
+
+			// should only the first one in a set be animated in?
+			$.each(element, function(i, e) {
+				$( e["img"] ).fadeIn({queue: false, duration: w.fadeMs*moveFrac}); 
+				if (bAnimate) $( e["img"] ).animate({top: "-="+w.moveAmtPx}, w.moveMs*moveFrac, "easeOutCubic");
+
+				if (index == 0 && i == 0) showMenuItems();
+			});
+
+			thisDoneAnimating.resolve(); 
+		};
+
+		// When this image is done loading and the previous image is done laying out, lay this out
+		$.when( ... thisDoneLoading, prevDoneLayout ).done( layoutImage ).promise();
+
+		// When this image is done laying out, animate it after a brief pause
+		$.when( thisDoneLayout ).done( function() { setTimeout( animateImage, w.delayDisplayMs ); }).promise();
+
+		// Stagger image loading so everything loads faster
+		var startLoading = function() { 
+			$.each(element, function(i, e) {
+				$( e["img"] ).attr( 'src', $( e["img"] ).attr( 'src-tmp' ) ); 
+			});
+		};
+    	setTimeout( startLoading, index * w.delayLoadingMs);
+
+    	// Save these promises
+	    prevDoneLayout = thisDoneLayout;
+	    prevDoneAnimating = thisDoneAnimating;
+	});
+
+	// console.log("project show");
 };
 function showAllItems(pageID) {
 	if (pageID == "home") {
@@ -380,18 +486,17 @@ function showAllItems(pageID) {
 	} else {
 		showProject();
 	}
-	console.log("all items show");
+	// console.log("all items show");
 };
 function show(pageID) {
 
 	// recompute all parameters
 	w.recompute();
-	console.log(w.windowW, w.windowL);
 
 	// show all items
 	showAllItems(pageID);
 
-	console.log("show complete");
+	// console.log("show complete");
 };
 
 // load a specific page within this domain (no fadeout!)
@@ -399,16 +504,16 @@ function loadPage(pageID="") {
 
 	// Get the pageID if not specified
 	if (pageID=="") pageID = getThisPage();
-	console.log("this pageID is: " + pageID);
+	// console.log("this pageID is: " + pageID);
 
 	// First, initialize all elements
 	var initDone = $.Deferred();
 	init(pageID, initDone);
 
 	// When all items have been initialized, show all items
-	$.when( initDone ).done( function(){console.log("initDone is complete"); return show(pageID);} ).promise();
+	$.when( initDone ).done( function(){ return show(pageID);} ).promise();
 
-	console.log("Loading page " + pageID);
+	// console.log("Loading page " + pageID);
 }
 
 function loadURL(toUrl) {
@@ -417,7 +522,7 @@ function loadURL(toUrl) {
 		// Get the page ID
 		var pageID = getPage(toUrl);
 		// Change the state of the page
-		console.log("From " + getThisPage() + " --> " + pageID);
+		// console.log("From " + getThisPage() + " --> " + pageID);
 		if (getThisPage() == "home") {
 			if (pageID == "home") return;
 			else history.pushState( {}, "", pageID );
@@ -425,7 +530,7 @@ function loadURL(toUrl) {
 			if (pageID == "home") history.pushState( {}, "", "../");
 			else history.pushState( {}, "", "../"+pageID);
 		}
-		console.log("Page changed to " + pageID);
+		// console.log("Page changed to " + pageID);
 		// Fade out
 		fadeOut();
 		// Load this page 
@@ -440,10 +545,16 @@ function loadURL(toUrl) {
 }
 
 var windowReady = $.Deferred();
-$( document ).ready(function() { console.log("window ready"); windowReady.resolve(); });
+$( document ).ready(function() { 
+	// console.log("window ready"); 
+	windowReady.resolve(); 
+});
 
 var windowLoaded = $.Deferred();
-$( window ).on("load", function() { windowLoaded.resolve(); console.log("window loaded"); });
+$( window ).on("load", function() { 
+	windowLoaded.resolve(); 
+	// console.log("window loaded"); 
+});
 
 // When the window is ready, initialize fonts and load the page
 $.when( windowReady, windowLoaded ).done( loadFonts, loadPage ).promise();
@@ -454,7 +565,7 @@ $( window ).on('popstate', function() {
 	var url = window.location.href;
 	// Parse the specific page
 	var pageID = getPage(url);
-	console.log("History changed to " + pageID);
+	// console.log("History changed to " + pageID);
 	// todo: Check if this page exists
 	// Fadeout and delete all elements
 	fadeOut();
