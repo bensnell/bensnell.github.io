@@ -202,6 +202,10 @@ function rect(x, y, w, h) {
 
 };
 
+function emptyDict(_dict) {
+	return Object.keys(_dict).length === 0;
+}
+
 function onTap(element, url) {
 	if (url != "") {
 		var load = function() { loadURL( url ); };
@@ -218,8 +222,6 @@ function getTextElement(id, text, url, font, color) {
 	para.appendChild(_text);
 	para.setAttribute("class", "asyncLoad");
 	onTap( para, url );
-	// if (url != "") $( para ).click( function() { loadURL( url ); });
-	// if (url != "") $( para ).on("touchstart", function() { loadURL( url ); });
 	$( para ).hover( function() { $( para ).css('cursor','pointer'); });
 	$( para ).css("position", "absolute");
 	$( para ).css('color', (color=="" ? "#000000" : color) );
@@ -234,8 +236,6 @@ function getImageElement(id, path, url) {
     img.setAttribute("src-tmp", path);
     img.setAttribute("class", "asyncLoad");
     onTap( img, url );
-	// if (url != "") $( img ).click( function() { loadURL( url ); });
-	// if (url != "") $( img ).on("touchstart", function() { loadURL( url ); });
 	$( img ).hover( function() { $( img ).css('cursor','pointer'); });
 	$( img ).css("display", "none");
 	$( img ).css("position", "absolute");

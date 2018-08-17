@@ -86,6 +86,8 @@ function loadFonts() {
 // parse reference data to use later on
 function parseHomeData(data) {
 
+	if (!emptyDict(dict)) return;
+
 	// Save projects
 	projects = data["projects"];
 
@@ -143,7 +145,61 @@ function initAbout() {
 	console.log("about init");
 	return null;
 }
-function initProject() {
+function initProject(pageID) {
+
+	// Make sure the dictionary is loaded
+	var loadDict = function(data) { parseHomeData(data); };
+	var jsonPath = pathPrefix()+"_json/home.json";
+	var dictLoaded = $.Deferred();
+    $.get(jsonPath, loadDict).done( function() { dictLoaded.resolve(); });
+
+    // When it's loaded, then get the projectID and load the json entry for that project
+    var projectJsonLoaded = $.Deferred();
+    $.when( dictLoaded ).done( function() {
+
+    	console.log("dict has been loaded!!!!!");
+    	var projectID = dict[pageID];
+    	console.log(dict);
+    	var projectJsonPath = pathPrefix() + "_json/" + projectID + ".json";
+    	console.log(projectJsonPath);
+    	
+    	var loadProjectJson = function(data) { 
+
+    		// store all image ids
+    		project["imgIDs"] = data["images"].map(function(e) { return pad(e, data["numDigits"], "0"); });
+
+    		// store all image paths
+    		project["imgPaths"] = project["imgIDs"].map(function(e) { return pathPrefix()+"_assets/"+projectID+"/"+e+"."+data["globalExt"]; }); 
+
+    		// store text
+    		project["title"] = data["title"];
+    		project["description"] = data["description"];
+    		project["date"] = data["date"];
+
+    		console.log(project);
+    	};
+
+    	// load the json
+		$.get(projectJsonPath, loadProjectJson).done( function() { console.log("hereeee"); projectJsonLoaded.resolve(); });    	
+	});
+
+	// When the json entry is retrieved, initialize its entries
+	// $.when( projectJsonLoaded ).done( function() {
+
+
+
+
+
+
+
+
+	// });
+
+
+
+
+
+
 
 	console.log("project init");
 	return null;
@@ -154,7 +210,7 @@ function initPageSpecificItems(pageID) {
 	} else if (pageID == "about") {
 		return initAbout();
 	} else {
-		return initProject();
+		return initProject(pageID);
 	}
 	// console.log("page specific items init");
 	return null;
