@@ -206,7 +206,7 @@ function onTap(element, url) {
 	if (url != "") {
 		var load = function() { loadURL( url ); };
 		$( element ).click( load );
-		$( element ).on("touchstart", load );
+		$( element ).on("touchend", load );
 	}
 }
 
