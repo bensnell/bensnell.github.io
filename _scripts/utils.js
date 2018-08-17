@@ -217,8 +217,13 @@ $( window ).on("touchmove", function(){ bDrag = true; });
 
 function onTap(element, url) {
 	if (url != "") {
-		var load = function() { if (!bDrag) loadURL( url ); };
-		$( element ).on("click touchend", load );
+		$( element ).on("click", function() { 
+			loadURL( url ); 
+		});
+		$( element ).on("touchend", function() { 
+			if (!bDrag) loadURL( url ); 
+			bDrag = false; 
+		});
 	}
 }
 
