@@ -120,8 +120,12 @@ function loadURL(toUrl) {
 //     console.log("Canvas resized");
 // }
 
+// Promises that must be fulfilled in all init functions
+var initDefs = []
+
 function loadFonts() {	
 	$.each(fonts, function(index, element) {
+
 		if (element[0] == fontTitle || element[0] == fontBody) {
 			var font = new FontFace( element[0], "url(" + pathPrefix() + "/_fonts/" + element[1] + ")", {} );
 			document.fonts.add( font );
@@ -134,12 +138,14 @@ function loadFonts() {
 // initialize, but do not yet show, menu items
 function initMenuItems() {
 	$.each(menuElems, function(index, element) {
+		var def = $.Deferred(); initDefs.push(def);
 		var para = getTextElement(	element[0],
 									element[1],
 									mainURL + (element[2]=="" ? "" : "/"+element[2]),
 									fontTitle,
 									element[3]);
 		menu[ element[0] ] = para;
+		def.resolve();
 	});
 	console.log("menu items init");
 }
@@ -154,6 +160,8 @@ function initHome() {
     	// Iterate through all projects to create an image and text box for each one
     	$.each(projects, function(index, element) {
 
+    		var def = $.Deferred(); initDefs.push(def);
+
     		// Image
     		element["imgID"] = "img" + element["projectID"];
     		var imgPath = pathPrefix() + data["homeFolderName"] + "/" + element["projectID"] + "." + data["imgExt"];
@@ -164,6 +172,7 @@ function initHome() {
 			element["txt"] = getTextElement( element["txtID"], element["title"], element["url"], fontBody, "#000000");
 
 			console.log("project image and text added for: " + element["projectID"]);
+			def.resolve();
     	});
 	});
 	console.log("home init");
@@ -200,7 +209,7 @@ function init() {
 
 	initPageSpecificItems();
 
-	initDone.resolve();
+	$.when(... initDefs).done( function() { initDone.resolve() });
 	console.log("init complete");
 }
 
@@ -390,6 +399,7 @@ $.when( windowReady, windowLoaded ).done( init ).promise();
 
 // When all items have been initialized, show (and load) all items
 $.when( initDone ).done( show ).promise();
+// $.when.apply($, initDefs).done( show ).promise();
 	
 
 	
