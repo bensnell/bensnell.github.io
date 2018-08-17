@@ -202,6 +202,14 @@ function rect(x, y, w, h) {
 
 };
 
+function onTap(element, url) {
+	if (url != "") {
+		var load = function() { loadURL( url ); };
+		$( element ).click( load );
+		$( element ).on("touchstart", load );
+	}
+}
+
 function getTextElement(id, text, url, font, color) {
 	var para = document.createElement( "P" );
 	para.setAttribute( "id", id );
@@ -209,7 +217,9 @@ function getTextElement(id, text, url, font, color) {
 	var _text = document.createTextNode( text );
 	para.appendChild(_text);
 	para.setAttribute("class", "asyncLoad");
-	if (url != "") $( para ).click( function() { loadURL( url ); });
+	onTap( para, url );
+	// if (url != "") $( para ).click( function() { loadURL( url ); });
+	// if (url != "") $( para ).on("touchstart", function() { loadURL( url ); });
 	$( para ).hover( function() { $( para ).css('cursor','pointer'); });
 	$( para ).css("position", "absolute");
 	$( para ).css('color', (color=="" ? "#000000" : color) );
@@ -223,7 +233,9 @@ function getImageElement(id, path, url) {
     img.setAttribute("id", id);
     img.setAttribute("src-tmp", path);
     img.setAttribute("class", "asyncLoad");
-	if (url != "") $( img ).click( function() { loadURL( url ); });
+    onTap( img, url );
+	// if (url != "") $( img ).click( function() { loadURL( url ); });
+	// if (url != "") $( img ).on("touchstart", function() { loadURL( url ); });
 	$( img ).hover( function() { $( img ).css('cursor','pointer'); });
 	$( img ).css("display", "none");
 	$( img ).css("position", "absolute");
