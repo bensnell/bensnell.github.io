@@ -31,7 +31,7 @@ function Params() {
 	// Title font
 	this.titleSizeFrac = 0.065; // 0.075 // 0.09 // 0.055
 	this.minTitleSize = 40;
-	this.titleTopOffset = 0.55; // 0.7
+	this.titleTopOffset = 0.5; // 0.7
 	this.titleLeftOffset = 0.5; // 0.37
 	this.bTitleAbove = true;
 	this.titleLineHeight = 1.1; // 1.25
@@ -39,6 +39,9 @@ function Params() {
 
 	// layout params
 	this.columnOffset = 1;
+
+	this.menuSizeFrac = 0.4;
+	this.subheadingSizeFrac = 0.3;
 
 
 	// ========================

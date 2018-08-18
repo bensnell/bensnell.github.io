@@ -252,7 +252,8 @@ function showMenuItems() {
 	$( logo ).css("font-size", w.titleSizePx);
 	$( logo ).css("letter-spacing", (w.titleLetterSpacing*w.titleSizePx) + "px"); // .1993
 	$( logo ).css("line-height", w.titleLineHeight);
-	$( logo ).css("top", -w.titleSizePx*(1-w.titleTopOffset)); // top
+	// $( logo ).css("top", -w.titleSizePx*(1-w.titleTopOffset)); // top
+	$( logo ).css("top", w.titleSizePx*w.titleTopOffset); // top
 	// $( logo ).css("top", windowH/2 - $(logo).height()/2 * 4); // center
 	$( logo ).css("left", w.windowL + w.windowW/2 - $( logo ).width()/2); // center
 	// $( logo ).css("left", windowL + titleSizePx*titleLeftOffset);
@@ -265,11 +266,10 @@ function showMenuItems() {
 	$( logo ).fadeIn({queue: false, duration: w.fadeMs}); 
 
 	var menuItems = ["about", "inquire"]
-	var menuSizeFraction = 0.4;
 	for (var i = 0; i < menuItems.length; i++) {
 		var item = menu[menuItems[i]];
 		// $( item ).css("text-align", "right");
-		$( item ).css("font-size", w.titleSizePx * menuSizeFraction);
+		$( item ).css("font-size", w.titleSizePx * w.menuSizeFrac);
 		// $( item ).css("bottom", -titleSizePx * 0.1);
 		$( item ).css("top", $(menu["logo"]).offset().top + $(menu["logo"]).height() - w.titleSizePx*0.3 + $(item).height() * i); //-titleSizePx*(1-titleTopOffset)); //+ 10 + $( item ).height()*i
 		var scrollBarWidth = 15;
@@ -320,27 +320,30 @@ function showHome() {
 
 			// Set the text attributes
 			$( element["txt"] ).css("font-size", w.fontSizePx);
-			$( element["txt"] ).css("top", thisRect.b() - w.fontSizePx*0.5);
+			$( element["txt"] ).css("top", thisRect.b() + w.fontSizePx*0.55 + w.moveAmtPx);
 			$( element["txt"] ).css("left", thisRect.x);
 			$( element["txt"] ).css("letter-spacing", (w.titleLetterSpacing/2*w.fontSizePx) + "px"); // .1993
 			$( element["txt"] ).css("z-index", 0);
 
 			// On hovering over the image, show the text below it
 			// (this has been extensively tested -- this works really well!)
-			$( element["img"] ).mouseenter( function() {
+			var hoverQueueName = "hover";
+			var sensorIDs = "#" + element["img"]["id"] + ", " + "#" + element["txt"]["id"];
+			$( sensorIDs ).mouseenter( function() {
 				if (element["timeout"]) {
 		    		for (var i = 0; i < element["timeout"].length; i++) clearTimeout(element["timeout"][i]);
 		    		element["timeout"] = [];
 		    	} else element["timeout"] = [];
-				$( element["txt"] ).stop(true, false).fadeIn({queue: false, duration: w.fadeMs*0.8});
+				$( element["txt"] ).stop(hoverQueueName, true, false).fadeIn({queue: hoverQueueName, duration: w.fadeMs*0.8}).dequeue(hoverQueueName);
+				// element["mouseleaveCount"] = 0;
 		    });
-		    $( element["img"] ).mouseleave( function() {
+		    $( sensorIDs ).mouseleave( function() {
 		    	if (element["timeout"]) {
 		    		for (var i = 0; i < element["timeout"].length; i++) clearTimeout(element["timeout"][i]);
 		    		element["timeout"] = [];
 		    	} else element["timeout"] = [];
 		    	var to = setTimeout( function() {
-		    		$( element["txt"] ).stop(true, false).fadeOut({queue: false, duration: w.fadeMs});
+		    		$( element["txt"] ).stop(hoverQueueName, true, false).fadeOut({queue: hoverQueueName, duration: w.fadeMs}).dequeue(hoverQueueName);
 				}, 2500);
 				element["timeout"].push(to);
 		    });
@@ -356,7 +359,7 @@ function showHome() {
 			$( element["img"] ).animate({top: "-="+w.moveAmtPx}, w.moveMs, "easeOutCubic");
 
 			// $( element["txt"] ).fadeIn({queue: false, duration: fadeMs}); 
-			// $( element["txt"] ).animate({top: "-="+moveAmtPx}, moveMs, "easeOutCubic");
+			$( element["txt"] ).animate({top: "-="+w.moveAmtPx}, w.moveMs, "easeOutCubic");
 
 			// Load logo text
 			if (index == 0) {
@@ -397,16 +400,18 @@ function showProject() {
 	var bAnimate = false;
 	var moveFrac = 0.6; // compared to home
 	var delayFrac = 0.7;
+	var delayTextMs = 120;
 
 
 	// Determine how wide to make the images and how wide to make the text
-	var img2textWidthFrac = 0.65;
-	var marginFrac = 0.05;
+	var img2textWidthFrac = 0.6;
+	var marginFrac = 0.025;
 	var imgVertMarginFrac = 0.025;
 	
 	var imgWidthFrac = (1-(w.marginSideFrac*2+marginFrac)) * img2textWidthFrac;
 	var textWidthFrac = (1-(w.marginSideFrac*2+marginFrac)) * (1-img2textWidthFrac);
 	var imgWidthPx = w.f2p( imgWidthFrac );
+	var textWidthPx = w.f2p( textWidthFrac );
 	var marginPx = w.f2p( marginFrac );
 	var imgVertMarginPx = w.f2p( imgVertMarginFrac );
 	var delayLoadingMs = w.delayLoadingMs * delayFrac;
@@ -436,12 +441,12 @@ function showProject() {
 
 				// Set the x, y, w, h
 				var ix = w.windowL + w.marginSidePx;
-				var iy = topOffsets[index] + w.marginTopPx;
+				var iy = topOffsets[index] + w.marginTopPx + (bAnimate ? w.moveAmtPx : 0);
 				var iw = imgWidthPx;
 				var ih = $(e["img"]).height() / $(e["img"]).width() * iw;
 
 				$( e["img"] ).css("left", ix); 
-				$( e["img"] ).css("top", iy + (bAnimate ? w.moveAmtPx : 0));
+				$( e["img"] ).css("top", iy);
 				$( e["img"] ).attr("width", iw);
 				$( e["img"] ).attr("height", ih);
 
@@ -450,10 +455,41 @@ function showProject() {
 
 				// If it's the first, set a promise
 				if (i == 0) {
-					// if (index != 0) {
-						// console.log(
-						topOffsets.push( topOffsets[topOffsets.length-1] + ih + imgVertMarginPx );
-					// }
+					topOffsets.push( topOffsets[topOffsets.length-1] + ih + imgVertMarginPx );
+
+					// set the text location
+					if (index == 0) {
+						var tx = ix + iw + w.f2p( marginFrac );
+						var ty = iy;
+						var tw = textWidthPx;
+
+						// title
+						var title = $( project["text"][0]["txt"] );
+						title.css("font-size", w.titleSizePx * w.subheadingSizeFrac);
+						title.css("letter-spacing", (w.titleLetterSpacing/2*w.fontSizePx) + "px"); // .1993
+						title.css("margin", 0);
+						setTxtPosDim(title, tx, ty, tw, null);
+						ty += title.height() + w.fontSizePx * 0.1;
+
+						// date
+						var date = $( project["text"][2]["txt"] );
+						date.css("font-size", w.titleSizePx * w.subheadingSizeFrac * 0.7);
+						date.css("letter-spacing", (w.titleLetterSpacing/2*w.fontSizePx * 0.7) + "px");
+						date.css("margin", 0);
+						setTxtPosDim(date, tx, ty, tw, null);
+						ty += date.height() + w.fontSizePx * 1.4;
+
+						// description
+						var desc = $( project["text"][1]["txt"] );
+						desc.css("font-size", w.fontSizePx);
+						desc.css("letter-spacing", (w.titleLetterSpacing/2*w.fontSizePx*0.8) + "px"); // .1993
+						desc.css("line-height", (w.fontSizePx * 1.4) + "px"); // .1993
+						desc.css("margin", 0);
+						setTxtPosDim(desc, tx, ty, tw, null);
+
+					}
+
+					// resolve promise
 					thisDoneLayout.resolve();
 				}
 			}
@@ -465,12 +501,31 @@ function showProject() {
 		// Animation Promises
 		var thisDoneAnimating = $.Deferred();
 		var animateFirstImage = function() {
+
+			// animate the image
 			$( element[0]["img"] ).fadeIn({queue: false, duration: w.fadeMs*moveFrac}); 
 			if (bAnimate) $( element[0]["img"] ).animate({top: "-="+w.moveAmtPx}, w.moveMs*moveFrac, "easeOutCubic");
-			showMenuItems();
+
+			if (index == 0) {
+				// animate the text
+				var showText = function() {
+					$.each(project["text"], function(i, e) {
+						console.log(e["txt"]);
+						$( e["txt"] ).fadeIn({queue: false, duration: w.fadeMs*moveFrac}); 
+						if (bAnimate) $( e["txt"] ).animate({top: "-="+w.moveAmtPx}, w.moveMs*moveFrac, "easeOutCubic");
+					});
+				}
+				setTimeout(showText, delayTextMs);
+			}
+
+			// resolve this promise
 			thisDoneAnimating.resolve(); 
 		};
 		$.when( thisDoneLayout ).done( function() { setTimeout( animateFirstImage, delayDisplayMs ); }).promise();
+
+		if (index == 0) {
+			$.when( thisDoneLayout ).done( function() { setTimeout( showMenuItems, Math.max(delayDisplayMs-delayTextMs,0) ); }).promise();
+		}
 
 		// Stagger image loading so everything loads faster
 		$.each(element, function(i, e) {

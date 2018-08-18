@@ -240,10 +240,13 @@ function getTextElement(id, text, url, font, color, classes = []) {
 	$.each(classes, function(index, element) { para.classList.add(element); });
 	// console.log(para.classList);
 	onTap( para, url );
-	$( para ).hover( function() { $( para ).css('cursor','pointer'); });
+	if (url != "") $( para ).hover( function() { $( para ).css('cursor','pointer'); });
 	$( para ).css("position", "absolute");
 	$( para ).css('color', (color=="" ? "#000000" : color) );
-	document.body.style = "white-space: pre;"
+	$( para ).css("margin", 0); // removes strange offsets
+	// document.body.style = "white-space: pre;"
+	document.body.style = "white-space: pre-wrap;"
+	// see: https://stackoverflow.com/questions/4413015/browser-compatible-word-wrap-and-whitespace-pre
 	document.body.appendChild(para);
 	return para;
 }
@@ -260,3 +263,12 @@ function getImageElement(id, path, url, classes = [], bCursorOnHover = true) {
     document.body.appendChild(img);
     return img;
 }
+
+// set the position and dimensions of a jquery document element
+function setTxtPosDim(el, x=null, y=null, w=null, h=null) {
+	if (x != null) el.css("left", x);
+	if (y != null) el.css("top", y);
+	if (w != null) el.css("width", w);
+	if (h != null) el.css("width", h);
+}
+
