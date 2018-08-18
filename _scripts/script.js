@@ -250,6 +250,7 @@ function saveThisScrollTop() {
 function saveThisPageHeight() {
 
 	dict[ getThisPage() ]["pageHeight"] = $( document ).height(); // should this be body?
+	// console.log("page height for " + getThisPage() + " saved: " + $( document ).height());
 }
 function setPageHeight(height) {
 
@@ -259,6 +260,9 @@ function setPageHeight(height) {
 	saveThisPageHeight();
 }
 function setFooterHeight(height) {
+
+	// console.log("width is " + w.windowW);
+	// console.log("body height for " + getThisPage() + " is " + getElemsHeight());
 
 	setPageHeight( getElemsHeight() + height );
 }
@@ -275,6 +279,7 @@ function anticipatePageHeightAndScroll() {
 	// If we've loaded this page before, set the page height
 	if ( dict[ getThisPage() ]["pageHeight"] != undefined ) {
 		setPageHeight( dict[ getThisPage() ]["pageHeight"] );
+		// setFooterHeight( w.f2p(w.footerFrac) );
 	}
 
 	// scroll to the correct location
