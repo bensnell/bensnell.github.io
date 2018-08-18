@@ -9,7 +9,7 @@ var domainKey = "ben-snell";	// used to check if we're in my domain
 
 // Stores all projects for home
 var projects;
-// Stores a dictionary of pageID's  and projectID's
+// Dict of pageID : { projectID : #, scrollTop : #, pageHeight : # }
 var dict = {};
 // Stores images for a project
 var project = {};
@@ -38,6 +38,8 @@ var fonts = [ 	[	"Cochin",		"cochin.ttc"	],
 // window parameters
 var w = new Params();
 
+
+stopScrollRestoration();
 
 // Get the specific page given a url (doesn't check if in domain)
 function getPage(url) {
@@ -72,6 +74,9 @@ function fadeOut() {
 		// Delete them after this much time
 		setTimeout( function() { $( element ).remove(); }, fadeOutMs );
 	});
+	var fadeOutDone = $.Deferred();
+	setTimeout( function() { fadeOutDone.resolve(); }, fadeOutMs );
+	return fadeOutDone;
 }
 
 function loadFonts() {	
@@ -84,7 +89,6 @@ function loadFonts() {
 			font.load();
 		}
 	}); 
-	// console.log("fonts loaded");
 	return null;
 }
 
@@ -98,7 +102,16 @@ function parseHomeData(data) {
 
 	// Parse projects into an accessible dictionary
 	$.each(projects, function(index, element) {
-		dict[ getPage(element["url"]) ] = element["projectID"];
+		dict[ getPage(element["url"]) ] = { "projectID" : element["projectID"] }
+	});
+	// also add home and menu items (minus logo)
+	$.each( menuElems, function(index, element) {
+		dict[ element[0]=="logo" ? "home" : element[0] ] = {};
+	});
+
+	// Set all scroll positions initially to 0
+	$.each( dict, function(index, element) {
+		element["scrollTop"] = 0;
 	});
 }
 
@@ -118,7 +131,6 @@ function initMenuItems() {
 			menu[ element[0] ] = para;
 		}
 	});
-	// console.log("menu items init");
 	return null;
 }
 function initHome() {
@@ -139,8 +151,6 @@ function initHome() {
 		    // Text
 			element["txtID"] = "txt" + element["projectID"];
 			element["txt"] = getTextElement( element["txtID"], element["title"], element["url"], fontBody, "#000000", ["async"]);
-
-			// console.log("project image and text added for: " + element["projectID"]);
     	});
 	};
 
@@ -148,12 +158,10 @@ function initHome() {
 	var jsonPath = pathPrefix()+"_json/home.json";
 	var def = $.Deferred();
     $.get(jsonPath, loadHomeItems).done( function() { def.resolve(); });
-	// console.log("home init");
 	return def;
 }
 function initAbout() {
 
-	// console.log("about init");
 	return null;
 }
 function initProject(pageID) {
@@ -168,7 +176,7 @@ function initProject(pageID) {
     var projectJsonLoaded = $.Deferred();
     $.when( dictLoaded ).done( function() {
 
-    	var projectID = dict[pageID];
+    	var projectID = dict[pageID]["projectID"];
     	var projectJsonPath = pathPrefix() + "_json/" + projectID + ".json";
     	var loadProjectJson = function(data) { 
 
@@ -200,7 +208,6 @@ function initProject(pageID) {
 
 		$.each(project["text"], function(index, element) {
 			element["txt"] = getTextElement(element["id"], element["content"], "", fontBody, "#000000", ["async"]);
-			// console.log("init txt " + element["id"]);
 		});
 
 		$.each(project["images"], function(index, element) {
@@ -211,14 +218,11 @@ function initProject(pageID) {
 			} else {
 				element["img"] = getImageElement(element["id"], element["path"], "", ["async"], false);
 			}
-			// console.log("init img " + element["id"]);
 		});
-		console.log(project);
 
 		elementsLoaded.resolve();
 	});
 
-	// console.log("project init");
 	return elementsLoaded;
 }
 function initPageSpecificItems(pageID) {
@@ -229,7 +233,6 @@ function initPageSpecificItems(pageID) {
 	} else {
 		return initProject(pageID);
 	}
-	// console.log("page specific items init");
 	return null;
 }
 function init(pageID, promise) {
@@ -238,7 +241,51 @@ function init(pageID, promise) {
 	defs.push(initMenuItems());
 	defs.push(initPageSpecificItems(pageID));
 	$.when(... defs).done( function() { promise.resolve(); });
-	// console.log("init complete");
+}
+
+function saveThisScrollTop() {
+
+	dict[ getThisPage() ]["scrollTop"] = $( window ).scrollTop();
+}
+function saveThisPageHeight() {
+
+	dict[ getThisPage() ]["pageHeight"] = $( document ).height(); // should this be body?
+}
+function setPageHeight(height) {
+
+	$( document.body ).css("height", height);
+
+	// Then save the page height
+	saveThisPageHeight();
+}
+function setFooterHeight(height) {
+
+	setPageHeight( getElemsHeight() + height );
+}
+function setScrollTop(scrollTop) {
+
+	$( window ).scrollTop(scrollTop);
+}
+function previouslyVisited(pageID="") {
+
+	return dict[ (pageID=="" ? getThisPage() : pageID) ]["pageHeight"] != undefined; // should also be scrollTop?
+}
+function anticipatePageHeightAndScroll() {
+
+	// If we've loaded this page before, set the page height
+	if ( dict[ getThisPage() ]["pageHeight"] != undefined ) {
+		setPageHeight( dict[ getThisPage() ]["pageHeight"] );
+	}
+
+	// scroll to the correct location
+	if ( dict[ getThisPage() ]["scrollTop"] != undefined ) {
+		setScrollTop(dict[ getThisPage() ]["scrollTop"]);
+	}
+}
+function markPageUnvisited(pageID) {
+
+	dict[pageID]["scrollTop"] = 0;
+	dict[pageID]["pageHeight"] = undefined;
 }
 
 // Display Images and Text
@@ -282,10 +329,10 @@ function showMenuItems() {
 		$( item ).css("line-height", w.titleLineHeight);
 		$( item ).fadeIn({queue: false, duration: w.fadeMs}); 
 	}
-
-	// console.log("menu items show");
 };
 function showHome() {
+
+	anticipatePageHeightAndScroll();
 
 	// Create the foundation for an image layout
 	var layout = new ColumnLayout(2, (1 - (w.marginSideFrac*2+w.marginBetweenFrac)) * w.windowW / 2.0, w.marginBetweenPx, 1);
@@ -295,16 +342,14 @@ function showHome() {
 	var prevDoneLayout = null;
     $.each(projects, function(index, element) {
 
-    	// console.log("project loading: " + element["projectID"]);
-
     	// Make promises 
     	var thisDoneLoading = $.Deferred();
     	$( element["img"] ).on( "load", function () { thisDoneLoading.resolve(); });
 
     	var thisDoneLayout = $.Deferred();
+    	var moveAmtPx = previouslyVisited() ? 0 : w.moveAmtPx;
+    	var delayFrac = previouslyVisited() ? 0.7 : 1.0;
 		var layoutImage = function() {
-
-			// console.log("laying out: " + element["projectID"]);
 
 			var origRect = layout.getImagePosition($( element["img"] ).width(), $( element["img"] ).height());
 			var thisRect = origRect.getCopy();
@@ -314,13 +359,13 @@ function showHome() {
 			// Set the image attributes
 			$( element["img"] ).attr("width", thisRect.w);
 			$( element["img"] ).attr("height", thisRect.h);				
-			$( element["img"] ).css("top", thisRect.y + w.moveAmtPx);
+			$( element["img"] ).css("top", thisRect.y + moveAmtPx);
 			$( element["img"] ).css("left", thisRect.x); 
 			$( element["img"] ).css("z-index", 0);
 
 			// Set the text attributes
 			$( element["txt"] ).css("font-size", w.fontSizePx);
-			$( element["txt"] ).css("top", thisRect.b() + w.fontSizePx*0.55 + w.moveAmtPx);
+			$( element["txt"] ).css("top", thisRect.b() + w.fontSizePx*0.55 + moveAmtPx);
 			$( element["txt"] ).css("left", thisRect.x);
 			$( element["txt"] ).css("letter-spacing", (w.titleLetterSpacing/2*w.fontSizePx) + "px"); // .1993
 			$( element["txt"] ).css("z-index", 0);
@@ -335,7 +380,6 @@ function showHome() {
 		    		element["timeout"] = [];
 		    	} else element["timeout"] = [];
 				$( element["txt"] ).stop(hoverQueueName, true, false).fadeIn({queue: hoverQueueName, duration: w.fadeMs*0.8}).dequeue(hoverQueueName);
-				// element["mouseleaveCount"] = 0;
 		    });
 		    $( sensorIDs ).mouseleave( function() {
 		    	if (element["timeout"]) {
@@ -355,11 +399,12 @@ function showHome() {
 		var thisDoneAnimating = $.Deferred();
 		var animateImage = function() {
 
-			$( element["img"] ).fadeIn({queue: false, duration: w.fadeMs}); 
-			$( element["img"] ).animate({top: "-="+w.moveAmtPx}, w.moveMs, "easeOutCubic");
+			// at the end of fading in, save the page height
+			$( element["img"] ).fadeIn({queue: false, duration: w.fadeMs});
+			$( element["img"] ).animate({top: "-="+moveAmtPx}, {duration: w.moveMs, easing: "easeOutCubic"});
 
 			// $( element["txt"] ).fadeIn({queue: false, duration: fadeMs}); 
-			$( element["txt"] ).animate({top: "-="+w.moveAmtPx}, w.moveMs, "easeOutCubic");
+			$( element["txt"] ).animate({top: "-="+moveAmtPx}, {duration: w.moveMs, easing: "easeOutCubic"});
 
 			// Load logo text
 			if (index == 0) {
@@ -373,24 +418,27 @@ function showHome() {
 		$.when( thisDoneLoading, prevDoneLayout ).done( layoutImage ).promise();
 
 		// When this image is done laying out, animate it after a brief pause
-		$.when( thisDoneLayout ).done( function() { setTimeout( animateImage, w.delayDisplayMs ); }).promise();
+		$.when( thisDoneLayout ).done( function() { setTimeout( animateImage, w.delayDisplayMs*delayFrac ); }).promise();
+
+		// When the final image is done animating, set the height of the body a little bit higher
+		if (index == projects.length-1) {
+			$.when( thisDoneAnimating ).done( function() { return setFooterHeight( w.f2p(w.footerFrac) ); }).promise();
+		}
 
 		// Stagger image loading so everything loads faster
 		var startLoading = function() { $( element["img"] ).attr( 'src', $( element["img"] ).attr( 'src-tmp' ) ); };
-    	setTimeout( startLoading, index * w.delayLoadingMs);
+    	setTimeout( startLoading, index * w.delayLoadingMs * delayFrac);
 
     	// Save these promises
 	    prevDoneLayout = thisDoneLayout;
 	    prevDoneAnimating = thisDoneAnimating;
     });
-
-	// console.log("home show");
 };
 function showAbout() {
-
-	// console.log("about show");
 };
 function showProject() {
+
+	anticipatePageHeightAndScroll();
 
 	// Choose whether to load the next image set once the entire previous 
 	// image set is loaded, or only once the first image in the previous 
@@ -510,7 +558,6 @@ function showProject() {
 				// animate the text
 				var showText = function() {
 					$.each(project["text"], function(i, e) {
-						console.log(e["txt"]);
 						$( e["txt"] ).fadeIn({queue: false, duration: w.fadeMs*moveFrac}); 
 						if (bAnimate) $( e["txt"] ).animate({top: "-="+w.moveAmtPx}, w.moveMs*moveFrac, "easeOutCubic");
 					});
@@ -527,6 +574,10 @@ function showProject() {
 			$.when( thisDoneLayout ).done( function() { setTimeout( showMenuItems, Math.max(delayDisplayMs-delayTextMs,0) ); }).promise();
 		}
 
+		if (index == project["images"].length-1) {
+			$.when( thisDoneAnimating ).done( function() { return setFooterHeight( w.f2p(w.footerFrac) ); }).promise();
+		}
+
 		// Stagger image loading so everything loads faster
 		$.each(element, function(i, e) {
 			var startLoading = function() { $( e["img"] ).attr( 'src', $( e["img"] ).attr( 'src-tmp' ) ); };
@@ -537,8 +588,6 @@ function showProject() {
 	    prevDoneLayout = thisDoneLayout;
 	    prevDoneAnimating = thisDoneAnimating;
 	});
-
-	// console.log("project show");
 };
 function showAllItems(pageID) {
 	if (pageID == "home") {
@@ -548,7 +597,6 @@ function showAllItems(pageID) {
 	} else {
 		showProject();
 	}
-	// console.log("all items show");
 };
 function show(pageID) {
 
@@ -557,34 +605,43 @@ function show(pageID) {
 
 	// show all items
 	showAllItems(pageID);
-
-	// console.log("show complete");
 };
 
 // load a specific page within this domain (no fadeout!)
-function loadPage(pageID="") {
+function loadPage(pageID="", fadeOutDone=null) {
 
 	// Get the pageID if not specified
 	if (pageID=="") pageID = getThisPage();
-	// console.log("this pageID is: " + pageID);
 
 	// First, initialize all elements
 	var initDone = $.Deferred();
 	init(pageID, initDone);
 
 	// When all items have been initialized, show all items
-	$.when( initDone ).done( function(){ return show(pageID);} ).promise();
+	$.when( initDone, fadeOutDone ).done( function(){ return show(pageID);} ).promise();
+}
 
-	// console.log("Loading page " + pageID);
+// exit current page and load a new one (pageID);
+function exitAndLoad(pageID) {
+
+	// fade out and delete all elements
+	var fadeOutDone = fadeOut();
+
+	// load the new page
+	loadPage(pageID, fadeOutDone);
 }
 
 function loadURL(toUrl) {
+
 	// Check if new page is within this domain
 	if (toUrl.includes(domainKey)) {
 		// Get the page ID
 		var pageID = getPage(toUrl);
+
+		// Reset the scrollTop
+		markPageUnvisited(pageID);
+
 		// Change the state of the page
-		// console.log("From " + getThisPage() + " --> " + pageID);
 		if (getThisPage() == "home") {
 			if (pageID == "home") return;
 			else history.pushState( {}, "", pageID );
@@ -592,11 +649,7 @@ function loadURL(toUrl) {
 			if (pageID == "home") history.pushState( {}, "", "../");
 			else history.pushState( {}, "", "../"+pageID);
 		}
-		// console.log("Page changed to " + pageID);
-		// Fade out
-		fadeOut();
-		// Load this page 
-		loadPage(pageID);
+		exitAndLoad( pageID );
 
 	} else {
 		// fade out
@@ -608,14 +661,12 @@ function loadURL(toUrl) {
 
 var windowReady = $.Deferred();
 $( document ).ready(function() { 
-	// console.log("window ready"); 
 	windowReady.resolve(); 
 });
 
 var windowLoaded = $.Deferred();
 $( window ).on("load", function() { 
 	windowLoaded.resolve(); 
-	// console.log("window loaded"); 
 });
 
 // When the window is ready, initialize fonts and load the page
@@ -623,16 +674,16 @@ $.when( windowReady, windowLoaded ).done( loadFonts, loadPage ).promise();
 
 // load new page if the forward or back button is pressed
 $( window ).on('popstate', function() {
+
+	// setScrollTop(
+
 	// Get the current url
 	var url = window.location.href;
 	// Parse the specific page
 	var pageID = getPage(url);
-	// console.log("History changed to " + pageID);
 	// todo: Check if this page exists
-	// Fadeout and delete all elements
-	fadeOut();
-	// Load this page
-	loadPage(pageID);
+	
+	exitAndLoad( pageID );
 });
 
 
@@ -642,24 +693,13 @@ $( window ).on('popstate', function() {
 
 
 
-// $( window ).scroll( function() {
+$( window ).scroll( function() {
 
-// 	// var hiddenFrac = 0.05;
-
-// 	// var hiddenPx = hiddenFrac * w.windowW;
-//     // if ( $(window).scrollTop() > hiddenPx/4 && $( menu["logo"] ).is(":visible") && !$(menu["logo"]).is(':animated') ) {
-//     //     // Fade out
-//     //     $( menu["logo"] ).fadeOut({queue: false, duration: 300}); 
-//     // }
-//     // if ( $(window).scrollTop() <= hiddenPx && $( menu["logo"] ).is(":hidden") && !$(menu["logo"]).is(':animated') ) {
-//     //     // Fade in
-//     //     $( menu["logo"] ).fadeIn({queue: false, duration: 800}); 
-//     // }
-// });
+	saveThisScrollTop();
+});
 
 // $( window ).on( "resize", function() {
 
-//     console.log( "window resized" );
 
 //     // resizeCanvas();
 

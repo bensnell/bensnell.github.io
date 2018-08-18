@@ -1,5 +1,10 @@
 // Utility functions
 
+function stopScrollRestoration() {
+
+	if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+}
+
 function pad(n, width, z) {
   z = z || '0';
   n = n + '';
@@ -269,6 +274,15 @@ function setTxtPosDim(el, x=null, y=null, w=null, h=null) {
 	if (x != null) el.css("left", x);
 	if (y != null) el.css("top", y);
 	if (w != null) el.css("width", w);
-	if (h != null) el.css("width", h);
+	if (h != null) el.css("height", h);
 }
 
+// Get the lowest position (y) of all of the elements on the page (within in the body)
+function getElemsHeight() {
+	var lowestY = 0;
+	$(document.body).children().each( function(index, element) {
+		var bottom = $( element ).offset().top + $( element ).height();
+		if (bottom > lowestY) lowestY = bottom;
+	});
+	return lowestY;
+}
