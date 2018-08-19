@@ -239,9 +239,31 @@ function onTap(element, url) {
 	}
 }
 function onTapFn(element, fn) {
-	$( element ).on("click", fn);
+	// Taps will prevent double events when there is a touchscreen
+	var debounceTimeMs = 1000;
+	if ( !element["taps"] ) element["taps"] = [];
+
+	$( element ).on("click", function() {
+
+		if ( element["taps"].length > 0) {
+			var lastTap = element["taps"][element["taps"].length-1];
+			if (lastTap[0] == "touch" && abs(lastTap[1]-getTimeMs()) < debounceTimeMs) return;
+		}
+
+		element["taps"].push( ["click", getTimeMs()] );
+		fn();
+	});
 	$( element ).on("touchend", function() { 
-		if (!bDrag) fn(); 
+
+		if ( element["taps"].length > 0) {
+			var lastTap = element["taps"][element["taps"].length-1];
+			if (lastTap[0] == "click" && abs(lastTap[1]-getTimeMs()) < debounceTimeMs) return;
+		}
+
+		if (!bDrag) {
+			element["taps"].push( ["touch", getTimeMs()] );
+			fn(); 
+		}
 		bDrag = false; 
 	});
 }
