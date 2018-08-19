@@ -247,7 +247,7 @@ function onTapFn(element, fn) {
 
 		if ( element["taps"].length > 0) {
 			var lastTap = element["taps"][element["taps"].length-1];
-			if (lastTap[0] == "touch" && abs(lastTap[1]-getTimeMs()) < debounceTimeMs) return;
+			if (lastTap[0] == "touch" && Math.abs(lastTap[1]-getTimeMs()) < debounceTimeMs) return;
 		}
 
 		element["taps"].push( ["click", getTimeMs()] );
@@ -257,7 +257,7 @@ function onTapFn(element, fn) {
 
 		if ( element["taps"].length > 0) {
 			var lastTap = element["taps"][element["taps"].length-1];
-			if (lastTap[0] == "click" && abs(lastTap[1]-getTimeMs()) < debounceTimeMs) return;
+			if (lastTap[0] == "click" && Math.abs(lastTap[1]-getTimeMs()) < debounceTimeMs) return;
 		}
 
 		if (!bDrag) {
