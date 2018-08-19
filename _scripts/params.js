@@ -45,6 +45,10 @@ function Params() {
 
 	this.footerFrac = 0.05;
 
+	// text color params
+	this.dark = "#000000";
+	this.light = "#BBBBBB";
+
 
 	// ========================
 	// ======= COMPUTE ========

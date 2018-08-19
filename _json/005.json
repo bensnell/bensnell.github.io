@@ -6,10 +6,10 @@
 	"globalExt" : "jpg",
 	"numDigits" : 3,
 	"images" : [
-		2, 
-		3, 
-		4,
-		5, 
-		1
-	]
+		[2, 3],
+		[4, 5, 1]
+	],
+	"captions" : {
+		"2" : "Dio. 43 x 12 x 8 cm. (detail)"
+	}
 }

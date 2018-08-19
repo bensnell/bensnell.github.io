@@ -117,6 +117,13 @@ function rect(x, y, w, h) {
 		return tmp;
 	}
 
+	this.setFromImage = function(img) {
+		this.x = $(img).offset().left;
+		this.y = $(img).offset().top;
+		this.w = $(img).attr("width");
+		this.h = $(img).attr("height");
+	}
+
 	// get bottom
 	this.b = function() {
 		return this.y + this.h;
@@ -231,6 +238,13 @@ function onTap(element, url) {
 		});
 	}
 }
+function onTapFn(element, fn) {
+	$( element ).on("click", fn);
+	$( element ).on("touchend", function() { 
+		if (!bDrag) fn(); 
+		bDrag = false; 
+	});
+}
 
 function elementExists(id) {
 	return document.getElementById(id) != null;
@@ -267,6 +281,18 @@ function getImageElement(id, path, url, classes = [], bCursorOnHover = true) {
 	$( img ).css("position", "absolute");
     document.body.appendChild(img);
     return img;
+}
+
+function getDivElement(id, url, classes = [], cursorType = "") {
+	var div = document.createElement("div");
+    div.setAttribute("id", id);
+    $.each(classes, function(index, element) { div.classList.add(element); });
+    onTap( div, url );
+	if (cursorType != "") $( div ).hover( function() { $( div ).css('cursor',cursorType); });
+	// $( div ).css("display", "none");
+	$( div ).css("position", "absolute");
+    document.body.appendChild(div);
+    return div;
 }
 
 // set the position and dimensions of a jquery document element

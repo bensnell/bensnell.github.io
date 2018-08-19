@@ -1,3 +1,33 @@
+// TODO
+// DONE - remove extra footer space on home when loaded from loadURL
+
+// - add functionality to flip through image sets
+// - add captions to project images
+
+// - extend clickable project icon across image and text (close the gap between them)
+
+// - on resizeCanvas, change the layout
+
+// - fix font sizes on mobile, tablet
+// - fix layout on tablet for project
+// - fix layout on mobile for project, home
+
+// - layout about, inquire
+// - add about blurb on home
+// - create about page
+// - create inquire page or link
+
+// - add instagram button
+
+// - keep images in memory to load previously visited paged faster
+
+// - access archive by scrolling down to bottom, then up to top, then back down to bottom
+
+// ==============================================
+
+
+$( document.body ).css("margin", "0px");
+
 // Ref: alignment: https://stackoverflow.com/questions/12744928/in-jquery-how-can-i-set-top-left-properties-of-an-element-with-position-values
 
 // fonts: Aver, Neris, Lato, 
@@ -14,6 +44,8 @@ var dict = {};
 // Stores images for a project
 var project = {};
 // NOTE: jsons CANNOT have commas at the end of their last element (otherwise they will not be parsed)
+// arrows for animating image sets
+// var arrows = {};
 
 // Stores the logo at the top of the page
 var menu = {};
@@ -115,7 +147,13 @@ function parseHomeData(data) {
 	});
 }
 
+
 // Prepare images and text to be displayed
+// function initArrows() {
+
+// 	arrows.push( { "left" : getImageElement("left", pathPrefix()+"_assets/misc/arrow_left.png", "", ["async"], false) });
+// 	arrows.push( { "right" : getImageElement("right", pathPrefix()+"_assets/misc/arrow_right.png", "", ["async"], false) });
+// }
 function initMenuItems() {
 
 	$.each(menuElems, function(index, element) {
@@ -150,7 +188,7 @@ function initHome() {
 
 		    // Text
 			element["txtID"] = "txt" + element["projectID"];
-			element["txt"] = getTextElement( element["txtID"], element["title"], element["url"], fontBody, "#000000", ["async"]);
+			element["txt"] = getTextElement( element["txtID"], element["title"], element["url"], fontBody, w.light, ["async"]);
     	});
 	};
 
@@ -243,14 +281,14 @@ function init(pageID, promise) {
 	$.when(... defs).done( function() { promise.resolve(); });
 }
 
+// Scrolling and Height Utilities
 function saveThisScrollTop() {
 
 	dict[ getThisPage() ]["scrollTop"] = $( window ).scrollTop();
 }
 function saveThisPageHeight() {
 
-	dict[ getThisPage() ]["pageHeight"] = $( document ).height(); // should this be body?
-	// console.log("page height for " + getThisPage() + " saved: " + $( document ).height());
+	dict[ getThisPage() ]["pageHeight"] = $( document.body ).height();
 }
 function setPageHeight(height) {
 
@@ -260,9 +298,6 @@ function setPageHeight(height) {
 	saveThisPageHeight();
 }
 function setFooterHeight(height) {
-
-	// console.log("width is " + w.windowW);
-	// console.log("body height for " + getThisPage() + " is " + getElemsHeight());
 
 	setPageHeight( getElemsHeight() + height );
 }
@@ -334,13 +369,14 @@ function showMenuItems() {
 		$( item ).css("line-height", w.titleLineHeight);
 		$( item ).fadeIn({queue: false, duration: w.fadeMs}); 
 	}
-};
+}
 function showHome() {
 
 	anticipatePageHeightAndScroll();
 
 	// Create the foundation for an image layout
-	var layout = new ColumnLayout(2, (1 - (w.marginSideFrac*2+w.marginBetweenFrac)) * w.windowW / 2.0, w.marginBetweenPx, 1);
+	var colWidth = (1 - (w.marginSideFrac*2+w.marginBetweenFrac)) * w.windowW / 2.0;
+	var layout = new ColumnLayout(2, colWidth, w.marginBetweenPx, 1);
 
 	// For each project ...
 	var prevDoneAnimating = null;
@@ -370,21 +406,27 @@ function showHome() {
 
 			// Set the text attributes
 			$( element["txt"] ).css("font-size", w.fontSizePx);
-			$( element["txt"] ).css("top", thisRect.b() + w.fontSizePx*0.55 + moveAmtPx);
-			$( element["txt"] ).css("left", thisRect.x);
 			$( element["txt"] ).css("letter-spacing", (w.titleLetterSpacing/2*w.fontSizePx) + "px"); // .1993
 			$( element["txt"] ).css("z-index", 0);
+			// set position
+			setTxtPosDim( 
+				$( element["txt"] ), 
+				thisRect.x, 
+				thisRect.b() + w.fontSizePx*0.55 + moveAmtPx, 
+				colWidth);
 
 			// On hovering over the image, show the text below it
 			// (this has been extensively tested -- this works really well!)
 			var hoverQueueName = "hover";
 			var sensorIDs = "#" + element["img"]["id"] + ", " + "#" + element["txt"]["id"];
+			var timeoutMs = 0; // 2500
+			var fadeFrac = 0.5;
 			$( sensorIDs ).mouseenter( function() {
 				if (element["timeout"]) {
 		    		for (var i = 0; i < element["timeout"].length; i++) clearTimeout(element["timeout"][i]);
 		    		element["timeout"] = [];
 		    	} else element["timeout"] = [];
-				$( element["txt"] ).stop(hoverQueueName, true, false).fadeIn({queue: hoverQueueName, duration: w.fadeMs*0.8}).dequeue(hoverQueueName);
+				$( element["txt"] ).stop(hoverQueueName, true, false).animate({color: w.dark}, {queue: hoverQueueName, duration: w.fadeMs*fadeFrac}).dequeue(hoverQueueName);
 		    });
 		    $( sensorIDs ).mouseleave( function() {
 		    	if (element["timeout"]) {
@@ -392,8 +434,8 @@ function showHome() {
 		    		element["timeout"] = [];
 		    	} else element["timeout"] = [];
 		    	var to = setTimeout( function() {
-		    		$( element["txt"] ).stop(hoverQueueName, true, false).fadeOut({queue: hoverQueueName, duration: w.fadeMs}).dequeue(hoverQueueName);
-				}, 2500);
+		    		$( element["txt"] ).stop(hoverQueueName, true, false).animate({color: w.light}, {queue: hoverQueueName, duration: w.fadeMs*fadeFrac}).dequeue(hoverQueueName);
+				}, timeoutMs);
 				element["timeout"].push(to);
 		    });
 
@@ -408,7 +450,9 @@ function showHome() {
 			$( element["img"] ).fadeIn({queue: false, duration: w.fadeMs});
 			$( element["img"] ).animate({top: "-="+moveAmtPx}, {duration: w.moveMs, easing: "easeOutCubic"});
 
-			// $( element["txt"] ).fadeIn({queue: false, duration: fadeMs}); 
+			// $( element["txt"] ).css("opacity", 0.5);
+			$( element["txt"] ).fadeIn({queue: false, duration: w.fadeMs}); 
+			// $( element["txt"] ).animate({opacity: 0.5}, {queue: false, duration: w.fadeMs});
 			$( element["txt"] ).animate({top: "-="+moveAmtPx}, {duration: w.moveMs, easing: "easeOutCubic"});
 
 			// Load logo text
@@ -416,7 +460,7 @@ function showHome() {
 				showMenuItems();
 			}
 
-			thisDoneAnimating.resolve(); 
+			setTimeout( function() { thisDoneAnimating.resolve(); }, Math.max(w.moveMs, w.fadeMs));
 		};
 
 		// When this image is done loading and the previous image is done laying out, lay this out
@@ -438,9 +482,9 @@ function showHome() {
 	    prevDoneLayout = thisDoneLayout;
 	    prevDoneAnimating = thisDoneAnimating;
     });
-};
+}
 function showAbout() {
-};
+}
 function showProject() {
 
 	anticipatePageHeightAndScroll();
@@ -485,6 +529,8 @@ function showProject() {
 			var def = $.Deferred(); thisDoneLoading.push(def);
 			$( e["img"] ).on("load", function() { def.resolve(); });
 		});
+
+		// If this element has a caption, add it
 		
 		// Layout promises
 		var thisDoneLayout = $.Deferred();
@@ -504,7 +550,56 @@ function showProject() {
 				$( e["img"] ).attr("height", ih);
 
 				// Lastly, set the priority of sets overlapping (higher numbers = further above)
-				$( e["img"] ).css("z-index", -i);
+				$( e["img"] ).css("z-index", 0);
+
+				// At the first image in a set, make the set flippable
+				if (element.length > 1 && i == 0) {
+
+					// First, create clickable divs
+					var rct = new rect(ix, iy, iw, ih); 
+					var divR = getDivElement(index + "_rightButton", "", ["async"], "e-resize");
+					setTxtPosDim( $(divR), rct.x + rct.w/3*2, rct.y, rct.w/3, rct.h);
+					var divL = getDivElement(index + "_leftButton", "", ["async"], "w-resize");
+					setTxtPosDim( $(divL), rct.x, rct.y, rct.w/3, rct.h);
+					
+					// Then, on click of these divs:
+					// imgSet: 
+					// offset: -1 is left, +1 is right
+					var showNextImage = function(imgSet, imgOffset) {
+
+						// First, find the image in this set that's visible
+						var visImg = null;
+						var visImgIndex = -1;
+						for (var i = 0; i < imgSet.length; i++) {
+
+							if ($(imgSet[i]["img"]).is(":visible")) {
+								visImg = imgSet[i]["img"];
+								visImgIndex = i;
+								break;
+							}
+						}
+						if (visImg == null) return;
+
+						// Set the z-index of this image to 0
+						$( visImg ).css("z-index", 0);
+
+						// Find the next image
+						var nextImgIndex = (visImgIndex+imgOffset+imgSet.length)%imgSet.length;
+						var nextImg = imgSet[nextImgIndex]["img"];
+
+						// Set the z-index of the next image to something lower
+						$( nextImg ).css("z-index", -1);
+
+						// Show the next image
+						var queueName = "flip";
+						var flipMs = 200;
+						$( nextImg ).stop(true, false).fadeIn({queue: queueName, duration: flipMs}).dequeue(queueName);
+						// Fade out the top image
+						$( visImg ).stop(true, false).fadeOut({queue: queueName, duration: flipMs}).dequeue(queueName);
+					};
+					onTapFn( divR,  function() { return showNextImage(element, 1)});
+					onTapFn( divL,  function() { return showNextImage(element, -1)});
+				}
 
 				// If it's the first, set a promise
 				if (i == 0) {
@@ -539,7 +634,6 @@ function showProject() {
 						desc.css("line-height", (w.fontSizePx * 1.4) + "px"); // .1993
 						desc.css("margin", 0);
 						setTxtPosDim(desc, tx, ty, tw, null);
-
 					}
 
 					// resolve promise
@@ -566,12 +660,13 @@ function showProject() {
 						$( e["txt"] ).fadeIn({queue: false, duration: w.fadeMs*moveFrac}); 
 						if (bAnimate) $( e["txt"] ).animate({top: "-="+w.moveAmtPx}, w.moveMs*moveFrac, "easeOutCubic");
 					});
+
 				}
 				setTimeout(showText, delayTextMs);
 			}
 
 			// resolve this promise
-			thisDoneAnimating.resolve(); 
+			setTimeout( function() { thisDoneAnimating.resolve(); }, Math.max(w.moveMs*moveFrac, w.fadeMs*moveFrac));
 		};
 		$.when( thisDoneLayout ).done( function() { setTimeout( animateFirstImage, delayDisplayMs ); }).promise();
 
@@ -583,6 +678,22 @@ function showProject() {
 			$.when( thisDoneAnimating ).done( function() { return setFooterHeight( w.f2p(w.footerFrac) ); }).promise();
 		}
 
+		// setTimeout( function() { console.log( $(document.body).children().filter(":visible") ) }, 2000);
+
+		// Set Looping
+		// $.when( thisDoneLayout ).done( function() {
+			// if (element.length > 1) {
+			// 	// Create clickable divs
+			// 	console.log( element[0]["img"].offsetLeft );
+			// 	// var rectImg = new rect(); rectImg.setFromImage( element[0]["img"] ); rectImg.transform(console.log(rectImg);
+			// 	var divR = getDivElement(index + "_rightButton", "", ["async"], true);
+			// 	// setTxtPosDim(divR, element[0].
+			// 	// $(divR).show();
+			// 	var divL = getDivElement(index + "_leftButton", "", ["async"], true);
+			// 	// $(divL).show();
+			// }
+		// });
+
 		// Stagger image loading so everything loads faster
 		$.each(element, function(i, e) {
 			var startLoading = function() { $( e["img"] ).attr( 'src', $( e["img"] ).attr( 'src-tmp' ) ); };
@@ -593,7 +704,7 @@ function showProject() {
 	    prevDoneLayout = thisDoneLayout;
 	    prevDoneAnimating = thisDoneAnimating;
 	});
-};
+}
 function showAllItems(pageID) {
 	if (pageID == "home") {
 		showHome();
@@ -602,7 +713,7 @@ function showAllItems(pageID) {
 	} else {
 		showProject();
 	}
-};
+}
 function show(pageID) {
 
 	// recompute all parameters
@@ -610,7 +721,7 @@ function show(pageID) {
 
 	// show all items
 	showAllItems(pageID);
-};
+}
 
 // load a specific page within this domain (no fadeout!)
 function loadPage(pageID="", fadeOutDone=null) {
