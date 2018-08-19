@@ -567,6 +567,8 @@ function showProject() {
 					// offset: -1 is left, +1 is right
 					var showNextImage = function(imgSet, imgOffset) {
 
+						console.log( getTimeMs() );
+
 						// First, find the image in this set that's visible
 						var visImg = null;
 						var visImgIndex = -1;

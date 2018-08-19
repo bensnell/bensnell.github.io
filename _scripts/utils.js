@@ -246,6 +246,10 @@ function onTapFn(element, fn) {
 	});
 }
 
+function getTimeMs() {
+	return (new Date).getTime();
+}
+
 function elementExists(id) {
 	return document.getElementById(id) != null;
 }
