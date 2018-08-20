@@ -35,8 +35,8 @@
 // title serif: Andale, Baskerville, Batang*, Bell MT, Bookman Old Style, CAllisto MT, Cochin*, Consolas, Didot
 // body serif: Cambria, Cochin*, Century, Garamond
 
-var mainURL = "http://ben-snell.com";
-var domainKey = "ben-snell";	// used to check if we're in my domain
+var mainURL = "http://bensnell.io";
+var domainKey = "bensnell";	// used to check if we're in my domain
 
 // window parameters
 var w = new Params();
