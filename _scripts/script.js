@@ -228,6 +228,7 @@ function initProject(pageID) {
     var projectJsonLoaded = $.Deferred();
     $.when( dictLoaded ).done( function() {
 
+    	console.log(dict);
     	var projectID = dict[pageID]["projectID"];
     	var projectJsonPath = pathPrefix() + "_json/" + projectID + ".json";
     	var loadProjectJson = function(data) { 
