@@ -26,6 +26,9 @@
 
 // - access archive by scrolling down to bottom, then up to top, then back down to bottom
 
+// Photos:
+// - burn edges
+
 // ==============================================
 
 
