@@ -22,7 +22,6 @@
 // - add instagram button
 
 // - keep images in memory to load previously visited paged faster
-// - OR, on back button, load images closest to window viewport first
 
 // - access archive by scrolling down to bottom, then up to top, then back down to bottom
 
@@ -60,9 +59,8 @@ var menuElems = [ 	["logo", 	"Ben Snell", 	"", 			w.dark],
 					["inquire", "\\ inquire", 	"inquire", 		w.medium] ];
 
 // Fonts we're using
-// var fonts["title"] = "Didot";
-var fonts = {	"title": "Didot",
-				"body": "Garamond",
+var fonts = {	"title" : "Didot",
+				"body" : "Garamond",
 				"menu" : "Didot_i" };
 // Fonts available
 // 					NAME 			FILENAME
@@ -78,11 +76,7 @@ var fontLib = [ [	"Cochin",		"cochin.ttc"	],
 				[ 	"Playfair_bi",	"playfair/PlayfairDisplay-BoldItalic.ttf"],
 				[ 	"Playfair_k",	"playfair/PlayfairDisplay-Black.ttf"],
 				[ 	"Playfair_ki",	"playfair/PlayfairDisplay-BlackItalic.ttf"],
-				[	"Didot_i",		"didot_italic.ttf"] 
-				];
-
-				
-
+				[	"Didot_i",		"didot_italic.ttc"] ];
 
 stopScrollRestoration();
 
@@ -126,10 +120,9 @@ function fadeOut() {
 
 function loadFonts() {	
 	// should this include a deferred promise to ensure font is loaded? (what if the font isn't accessible?)
-	var usedFonts = getDictValues(fonts);
 	$.each(fontLib, function(index, element) {
 
-		if (usedFonts.includes(element[0])) {
+		if (fonts[ element[0] ]) {
 			var font = new FontFace( element[0], "url(" + pathPrefix() + "/_fonts/" + element[1] + ")", {} );
 			document.fonts.add( font );
 			font.load();
@@ -246,11 +239,8 @@ function initProject(pageID) {
 
     		// store text
     		project["text"] = [ {"id" : "title", "content" : data["title"]}, 
-					    		{"id" : "dimensions", "content" : data["dimensions"]},
-					    		{"id" : "material", "content" : data["material"]},
-					    		{"id" : "date", "content" : data["date"]},
-    							{"id" : "description", "content" : data["description"]}
-    							];
+    							{"id" : "description", "content" : data["description"]},
+    							{"id" : "date", "content" : data["date"]} ];
 
     		// store the captions
 			project["captions"] = {};
@@ -666,35 +656,24 @@ function showProject() {
 						var title = $( project["text"][0]["txt"] );
 						title.css("font-size", w.titleSizePx * w.subheadingSizeFrac);
 						title.css("letter-spacing", (w.titleLetterSpacing/2*w.fontSizePx) + "px"); // .1993
+						title.css("margin", 0);
 						setTxtPosDim(title, tx, ty, tw, null);
 						ty += title.height() + w.fontSizePx * 0.1;
 
-						// dimensions
-						var dims = $( project["text"][1]["txt"] );
-						dims.css("font-size", w.titleSizePx * w.subheadingSizeFrac * 0.7);
-						dims.css("letter-spacing", (w.titleLetterSpacing/2*w.fontSizePx * 0.7) + "px");
-						setTxtPosDim(dims, tx, ty, tw, null);
-						ty += dims.height() + w.fontSizePx * 0.1;
-
-						// material
-						var mat = $( project["text"][2]["txt"] );
-						mat.css("font-size", w.titleSizePx * w.subheadingSizeFrac * 0.7);
-						mat.css("letter-spacing", (w.titleLetterSpacing/2*w.fontSizePx * 0.7) + "px");
-						setTxtPosDim(mat, tx, ty, tw, null);
-						ty += mat.height() + w.fontSizePx * 0.1;
-
 						// date
-						var date = $( project["text"][3]["txt"] );
+						var date = $( project["text"][2]["txt"] );
 						date.css("font-size", w.titleSizePx * w.subheadingSizeFrac * 0.7);
 						date.css("letter-spacing", (w.titleLetterSpacing/2*w.fontSizePx * 0.7) + "px");
+						date.css("margin", 0);
 						setTxtPosDim(date, tx, ty, tw, null);
 						ty += date.height() + w.fontSizePx * 1.4;
 
 						// description
-						var desc = $( project["text"][4]["txt"] );
+						var desc = $( project["text"][1]["txt"] );
 						desc.css("font-size", w.fontSizePx);
 						desc.css("letter-spacing", (w.titleLetterSpacing/2*w.fontSizePx*0.8) + "px"); // .1993
 						desc.css("line-height", (w.fontSizePx * 1.4) + "px"); // .1993
+						desc.css("margin", 0);
 						setTxtPosDim(desc, tx, ty, tw, null);
 					}
 

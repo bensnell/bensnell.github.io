@@ -338,3 +338,7 @@ function getElemsHeight() {
 	});
 	return lowestY;
 }
+
+function getDictValues(dct) {
+	return Object.keys(dct).map(function(key){ return dct[key]; });
+}

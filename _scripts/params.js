@@ -14,7 +14,7 @@ function Params() {
 	this.delayDisplayMs = 150; // 200 // 150
 
 	// Margin Sizes (fractions of width)
-	this.marginTopFrac = 0.146; // 0.075 // 0.13 // 0.169 // 0.146
+	this.marginTopFrac = 0.17; // 0.075 // 0.13 // 0.169 // 0.146
 	this.vertSpacingFrac = 0.050;
 	this.marginSideFracOrig = 0.085;
 	this.marginBetweenFrac = 0.05;
@@ -48,6 +48,7 @@ function Params() {
 	// text color params
 	this.dark = "#000000";
 	this.light = "#BBBBBB";
+	this.medium = "#999999";
 
 
 	// ========================
