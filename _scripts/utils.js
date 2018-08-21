@@ -283,7 +283,6 @@ function getTextElement(id, text, url, font, color, classes = []) {
 	var _text = document.createTextNode( text );
 	para.appendChild(_text);
 	$.each(classes, function(index, element) { para.classList.add(element); });
-	// console.log(para.classList);
 	onTap( para, url );
 	if (url != "") $( para ).hover( function() { $( para ).css('cursor','pointer'); });
 	$( para ).css("position", "absolute");

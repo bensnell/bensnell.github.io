@@ -5,10 +5,11 @@
 // optional: show same images on back button, add custom cursor, fade-in arrows to suggest slideshow
 // DONE - add captions to project images
 
-// - layout about, inquire
+// DONE - add video (vimeo) capabilities
+
+// DONE - create about page
 // - add about blurb on home
-// - create about page
-// - create inquire page or link
+// - create inquire page
 
 // - fix font sizes on mobile, tablet
 // - fix layout on tablet for project
@@ -21,14 +22,14 @@
 
 // - add instagram button
 
+// - add favicon
+// - add website title
+// - add website page titles
+
 // - keep images in memory to load previously visited paged faster
 // - OR, on back button, load images closest to window viewport first
 
 // - access archive by scrolling down to bottom, then up to top, then back down to bottom
-
-// - add favicon
-// - add website title
-// - add website page titles
 
 // Photos:
 // - burn edges
@@ -664,7 +665,7 @@ function showProject() {
 		var thisDoneLoading = [];
 		$.each(element, function(i, e) {
 			var def = $.Deferred(); thisDoneLoading.push(def);
-			$( e["img"] ).on("load", function() { console.log("loaded", e); def.resolve(); });
+			$( e["img"] ).on("load", function() { def.resolve(); });
 		});
 		
 		// Layout promises
@@ -803,8 +804,6 @@ function showProject() {
 					// resolve promise
 					thisDoneLayout.resolve();
 				}
-
-				console.log("layout", e);
 			}
 			
 			var promises = [ thisDoneLoading[i], (i==0 ? prevDoneLayout : thisDoneLayout) ];
