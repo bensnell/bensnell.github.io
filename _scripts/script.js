@@ -26,6 +26,10 @@
 
 // - access archive by scrolling down to bottom, then up to top, then back down to bottom
 
+// - add favicon
+// - add website title
+// - add website page titles
+
 // Photos:
 // - burn edges
 
@@ -53,6 +57,7 @@ var project = {};
 // NOTE: jsons CANNOT have commas at the end of their last element (otherwise they will not be parsed)
 // arrows for animating image sets
 // var arrows = {};
+var about = {};
 
 // Stores the logo at the top of the page
 var menu = {};
@@ -83,8 +88,6 @@ var fontLib = [ [	"Cochin",		"cochin.ttc"	],
 				[ 	"Playfair_ki",	"playfair/PlayfairDisplay-BlackItalic.ttf"],
 				[	"Didot_i",		"didot_italic.ttf"] 
 				];
-
-				
 
 
 stopScrollRestoration();
@@ -163,6 +166,13 @@ function parseHomeData(data) {
 		element["scrollTop"] = 0;
 	});
 }
+function loadHomeData() {
+	var loadDict = function(data) { parseHomeData(data); };
+	var jsonPath = pathPrefix()+"_json/home.json";
+	var dictLoaded = $.Deferred();
+    $.get(jsonPath, loadDict).done( function() { dictLoaded.resolve(); });
+    return dictLoaded;
+}
 
 
 // Prepare images and text to be displayed
@@ -212,20 +222,30 @@ function initHome() {
 	// Parse the JSON with home's layout data
 	var jsonPath = pathPrefix()+"_json/home.json";
 	var def = $.Deferred();
-    $.get(jsonPath, loadHomeItems).done( function() { def.resolve(); });
+    $.get(jsonPath, loadHomeItems).done( function() { console.log("hello", dict); def.resolve(); });
 	return def;
 }
 function initAbout() {
 
-	return null;
+	// Init the about json
+	var loadAbout = function(data) { 
+		// add the image and about description
+		about["img"] = getImageElement("about_img", pathPrefix() + data["imgPath"], "", ["async"], false);
+		about["txt"] = getTextElement("about_txt", data["description"], "", fonts["body"], w.dark, ["async"]);
+	};
+	var aboutLoaded = $.Deferred();
+	var jsonPath = pathPrefix() + "_json/about.json";
+	$.get(jsonPath, loadAbout).done( function() { aboutLoaded.resolve(); });
+
+	// make sure the dict is loaded
+	var dictLoaded = loadHomeData();
+
+	return [aboutLoaded, dictLoaded];
 }
 function initProject(pageID) {
 
 	// Make sure the dictionary is loaded
-	var loadDict = function(data) { parseHomeData(data); };
-	var jsonPath = pathPrefix()+"_json/home.json";
-	var dictLoaded = $.Deferred();
-    $.get(jsonPath, loadDict).done( function() { dictLoaded.resolve(); });
+	var dictLoaded = loadHomeData();
 
     // When it's loaded, then get the projectID and load the json entry for that project
     var projectJsonLoaded = $.Deferred();
@@ -271,7 +291,7 @@ function initProject(pageID) {
 
 		// create project description
 		$.each(project["text"], function(index, element) {
-			element["txt"] = getTextElement(element["id"], element["content"], "", fonts["body"], "#000000", ["async"]);
+			element["txt"] = getTextElement(element["id"], element["content"], "", fonts["body"], w.dark, ["async"]);
 		});
 
 		// create images
@@ -313,7 +333,10 @@ function init(pageID, promise) {
 	var defs = [];
 	// defs.push(loadFonts()); // should only happen once, not every time something is initialized
 	defs.push(initMenuItems());
-	defs.push(initPageSpecificItems(pageID));
+	var pgsp = initPageSpecificItems(pageID); pgsp = isArray(pgsp) ? pgsp : [pgsp];
+	$.each(pgsp, function(i, e) { defs.push(e); });
+	// defs.push(initPageSpecificItems(pageID));
+	console.log(defs);
 	$.when(... defs).done( function() { promise.resolve(); });
 }
 
@@ -520,6 +543,66 @@ function showHome() {
     });
 }
 function showAbout() {
+
+	var columnFrac = 0.5;
+	var img2txtWidthFrac = 0.4;
+	var marginFrac = 0.025;
+
+	anticipatePageHeightAndScroll();
+
+	var loadAbt = function(def) {
+
+		beginLoadingImg( about["img"] );
+		$( about["img"] ).on("load", function() { console.log("loaded"); def.resolve(); });
+	};
+	var layoutAbt = function(def) {
+
+		// Set the location of all elements
+		var colWidthPx = w.f2p(columnFrac);
+		var imgWidthPx = img2txtWidthFrac * (colWidthPx * (1-marginFrac));
+		var marginWidthPx = w.f2p(marginFrac);
+		var txtWidthPx = colWidthPx - (imgWidthPx+marginWidthPx);
+		var sideMarginPx = w.f2p(1-columnFrac) / 2.0;
+
+
+		var imgHeightPx = getNewImageHeight(about["img"], imgWidthPx);
+		var vertCenter = Math.max( $(window).height()/2 - imgHeightPx/2, w.marginTopPx);
+		setImgPosDim( 
+			$(about["img"]), 
+			w.windowL + sideMarginPx, 
+			vertCenter, 
+			imgWidthPx, 
+			imgHeightPx);
+
+		$(about["txt"]).css("font-size", w.fontSizePx);
+		$(about["txt"]).css("letter-spacing", (w.titleLetterSpacing/2*w.fontSizePx*0.8) + "px"); // .1993
+		$(about["txt"]).css("line-height", (w.fontSizePx * 1.4) + "px"); // .1993
+
+		setTxtPosDim(
+			$(about["txt"]),
+			w.windowL + sideMarginPx + imgWidthPx + marginWidthPx,
+			0,
+			txtWidthPx);
+		setTxtPosDim(
+			$(about["txt"]),
+			null,
+			$(window).height()/2 - $(about["txt"]).height()/2);
+
+
+		def.resolve();
+	};
+	var animateAbt = function(def) {
+
+		var displayOffsetMs = 150;
+		var fadeFrac = 0.6; // compared to home
+
+		// show all items
+		setTimeout( showMenuItems, 0 * displayOffsetMs);
+		setTimeout( function() { $(about["img"]).fadeIn({queue:false, duration: w.fadeMs * fadeFrac}); }, 1 * displayOffsetMs);
+		setTimeout( function() { $(about["txt"]).fadeIn({queue:false, duration: w.fadeMs * fadeFrac}); def.resolve(); }, 1.5 * displayOffsetMs);
+	};
+
+	return consecCall( [loadAbt, layoutAbt, animateAbt] );
 }
 function showProject() {
 

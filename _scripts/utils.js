@@ -329,6 +329,13 @@ function setTxtPosDim(el, x=null, y=null, w=null, h=null) {
 	if (h != null) el.css("height", h);
 }
 
+function setImgPosDim(el, x=null, y=null, w=null, h=null) {
+	if (x != null) el.css("left", x);
+	if (y != null) el.css("top", y);
+	if (w != null) el.attr("width", w);
+	if (h != null) el.attr("height", h);
+}
+
 // Get the lowest position (y) of all of the elements on the page (within in the body)
 function getElemsHeight() {
 	var lowestY = 0;
@@ -341,4 +348,31 @@ function getElemsHeight() {
 
 function getDictValues(dct) {
 	return Object.keys(dct).map(function(key){ return dct[key]; });
+}
+
+// turn a non-array into an array
+function makeArray(element) {
+	return isArray(element) ? element : [element];
+}
+
+// each function provided will be called consecutively
+// each function should accept a promise as an argument, which finishes within the function once complete
+// once the final function has finished, the returned promise will resolve
+function consecCall(fnArray) {
+	
+	var prevDef = null;
+	$.each(fnArray, function(index, fn) {
+		var def = $.Deferred();
+		$.when( prevDef ).done( function() { return fn(def); });
+		prevDef = def;
+	});
+	return prevDef;
+}
+
+function beginLoadingImg(img) {
+	$( img ).attr( 'src', $( img ).attr( 'src-tmp' ) );
+}
+
+function getNewImageHeight(img, toWidth) {
+	return $(img).height() / $(img).width() * toWidth;
 }
