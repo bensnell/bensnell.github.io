@@ -321,6 +321,41 @@ function getDivElement(id, url, classes = [], cursorType = "") {
     return div;
 }
 
+function getVimeoPath(vidID) {
+	return "https://player.vimeo.com/video/" + vidID.split("_")[0] + "?color=ffffff&amp;title=0&amp;byline=0&amp;portrait=0";
+}
+
+function getVimeoElement(id, vidID, classes=[], bCursorOnHover=true) {
+
+	var url = "https://player.vimeo.com/video/" + vidID.split("_")[0] + "?color=ffffff&amp;title=0&amp;byline=0&amp;portrait=0";
+	return getiFrameElement(id, url, parseInt(vidID.split("_")[1]), parseInt(vidID.split("_")[2]), classes, bCursorOnHover);
+}
+
+// Video element
+function getiFrameElement(id, url, width, height, classes=[], bCursorOnHover=true) {
+	var vid = document.createElement("iframe");
+	vid.setAttribute("id", id);
+	vid.setAttribute("src-tmp", url);
+	$.each(classes, function(index, element) { vid.classList.add(element); });
+	if (bCursorOnHover) $( vid ).hover( function() { $( vid ).css('cursor','pointer'); });
+	$( vid ).css("display", "none");
+	$( vid ).css("position", "absolute");
+
+	vid.setAttribute("frameborder", 0);
+
+	vid.setAttribute("width", width);
+	vid.setAttribute("height", height);
+	
+	vid.setAttribute("webkitallowfullscreen", "");
+	vid.setAttribute("mozallowfullscreen", "");
+	vid.setAttribute("allowfullscreen", "");
+
+	// Set width/height with style ($( ).css)
+
+	document.body.appendChild(vid);
+	return vid;
+}
+
 // set the position and dimensions of a jquery document element
 function setTxtPosDim(el, x=null, y=null, w=null, h=null) {
 	if (x != null) el.css("left", x);
@@ -375,4 +410,8 @@ function beginLoadingImg(img) {
 
 function getNewImageHeight(img, toWidth) {
 	return $(img).height() / $(img).width() * toWidth;
+}
+
+function isString(a) {
+	return (typeof a) == "string";
 }

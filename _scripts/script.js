@@ -86,7 +86,8 @@ var fontLib = [ [	"Cochin",		"cochin.ttc"	],
 				[ 	"Playfair_bi",	"playfair/PlayfairDisplay-BoldItalic.ttf"],
 				[ 	"Playfair_k",	"playfair/PlayfairDisplay-Black.ttf"],
 				[ 	"Playfair_ki",	"playfair/PlayfairDisplay-BlackItalic.ttf"],
-				[	"Didot_i",		"didot_italic.ttf"] 
+				[	"Didot_i",		"didot_italic.ttf"],
+				[	"Didot_b",		"didot_bold.ttf"],
 				];
 
 
@@ -222,7 +223,7 @@ function initHome() {
 	// Parse the JSON with home's layout data
 	var jsonPath = pathPrefix()+"_json/home.json";
 	var def = $.Deferred();
-    $.get(jsonPath, loadHomeItems).done( function() { console.log("hello", dict); def.resolve(); });
+    $.get(jsonPath, loadHomeItems).done( function() { def.resolve(); });
 	return def;
 }
 function initAbout() {
@@ -251,21 +252,31 @@ function initProject(pageID) {
     var projectJsonLoaded = $.Deferred();
     $.when( dictLoaded ).done( function() {
 
-    	console.log(dict);
     	var projectID = dict[pageID]["projectID"];
     	var projectJsonPath = pathPrefix() + "_json/" + projectID + ".json";
     	var loadProjectJson = function(data) { 
 
     		// store all image ids
+    		var padImg = function(element) {
+    			// anything over numDigits will be interpreted as a vimeo id
+    			return isString(element) ? element : pad(element, data["numDigits"], "0");
+    		};
     		project["images"] = data["images"].map(function(e) { 
-    			if (isArray(e)) return e.map(function(e) { return pad(e, data["numDigits"], "0"); });
-    			else { return pad(e, data["numDigits"], "0"); }
+    			if (isArray(e)) return e.map(function(e) { return padImg(e); });
+    			else { return padImg(e); }
     		});
 
     		// store all image paths
+    		var attrDict = function(element) {
+    			return {
+    				"id" : element,
+    				"bVideo" : (element.length > data["numDigits"]) ? true : false,
+    				"path" : (element.length > data["numDigits"]) ? getVimeoPath(element) : (pathPrefix()+"_assets/"+projectID+"/"+element+"."+data["globalExt"])
+    			};
+    		}
     		project["images"] = project["images"].map(function(e) { 
-    			if (isArray(e)) return e.map(function(e) { return {"id" : e, "path" : (pathPrefix()+"_assets/"+projectID+"/"+e+"."+data["globalExt"])}; });
-    			else return {"id" : e, "path" : (pathPrefix()+"_assets/"+projectID+"/"+e+"."+data["globalExt"])}; 
+    			if (isArray(e)) return e.map(function(e) { return attrDict(e); });
+    			else return attrDict(e); 
     		}); 
 
     		// store text
@@ -295,13 +306,16 @@ function initProject(pageID) {
 		});
 
 		// create images
+		var getVisualElement = function(el) {
+			return el["bVideo"] ? getVimeoElement(el["id"].split("_")[0], el["id"], ["async"], false) : getImageElement(el["id"], el["path"], "", ["async"], false);
+		};
 		$.each(project["images"], function(index, element) {
 			if (isArray(element)) {
 				$.each(element, function(i, e) {
-					e["img"] = getImageElement(e["id"], e["path"], "", ["async"], false);
+					e["img"] = getVisualElement(e);
 				});
 			} else {
-				element["img"] = getImageElement(element["id"], element["path"], "", ["async"], false);
+				element["img"] = getVisualElement(element);
 			}
 		});
 
@@ -331,12 +345,15 @@ function initPageSpecificItems(pageID) {
 }
 function init(pageID, promise) {
 	var defs = [];
+
 	// defs.push(loadFonts()); // should only happen once, not every time something is initialized
+
 	defs.push(initMenuItems());
+
 	var pgsp = initPageSpecificItems(pageID); pgsp = isArray(pgsp) ? pgsp : [pgsp];
 	$.each(pgsp, function(i, e) { defs.push(e); });
 	// defs.push(initPageSpecificItems(pageID));
-	console.log(defs);
+
 	$.when(... defs).done( function() { promise.resolve(); });
 }
 
@@ -553,7 +570,7 @@ function showAbout() {
 	var loadAbt = function(def) {
 
 		beginLoadingImg( about["img"] );
-		$( about["img"] ).on("load", function() { console.log("loaded"); def.resolve(); });
+		$( about["img"] ).on("load", function() { def.resolve(); });
 	};
 	var layoutAbt = function(def) {
 
@@ -646,7 +663,7 @@ function showProject() {
 		var thisDoneLoading = [];
 		$.each(element, function(i, e) {
 			var def = $.Deferred(); thisDoneLoading.push(def);
-			$( e["img"] ).on("load", function() { def.resolve(); });
+			$( e["img"] ).on("load", function() { console.log("loaded", e); def.resolve(); });
 		});
 		
 		// Layout promises
@@ -661,10 +678,7 @@ function showProject() {
 				var iw = imgWidthPx;
 				var ih = $(e["img"]).height() / $(e["img"]).width() * iw;
 
-				$( e["img"] ).css("left", ix); 
-				$( e["img"] ).css("top", iy);
-				$( e["img"] ).attr("width", iw);
-				$( e["img"] ).attr("height", ih);
+				setImgPosDim( $( e["img"] ), ix, iy, iw, ih);
 
 				// Lastly, set the priority of sets overlapping (higher numbers = further above)
 				$( e["img"] ).css("z-index", 0);
@@ -786,6 +800,7 @@ function showProject() {
 					}
 
 					// resolve promise
+					console.log("layout", e);
 					thisDoneLayout.resolve();
 				}
 			}
