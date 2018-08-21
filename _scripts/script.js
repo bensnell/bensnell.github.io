@@ -632,7 +632,7 @@ function showProject() {
 
 	var bAnimate = false;
 	var moveFrac = 0.6; // compared to home
-	var delayFrac = 0.7;
+	var delayFrac = 0.65;
 	var delayTextMs = 120;
 
 
@@ -653,6 +653,7 @@ function showProject() {
 	// Draw all images and load text with the first image set
 	var prevDoneAnimating = null;
 	var prevDoneLayout = null;
+	var prevBeginsAnimating = null;
 	var topOffsets = [0]; // offsets (not including the top margin) for each image set
 	// var topOffset = 0; // doesn't include top margin
 	$.each(project["images"], function(index, _element) {
@@ -800,9 +801,10 @@ function showProject() {
 					}
 
 					// resolve promise
-					console.log("layout", e);
 					thisDoneLayout.resolve();
 				}
+
+				console.log("layout", e);
 			}
 			
 			var promises = [ thisDoneLoading[i], (i==0 ? prevDoneLayout : thisDoneLayout) ];
@@ -810,8 +812,11 @@ function showProject() {
 		});
 		
 		// Animation Promises
-		var thisDoneAnimating = $.Deferred();
+		var thisDoneAnimating = $.Deferred(); 
+		var thisBeginsAnimating = $.Deferred(); // need this because it takes time to layout videos
 		var animateFirstImage = function() {
+
+			thisBeginsAnimating.resolve();
 
 			// animate the image
 			$( element[0]["img"] ).fadeIn({queue: false, duration: w.fadeMs*moveFrac}); 
@@ -845,7 +850,7 @@ function showProject() {
 			// resolve this promise
 			setTimeout( function() { thisDoneAnimating.resolve(); }, Math.max(w.moveMs*moveFrac, w.fadeMs*moveFrac));
 		};
-		$.when( thisDoneLayout ).done( function() { setTimeout( animateFirstImage, delayDisplayMs ); }).promise();
+		$.when( thisDoneLayout, prevBeginsAnimating ).done( function() { setTimeout( animateFirstImage, delayDisplayMs ); }).promise();
 
 		if (index == 0) {
 			$.when( thisDoneLayout ).done( function() { setTimeout( showMenuItems, Math.max(delayDisplayMs-delayTextMs,0) ); }).promise();
@@ -854,22 +859,6 @@ function showProject() {
 		if (index == project["images"].length-1) {
 			$.when( thisDoneAnimating ).done( function() { return setFooterHeight( w.f2p(w.footerFrac) ); }).promise();
 		}
-
-		// setTimeout( function() { console.log( $(document.body).children().filter(":visible") ) }, 2000);
-
-		// Set Looping
-		// $.when( thisDoneLayout ).done( function() {
-			// if (element.length > 1) {
-			// 	// Create clickable divs
-			// 	console.log( element[0]["img"].offsetLeft );
-			// 	// var rectImg = new rect(); rectImg.setFromImage( element[0]["img"] ); rectImg.transform(console.log(rectImg);
-			// 	var divR = getDivElement(index + "_rightButton", "", ["async"], true);
-			// 	// setTxtPosDim(divR, element[0].
-			// 	// $(divR).show();
-			// 	var divL = getDivElement(index + "_leftButton", "", ["async"], true);
-			// 	// $(divL).show();
-			// }
-		// });
 
 		// Stagger image loading so everything loads faster
 		$.each(element, function(i, e) {
@@ -880,6 +869,7 @@ function showProject() {
     	// Save these promises
 	    prevDoneLayout = thisDoneLayout;
 	    prevDoneAnimating = thisDoneAnimating;
+	    prevBeginsAnimating = thisBeginsAnimating;
 	});
 }
 function showAllItems(pageID) {
