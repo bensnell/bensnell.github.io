@@ -280,8 +280,14 @@ function getTextElement(id, text, url, font, color, classes = []) {
 	var para = document.createElement( "P" );
 	para.setAttribute( "id", id );
 	para.setAttribute( "style", "display: none; font-family: " + font );
-	var _text = document.createTextNode( text );
-	para.appendChild(_text);
+
+	// this won't allow links:
+	// var _text = document.createTextNode( text );
+	// para.appendChild(_text);
+
+	// this will allow links:
+	para.innerHTML = text;
+
 	$.each(classes, function(index, element) { para.classList.add(element); });
 	onTap( para, url );
 	if (url != "") $( para ).hover( function() { $( para ).css('cursor','pointer'); });
@@ -414,3 +420,4 @@ function getNewImageHeight(img, toWidth) {
 function isString(a) {
 	return (typeof a) == "string";
 }
+

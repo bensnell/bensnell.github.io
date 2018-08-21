@@ -7,6 +7,8 @@
 
 // DONE - add video (vimeo) capabilities
 
+// DONE - add text link capabilities
+
 // DONE - create about page
 // - add about blurb on home
 // - create inquire page
@@ -65,8 +67,9 @@ var menu = {};
 var bKeepMenu = true;
 //				     ID 		TEXT 			URL_SUFFIX 		HEX_COLOR
 var menuElems = [ 	["logo", 	"Ben Snell", 	"", 			w.dark],
-					["about", 	"\\ about", 	"about", 		w.medium],
-					["inquire", "\\ inquire", 	"inquire", 		w.medium] ];
+					["about", 	"about  ||  inquire", 	"about", 		w.medium],
+					["inquire", "inquire", 	"inquire", 		w.medium] 
+				];
 
 // Fonts we're using
 // var fonts["title"] = "Didot";
@@ -78,7 +81,8 @@ var fonts = {	"title": "Didot",
 var fontLib = [ [	"Cochin",		"cochin.ttc"	],
 				[	"Batang",		"batang.ttf"	],
 				[	"Consolas",		"consolas.ttf"	],
-				[	"Didot",		"didot-regular.ttf"],
+				[	"Didot",		"didot.ttc"],
+				// [	"Didot",		"didot-regular.ttf"],
 				[	"Baskerville", 	"baskerville.ttc"],
 				[ 	"Garamond", 	"garamond.ttf"],
 				[ 	"Playfair_r",	"playfair/PlayfairDisplay-Regular.ttf"],
@@ -175,6 +179,18 @@ function loadHomeData() {
     $.get(jsonPath, loadDict).done( function() { dictLoaded.resolve(); });
     return dictLoaded;
 }
+
+// make all links in a page a specific color
+function colorLinks(hex) {
+    var links = document.getElementsByTagName("a");
+    for(var i=0;i<links.length;i++)
+    {
+        if(links[i].href)
+        {
+            links[i].style.color = hex;  
+        }
+    }  
+};
 
 
 // Prepare images and text to be displayed
@@ -345,6 +361,8 @@ function initPageSpecificItems(pageID) {
 	return null;
 }
 function init(pageID, promise) {
+
+	// color all links
 	var defs = [];
 
 	// defs.push(loadFonts()); // should only happen once, not every time something is initialized
@@ -355,7 +373,7 @@ function init(pageID, promise) {
 	$.each(pgsp, function(i, e) { defs.push(e); });
 	// defs.push(initPageSpecificItems(pageID));
 
-	$.when(... defs).done( function() { promise.resolve(); });
+	$.when(... defs).done( function() { colorLinks(w.dark); promise.resolve(); });
 }
 
 // Scrolling and Height Utilities
