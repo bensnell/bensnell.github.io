@@ -47,6 +47,7 @@
 
 var mainURL = "http://bensnell.io";
 var domainKey = "bensnell";	// used to check if we're in my domain
+var mailKey = "mailto";
 
 // window parameters
 var w = new Params();
@@ -65,10 +66,12 @@ var about = {};
 // Stores the logo at the top of the page
 var menu = {};
 var bKeepMenu = true;
+var emailLink = "mailto:ben@bensnell.io?subject=Hello!";
 //				     ID 		TEXT 			URL_SUFFIX 		HEX_COLOR
 var menuElems = [ 	["logo", 	"Ben Snell", 	"", 			w.dark],
-					["about", 	"about  ||  inquire", 	"about", 		w.medium],
-					["inquire", "inquire", 	"inquire", 		w.medium] 
+					["about", 	"about", 		"about", 		w.lighter],
+					["and", 	"  &  ", 		null, 			w.lighter],
+					["inquire", "inquire", 		emailLink, 		w.lighter]
 				];
 
 // Fonts we're using
@@ -182,12 +185,19 @@ function loadHomeData() {
 
 // make all links in a page a specific color
 function colorLinks(hex) {
+
     var links = document.getElementsByTagName("a");
-    for(var i=0;i<links.length;i++)
-    {
-        if(links[i].href)
-        {
-            links[i].style.color = hex;  
+    for(var i=0;i<links.length;i++) {
+        if(links[i].href) {
+
+        	// var colorLink = true;
+        	// $.each(menuElems, function(index, element) {
+        	// 	colorLink = colorLink && (!links[i].innerHTML.includes(element[0]));
+        	// })
+
+        	// if (colorLink) links[i].style.color = hex;  
+
+    		links[i].style.color = hex;  
         }
     }  
 };
@@ -207,13 +217,15 @@ function initMenuItems() {
 		if (!bKeepMenu || !elementExists(element[0])) {
 			var para = getTextElement(	element[0],
 										element[1],
-										mainURL + (element[2]=="" ? "" : "/"+element[2]),
+										(element[2]==null) ? "" : (element[2].includes(mailKey) ? element[2] : (mainURL + (element[2]=="" ? "" : "/"+element[2]))),
 										element[0]=="logo" ? fonts["title"] : fonts["menu"],
 										element[3],
-										["menu"]);
-			menu[ element[0] ] = para;
+										["menu"],
+										element[0]=="and" ? "default" : "pointer");
+			menu[ element[0] ] = { "txt": para };
 		}
 	});
+	console.log(menu);
 	return null;
 }
 function initHome() {
@@ -426,44 +438,77 @@ function markPageUnvisited(pageID) {
 // Display Images and Text
 function showMenuItems() {
 
+	// you need to change both of these numbers if you change one
+	var andFrac = 0.71; 
+	var andOffsetMult = 2.2;
+
 	// If we're keeping the menu, don't change it
 	if (bKeepMenu && $( "#"+menuElems[0][0] ).is(":visible")) return;
 
-	// call this when the first image is shown
-	var logo = menu["logo"];
-	$( logo ).css("font-size", w.titleSizePx);
-	$( logo ).css("letter-spacing", (w.titleLetterSpacing*w.titleSizePx) + "px"); // .1993
-	$( logo ).css("line-height", w.titleLineHeight);
-	// $( logo ).css("top", -w.titleSizePx*(1-w.titleTopOffset)); // top
-	$( logo ).css("top", w.titleSizePx*w.titleTopOffset); // top
-	// $( logo ).css("top", windowH/2 - $(logo).height()/2 * 4); // center
-	$( logo ).css("left", w.windowL + w.windowW/2 - $( logo ).width()/2); // center
-	// $( logo ).css("left", windowL + titleSizePx*titleLeftOffset);
-	// $( logo ).css("left", windowL + marginSideFrac*windowW);
-	$( logo ).css("z-index", w.bTitleAbove * 2 -1);
-	// $( logo ).style.textAlign = "center";
-	// $( logo ).css("text-align", "center");
-	$( logo ).css("position", "absolute");
-	// $( logo ).css("position", "fixed");
-	$( logo ).fadeIn({queue: false, duration: w.fadeMs}); 
+	var menuItems = [];
+	var menuWidth = 0;
+	$.each(menuElems, function(index, element) {
 
-	var menuItems = ["about", "inquire"]
-	for (var i = 0; i < menuItems.length; i++) {
-		var item = menu[menuItems[i]];
-		// $( item ).css("text-align", "right");
-		$( item ).css("font-size", w.titleSizePx * w.menuSizeFrac);
-		// $( item ).css("bottom", -titleSizePx * 0.1);
-		$( item ).css("top", $(menu["logo"]).offset().top + $(menu["logo"]).height() - w.titleSizePx*0.3 + $(item).height() * i); //-titleSizePx*(1-titleTopOffset)); //+ 10 + $( item ).height()*i
-		var scrollBarWidth = 15;
-		// $( item ).css("left", origWindowW - scrollBarWidth - $(item).width() - titleSizePx*titleLeftOffset/2);
-		// $( item ).css("left", $( window ).width() * 0.7);
-		$( item ).css("left", w.windowL + w.marginSideFrac*w.windowW);
-		$( item ).css("z-index", w.bTitleAbove * 2 -1);
-		// $( item ).css("position", "fixed");
-		$( item ).css("position", "absolute");
-		$( item ).css("line-height", w.titleLineHeight);
-		$( item ).fadeIn({queue: false, duration: w.fadeMs}); 
-	}
+		var item = $( menu[ element[0] ]["txt"] );
+		if (element[0] == "logo") {
+
+			// call this when the first image is shown
+			item.css("font-size", w.titleSizePx);
+			item.css("letter-spacing", (w.titleLetterSpacing*w.titleSizePx) + "px"); // .1993
+			item.css("line-height", w.titleLineHeight);
+			item.css("z-index", w.bTitleAbove * 2 -1);
+
+			setTxtPosDim(item, 
+				w.windowL + w.windowW/2 - $( logo ).width()/2,
+				w.titleSizePx*w.titleTopOffset );
+			
+			item.fadeIn({queue: false, duration: w.fadeMs});
+
+		} else { // all other menu items
+
+			// only set the sizes for now
+			item.css("font-size", w.titleSizePx * w.menuSizeFrac * (element[0]=="and" ? andFrac : 1));
+			// item.css("letter-spacing", );
+			item.css("line-height", w.titleLineHeight);
+			item.css("z-index", w.bTitleAbove * 2 -1);
+
+			menuItems.push( item );
+			menuWidth += item.width();
+
+			if (item.attr("id") != "and") {
+				// on hovering over these items, they become darker
+				// console.log(menu[element[0]]["txt"]);
+				var fadeFrac = 0.4;
+				setupAnimateOnHover(
+					[ menu[element[0]]["txt"] ], 
+					menu[element[0]], 
+					[ menu[element[0]]["txt"] ], 
+					"queue_" + $(menu[element[0]]["txt"]).attr("id"), 
+					{color: w.medium}, 
+					w.fadeMs * fadeFrac, 
+					0, 
+					{color: element[3]}, 
+					w.fadeMs * fadeFrac, 
+					0);
+			}
+		}
+	});
+
+	var xOffset = w.windowL + w.windowW/2 - menuWidth/2;
+	var ty = $(menu["logo"]["txt"]).offset().top + $(menu["logo"]["txt"]).height();
+	$.each(menuItems, function(index, item) {
+
+		// Layout the menu items
+		var thisY = ty + item.height() * (item.attr("id")=="and" ? 0.2/andFrac*andOffsetMult : 0.2);
+		setTxtPosDim(item,
+			xOffset,
+			thisY );
+
+		item.fadeIn({queue: false, duration: w.fadeMs}); 
+
+		xOffset += item.width();
+	});
+
 }
 function showHome() {
 
@@ -933,8 +978,11 @@ function exitAndLoad(pageID) {
 
 function loadURL(toUrl) {
 
-	// Check if new page is within this domain
-	if (toUrl.includes(domainKey)) {
+	if (toUrl.includes(mailKey) ) {
+
+		window.open(toUrl, '_blank');
+
+	} else if (toUrl.includes(domainKey)) {
 		// Get the page ID
 		var pageID = getPage(toUrl);
 
@@ -942,9 +990,11 @@ function loadURL(toUrl) {
 		markPageUnvisited(pageID);
 
 		// Change the state of the page
+		if (getThisPage() == pageID) return;
 		if (getThisPage() == "home") {
-			if (pageID == "home") return;
-			else history.pushState( {}, "", pageID );
+			// if (pageID == "home") return;
+			// else history.pushState( {}, "", pageID );
+			history.pushState( {}, "", pageID );
 		} else {
 			if (pageID == "home") history.pushState( {}, "", "../");
 			else history.pushState( {}, "", "../"+pageID);
@@ -955,7 +1005,8 @@ function loadURL(toUrl) {
 		// fade out
 		fadeOut();
 		// load an external url
-		window.location.href = toUrl;		
+		window.open(toUrl, '_self');
+		// window.location.href = toUrl;		
 	}
 }
 

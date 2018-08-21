@@ -276,7 +276,7 @@ function elementExists(id) {
 	return document.getElementById(id) != null;
 }
 
-function getTextElement(id, text, url, font, color, classes = []) {
+function getTextElement(id, text, url, font, color, classes = [], cursorOnHover="pointer") {
 	var para = document.createElement( "P" );
 	para.setAttribute( "id", id );
 	para.setAttribute( "style", "display: none; font-family: " + font );
@@ -290,7 +290,11 @@ function getTextElement(id, text, url, font, color, classes = []) {
 
 	$.each(classes, function(index, element) { para.classList.add(element); });
 	onTap( para, url );
-	if (url != "") $( para ).hover( function() { $( para ).css('cursor','pointer'); });
+	if (url != "") $( para ).hover( function() { $( para ).css('cursor',cursorOnHover); });
+	if (cursorOnHover == "none") $( para ).hover( function() { $( para ).css('cursor', "none"); });
+	if (cursorOnHover == "default") $( para ).hover( function() { $( para ).css('cursor', "default"); });
+
+
 	$( para ).css("position", "absolute");
 	$( para ).css('color', (color=="" ? "#000000" : color) );
 	$( para ).css("margin", 0); // removes strange offsets
@@ -419,5 +423,44 @@ function getNewImageHeight(img, toWidth) {
 
 function isString(a) {
 	return (typeof a) == "string";
+}
+
+// sensors 		[item_1, item_2, ...] 		items for which animation is triggered on enter/exit
+// carrier		{ }							dictionary where timeout references are stored
+// actuators	[item_3, item_4, ...]		items which are animated
+// inOptions	{ }							attributes of actuators that are animated toward
+// inDuration 								time in ms to complete animation
+// 
+function setupAnimateOnHover(sensors, carrier, actuators, queueName, inOptions, inDuration, inDelay, outOptions, outDuration, outDelay) {
+
+	var timeoutName = "timeout_" + queueName;
+	var clearTimeout = function(e) {
+		if ( e[timeoutName] ) {
+    		for (var i = 0; i < e[timeoutName].length; i++) clearTimeout(e[timeoutName][i]);
+    		e[timeoutName] = [];
+    	} else e[timeoutName] = [];
+	}
+	$.each(sensors, function(si, se) {
+
+		$( se ).mouseenter( function() {
+			clearTimeout( carrier );
+			$.each(actuators, function(ai, ae) {
+				var timeoutReference = setTimeout( function() {
+		    		$( ae ).stop(queueName, true, false).animate(inOptions, {queue: queueName, duration: inDuration}).dequeue(queueName);
+				}, inDelay);
+				carrier[timeoutName].push(timeoutReference);
+			});
+		});
+
+		$( se ).mouseleave( function() {
+			clearTimeout( carrier );
+			$.each(actuators, function(ai, ae) {
+				var timeoutReference = setTimeout( function() {
+		    		$( ae ).stop(queueName, true, false).animate(outOptions, {queue: queueName, duration: outDuration}).dequeue(queueName);
+				}, outDelay);
+				carrier[timeoutName].push(timeoutReference);
+			});
+		});
+	});
 }
 

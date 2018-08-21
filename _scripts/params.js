@@ -14,7 +14,7 @@ function Params() {
 	this.delayDisplayMs = 150; // 200 // 150
 
 	// Margin Sizes (fractions of width)
-	this.marginTopFrac = 0.17; // 0.075 // 0.13 // 0.169 // 0.146
+	this.marginTopFrac = 0.19; // 0.075 // 0.13 // 0.169 // 0.146 // 0.17
 	this.vertSpacingFrac = 0.050;
 	this.marginSideFracOrig = 0.085;
 	this.marginBetweenFrac = 0.05;
@@ -31,7 +31,7 @@ function Params() {
 	// Title font
 	this.titleSizeFrac = 0.065; // 0.075 // 0.09 // 0.055
 	this.minTitleSize = 40;
-	this.titleTopOffset = 0.5; // 0.7
+	this.titleTopOffset = 0.6; // 0.7 // 0.5
 	this.titleLeftOffset = 0.5; // 0.37
 	this.bTitleAbove = true;
 	this.titleLineHeight = 1.1; // 1.25
@@ -40,15 +40,17 @@ function Params() {
 	// layout params
 	this.columnOffset = 1;
 
-	this.menuSizeFrac = 0.4;
+	this.menuSizeFrac = 0.35;
 	this.subheadingSizeFrac = 0.3;
 
 	this.footerFrac = 0.05;
 
 	// text color params
 	this.dark = "#000000";
-	this.light = "#BBBBBB";
 	this.medium = "#999999";
+	this.light = "#BBBBBB";
+	this.lighter = "#DDDDDD";
+	
 
 
 	// ========================
