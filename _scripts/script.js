@@ -225,7 +225,6 @@ function initMenuItems() {
 			menu[ element[0] ] = { "txt": para };
 		}
 	});
-	console.log(menu);
 	return null;
 }
 function initHome() {
@@ -477,7 +476,6 @@ function showMenuItems() {
 
 			if (item.attr("id") != "and") {
 				// on hovering over these items, they become darker
-				// console.log(menu[element[0]]["txt"]);
 				var fadeFrac = 0.4;
 				setupAnimateOnHover(
 					[ menu[element[0]]["txt"] ], 
