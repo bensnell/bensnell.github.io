@@ -38,6 +38,12 @@
 
 // ==============================================
 
+console.log(window.mobilecheck());
+
+// Website designed to work and be readable on desktop/tablet for screens > 768 px
+// https://www.websitedimensions.com
+// Website designed to change to mobile design if window.mobilecheck() returns true
+// https://stackoverflow.com/questions/11381673/detecting-a-mobile-browser
 
 // Ref: alignment: https://stackoverflow.com/questions/12744928/in-jquery-how-can-i-set-top-left-properties-of-an-element-with-position-values
 
