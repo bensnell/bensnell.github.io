@@ -736,7 +736,7 @@ function showProject() {
 	var prevDoneAnimating = null;
 	var prevDoneLayout = null;
 	var prevBeginsAnimating = null;
-	var topOffsets = [0]; // offsets (not including the top margin) for each image set
+	var topOffsets = [w.marginTopPx + (bAnimate ? w.moveAmtPx : 0)]; // offsets (not including the top margin) for each image set
 	// var topOffset = 0; // doesn't include top margin
 	$.each(project["images"], function(index, _element) {
 
@@ -767,7 +767,7 @@ function showProject() {
 					if (!(index == 0 && i == 0)) return;
 
 					tx = w.windowL + w.marginSidePx + xOffset;
-					ty = topOffsets[index] + w.marginTopPx + (bAnimate ? w.moveAmtPx : 0);
+					ty = topOffsets[index];
 					tw = textWidthPx;
 
 					// title
@@ -808,7 +808,7 @@ function showProject() {
 
 					if (w.onMobile) {	// mobile
 						// x doesn't change	
-						yOffset += ty + imgVertMarginPx;
+						yOffset += (ty-topOffsets[index]) + imgVertMarginPx;
 					} else {			// desktop
 						// x doesn't change
 						// y doesn't change
@@ -822,7 +822,7 @@ function showProject() {
 					// Determine the position and dimensions of the image
 					ix = w.windowL + w.marginSidePx;
 					if (w.onMobile) iy = yOffset + topOffsets[index] + imgVertMarginPx*2;
-					else iy = yOffset + topOffsets[index] + w.marginTopPx + (bAnimate ? w.moveAmtPx : 0); 
+					else iy = yOffset + topOffsets[index]; 
 					
 					iw = imgWidthPx;
 					ih = $(e["img"]).height() / $(e["img"]).width() * iw;
@@ -942,8 +942,10 @@ function showProject() {
 			thisBeginsAnimating.resolve();
 
 			// animate the image
-			$( element[0]["img"] ).fadeIn({queue: false, duration: w.fadeMs*moveFrac}); 
-			if (bAnimate) $( element[0]["img"] ).animate({top: "-="+w.moveAmtPx}, w.moveMs*moveFrac, "easeOutCubic");
+			setTimeout( function() {
+				$( element[0]["img"] ).fadeIn({queue: false, duration: w.fadeMs*moveFrac}); 
+				if (bAnimate) $( element[0]["img"] ).animate({top: "-="+w.moveAmtPx}, w.moveMs*moveFrac, "easeOutCubic");
+			}, 	(w.onMobile ? delayTextMs : 0));
 
 			if (index == 0) {
 				// animate the text
@@ -953,7 +955,7 @@ function showProject() {
 						if (bAnimate) $( e["txt"] ).animate({top: "-="+w.moveAmtPx}, w.moveMs*moveFrac, "easeOutCubic");
 					});
 				}
-				setTimeout(showText, delayTextMs);
+				setTimeout(showText, (w.onMobile ? 0 : delayTextMs));
 			}
 
 			// If there's a caption, animate it, too
