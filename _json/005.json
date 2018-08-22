@@ -10,8 +10,11 @@
 	"numDigits" : 3,
 	"images" : [
 		2,
-		3,
-		4,
+		[3, 4],
 		1
-	]
+	],
+	"captions" : {
+		"2" : "This is a caption",
+		"3" : "This is a caption"
+	}
 }

@@ -41,7 +41,9 @@ function Params() {
 	this.columnOffset = 1;
 
 	this.menuSizeFracDesktop = 0.35;
-	this.subheadingSizeFrac = 0.3;
+	this.subheadingSizeFracDesktop = 0.3;
+	this.subheadingSizeFracMobile = 0.38;
+
 
 	this.footerFrac = 0.05;
 
@@ -87,6 +89,7 @@ function Params() {
 	this.menuColor = null;
 	this.titleColor = null;
 	this.homeCaptionColor = null;
+	this.subheadingSizeFrac = null;
 
 	// fraction (in terms of windowW) to pixels
 	this.f2p = function(f) { return f*this.windowW; };
@@ -131,6 +134,7 @@ function Params() {
 			t.fontSizePx = Math.max( t.f2p( t.fontSizeFrac ), t.minFontSize) * t.mobileTextMult * 1.3;
 			t.titleSizePx = Math.max( t.f2p( t.titleSizeFrac ), t.minTitleSize) * t.mobileTextMult;
 			t.menuSizeFrac = t.menuSizeFracMobile;
+			t.subheadingSizeFrac = t.subheadingSizeFracMobile;
 
 			// Colors
 			t.menuColor = t.light;
@@ -175,6 +179,7 @@ function Params() {
 			t.fontSizePx = Math.max( t.f2p( t.fontSizeFrac ), t.minFontSize);
 			t.titleSizePx = Math.max( t.f2p( t.titleSizeFrac ), t.minTitleSize);
 			t.menuSizeFrac = t.menuSizeFracDesktop;
+			t.subheadingSizeFrac = t.subheadingSizeFracDesktop;
 
 			// Colors
 			t.menuColor = t.lighter;

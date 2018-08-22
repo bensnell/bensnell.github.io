@@ -10,7 +10,7 @@
 // DONE - add text link capabilities
 
 // DONE - create about page
-// - add about blurb on home
+// NO - add about blurb on home
 // - create inquire page
 
 // - fix font sizes on mobile, tablet
@@ -35,6 +35,11 @@
 
 // - make "about" fade out after clicking on it
 
+// - don't open new tab for email on mobile
+
+// - combine about & inquire into one ?
+// - OR: "Please send inquiries to: ben@bensnell.io <a>Send me an email here.</a>"
+
 // Photos:
 // - burn edges
 
@@ -57,9 +62,6 @@ var mailKey = "mailto";
 
 // window parameters
 var w = new Params();
-console.log(w.windowW);
-console.log(w);
-console.log(window.devicePixelRatio);
 
 // Stores all projects for home
 var projects;
@@ -721,8 +723,8 @@ function showProject() {
 	var marginFrac = 0.025;
 	var imgVertMarginFrac = 0.025;
 	
-	var imgWidthFrac = (1-(w.marginSideFrac*2+marginFrac)) * img2textWidthFrac;
-	var textWidthFrac = (1-(w.marginSideFrac*2+marginFrac)) * (1-img2textWidthFrac);
+	var imgWidthFrac = (1-(w.marginSideFrac*2+(w.onMobile?0:marginFrac))) * (w.onMobile ? 1 : img2textWidthFrac);
+	var textWidthFrac = (1-(w.marginSideFrac*2+(w.onMobile?0:marginFrac))) * (w.onMobile ? 1 : (1-img2textWidthFrac));
 	var imgWidthPx = w.f2p( imgWidthFrac );
 	var textWidthPx = w.f2p( textWidthFrac );
 	var marginPx = w.f2p( marginFrac );
@@ -753,17 +755,100 @@ function showProject() {
 
 			var layoutImage = function() {
 
+				// size of the first image
+				var xOffset = 0;
+				var yOffset = 0;
+
+				// set the title, date, description location
+				var tx = 0, ty = 0, tw = 0, th = 0;
+				var layoutProjectText = function() {
+
+					// don't setup this project text 
+					if (!(index == 0 && i == 0)) return;
+
+					tx = w.windowL + w.marginSidePx + xOffset;
+					ty = topOffsets[index] + w.marginTopPx + (bAnimate ? w.moveAmtPx : 0);
+					tw = textWidthPx;
+
+					// title
+					var title = $( project["text"][0]["txt"] );
+					title.css("font-size", w.titleSizePx * w.subheadingSizeFrac);
+					title.css("letter-spacing", (w.titleLetterSpacing/2*w.fontSizePx) + "px"); // .1993
+					setTxtPosDim(title, tx, ty, tw, null);
+					ty += title.height() + w.fontSizePx * 0.1;
+
+					// dimensions
+					var dims = $( project["text"][1]["txt"] );
+					dims.css("font-size", w.titleSizePx * w.subheadingSizeFrac * 0.7);
+					dims.css("letter-spacing", (w.titleLetterSpacing/2*w.fontSizePx * 0.7) + "px");
+					setTxtPosDim(dims, tx, ty, tw, null);
+					ty += dims.height() + w.fontSizePx * 0.1;
+
+					// material
+					var mat = $( project["text"][2]["txt"] );
+					mat.css("font-size", w.titleSizePx * w.subheadingSizeFrac * 0.7);
+					mat.css("letter-spacing", (w.titleLetterSpacing/2*w.fontSizePx * 0.7) + "px");
+					setTxtPosDim(mat, tx, ty, tw, null);
+					ty += mat.height() + w.fontSizePx * 0.1;
+
+					// date
+					var date = $( project["text"][3]["txt"] );
+					date.css("font-size", w.titleSizePx * w.subheadingSizeFrac * 0.7);
+					date.css("letter-spacing", (w.titleLetterSpacing/2*w.fontSizePx * 0.7) + "px");
+					setTxtPosDim(date, tx, ty, tw, null);
+					ty += date.height() + w.fontSizePx * 1.4;
+
+					// description
+					var desc = $( project["text"][4]["txt"] );
+					desc.css("font-size", w.fontSizePx);
+					desc.css("letter-spacing", (w.titleLetterSpacing/2*w.fontSizePx*0.8) + "px"); // .1993
+					desc.css("line-height", (w.fontSizePx * 1.4) + "px"); // .1993
+					setTxtPosDim(desc, tx, ty, tw, null);
+					ty += desc.height();
+
+					if (w.onMobile) {	// mobile
+						// x doesn't change	
+						yOffset += ty + imgVertMarginPx;
+					} else {			// desktop
+						// x doesn't change
+						// y doesn't change
+					}
+				}
+				
 				// Set the x, y, w, h
-				var ix = w.windowL + w.marginSidePx;
-				var iy = topOffsets[index] + w.marginTopPx + (bAnimate ? w.moveAmtPx : 0);
-				var iw = imgWidthPx;
-				var ih = $(e["img"]).height() / $(e["img"]).width() * iw;
+				var ix = 0, iy = 0, iw = 0, ih = 0;
+				var layoutFirstImage = function() {
 
-				setImgPosDim( $( e["img"] ), ix, iy, iw, ih);
+					// Determine the position and dimensions of the image
+					ix = w.windowL + w.marginSidePx;
+					if (w.onMobile) iy = yOffset + topOffsets[index] + imgVertMarginPx*2;
+					else iy = yOffset + topOffsets[index] + w.marginTopPx + (bAnimate ? w.moveAmtPx : 0); 
+					
+					iw = imgWidthPx;
+					ih = $(e["img"]).height() / $(e["img"]).width() * iw;
 
-				// Lastly, set the priority of sets overlapping (higher numbers = further above)
-				$( e["img"] ).css("z-index", 0);
+					// Set the image position
+					setImgPosDim( $( e["img"] ), ix, iy, iw, ih);
 
+					// Lastly, set the priority of sets overlapping (higher numbers = further above)
+					$( e["img"] ).css("z-index", 0);	
+
+					if (w.onMobile) { 	// mobile
+						// x doesn't change
+						yOffset += ih + imgVertMarginPx*2;
+					} else { 			// desktop
+						xOffset += iw + w.f2p( marginFrac );
+						yOffset += ih + imgVertMarginPx;
+					}
+				}
+
+				// setup image first on desktop or the text first on mobile
+				if (w.onMobile) {
+					layoutProjectText(); layoutFirstImage();
+				} else {
+					layoutFirstImage(); layoutProjectText(); 
+				}
+				
 				// At the first image in a set, make the set flippable
 				if (element.length > 1 && i == 0) {
 
@@ -775,7 +860,7 @@ function showProject() {
 					setTxtPosDim( $(divL), rct.x, rct.y, rct.w/3, rct.h);
 					
 					// Then, on click of these divs:
-					// imgSet: 
+					// imgSet: array of images (with one visible)
 					// offset: -1 is left, +1 is right
 					var showNextImage = function(imgSet, imgOffset) {
 
@@ -829,57 +914,17 @@ function showProject() {
 							$(caption).css("letter-spacing", (w.titleLetterSpacing/2*w.fontSizePx*0.8) + "px"); // .1993
 							$(caption).css("line-height", (w.fontSizePx * 1.4) + "px"); // .1993
 
-							setTxtPosDim( $(caption), ix+iw/2-$(caption).width()/2, iy+ih);
-							captionOffset += $(caption).height();
+							var addlCaptionOffset = $(caption).height() * 0.2;
+							setTxtPosDim( $(caption), ix+iw/2-$(caption).width()/2, iy+ih+addlCaptionOffset);
+							captionOffset += $(caption).height() + addlCaptionOffset;
+							yOffset += captionOffset;
 						}
 					}
 					layoutCaption();
 
 					// Store the offset for this image
-					topOffsets.push( topOffsets[topOffsets.length-1] + ih + imgVertMarginPx + captionOffset );
-
-					// set the title, date, description location
-					if (index == 0) {
-						var tx = ix + iw + w.f2p( marginFrac );
-						var ty = iy;
-						var tw = textWidthPx;
-
-						// title
-						var title = $( project["text"][0]["txt"] );
-						title.css("font-size", w.titleSizePx * w.subheadingSizeFrac);
-						title.css("letter-spacing", (w.titleLetterSpacing/2*w.fontSizePx) + "px"); // .1993
-						setTxtPosDim(title, tx, ty, tw, null);
-						ty += title.height() + w.fontSizePx * 0.1;
-
-						// dimensions
-						var dims = $( project["text"][1]["txt"] );
-						dims.css("font-size", w.titleSizePx * w.subheadingSizeFrac * 0.7);
-						dims.css("letter-spacing", (w.titleLetterSpacing/2*w.fontSizePx * 0.7) + "px");
-						setTxtPosDim(dims, tx, ty, tw, null);
-						ty += dims.height() + w.fontSizePx * 0.1;
-
-						// material
-						var mat = $( project["text"][2]["txt"] );
-						mat.css("font-size", w.titleSizePx * w.subheadingSizeFrac * 0.7);
-						mat.css("letter-spacing", (w.titleLetterSpacing/2*w.fontSizePx * 0.7) + "px");
-						setTxtPosDim(mat, tx, ty, tw, null);
-						ty += mat.height() + w.fontSizePx * 0.1;
-
-						// date
-						var date = $( project["text"][3]["txt"] );
-						date.css("font-size", w.titleSizePx * w.subheadingSizeFrac * 0.7);
-						date.css("letter-spacing", (w.titleLetterSpacing/2*w.fontSizePx * 0.7) + "px");
-						setTxtPosDim(date, tx, ty, tw, null);
-						ty += date.height() + w.fontSizePx * 1.4;
-
-						// description
-						var desc = $( project["text"][4]["txt"] );
-						desc.css("font-size", w.fontSizePx);
-						desc.css("letter-spacing", (w.titleLetterSpacing/2*w.fontSizePx*0.8) + "px"); // .1993
-						desc.css("line-height", (w.fontSizePx * 1.4) + "px"); // .1993
-						setTxtPosDim(desc, tx, ty, tw, null);
-					}
-
+					topOffsets.push( topOffsets[topOffsets.length-1] + yOffset);
+					
 					// resolve promise
 					thisDoneLayout.resolve();
 				}
@@ -907,7 +952,6 @@ function showProject() {
 						$( e["txt"] ).fadeIn({queue: false, duration: w.fadeMs*moveFrac}); 
 						if (bAnimate) $( e["txt"] ).animate({top: "-="+w.moveAmtPx}, w.moveMs*moveFrac, "easeOutCubic");
 					});
-
 				}
 				setTimeout(showText, delayTextMs);
 			}
@@ -923,7 +967,6 @@ function showProject() {
 				}
 			}
 			animateCaption();
-
 
 			// resolve this promise
 			setTimeout( function() { thisDoneAnimating.resolve(); }, Math.max(w.moveMs*moveFrac, w.fadeMs*moveFrac));
