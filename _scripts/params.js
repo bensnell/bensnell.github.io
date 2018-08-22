@@ -17,7 +17,7 @@ function Params() {
 	this.marginTopFrac = 0.19; // 0.075 // 0.13 // 0.169 // 0.146 // 0.17
 	this.vertSpacingFrac = 0.050;
 	this.marginSideFracOrig = 0.085;
-	this.marginBetweenFrac = 0.05;
+	this.marginBetweenFracOrig = 0.05;
 
 	// Image sizes
 	this.minImgArea = 0.25; 	// desktop, 0.25
@@ -40,7 +40,7 @@ function Params() {
 	// layout params
 	this.columnOffset = 1;
 
-	this.menuSizeFrac = 0.35;
+	this.menuSizeFracDesktop = 0.35;
 	this.subheadingSizeFrac = 0.3;
 
 	this.footerFrac = 0.05;
@@ -48,8 +48,18 @@ function Params() {
 	// text color params
 	this.dark = "#000000";
 	this.medium = "#999999";
+	this.mediumLight = "#AAAAAA";
 	this.light = "#BBBBBB";
 	this.lighter = "#DDDDDD";
+
+	// MOBILE PARAMS
+	// multiplier on all text for mobile
+	this.mobileTextMult = 1.85;
+	// margin
+	this.mobileSideMarginFrac = 0.025;
+	this.mobileMarginBetweenFrac = 0.025; // unneeded
+	this.onMobile = false;
+	this.menuSizeFracMobile = 0.5;
 	
 
 
@@ -72,6 +82,11 @@ function Params() {
 	this.fontSizePx = null;
 	this.titleSizePx = null;
 	this.marginSideFrac = null;
+	this.marginBetweenFrac = null;
+	this.menuSizeFrac = null;
+	this.menuColor = null;
+	this.titleColor = null;
+	this.homeCaptionColor = null;
 
 	// fraction (in terms of windowW) to pixels
 	this.f2p = function(f) { return f*this.windowW; };
@@ -82,59 +97,91 @@ function Params() {
 
 		var t = this;
 
+		t.onMobile = window.mobilecheck();
 		
-		
-		// if (window.mobilecheck()) {
+		if (t.onMobile) {
 
-		// 	// t.windowW = t.
+			// Width extends allmost the way to the edges
+			t.origWindowW = $( window ).width();
+			t.windowW = t.origWindowW;
+			t.windowH = $( window ).height();
 
-		// } else {
+			// left offset of all items
+			t.windowL = (t.origWindowW - t.windowW) / 2.0;
 
-		// 	t.windowW = t.origWindowW;
-		// 	t.windowH = $( window ).height();
-		// 	// Clamp the window width
-		// 	t.windowW = Math.min(t.windowW, t.maxWindowW);
-		// 	// Get the left offset of all items
-		// 	t.windowL = (t.origWindowW - t.windowW) / 2.0;
+			// Fade durations
+			t.fadeMs = 740 * t.slideAmt;
+			t.moveMs = 750 * t.slideAmt;
+			// Number of pixels of upward movement on loading
+			var moveAmtFrac = 0.12 * t.slideAmt;
+			t.moveAmtPx = t.f2p( moveAmtFrac );
 
-		// }
+			// Change the margin depending on the window size
+			t.marginSideFrac = t.mobileSideMarginFrac;
+			t.marginSidePx = t.f2p( t.marginSideFrac );
+			t.marginBetweenFrac = t.mobileMarginBetweenFrac;
+			t.marginBetweenPx = t.f2p( t.marginBetweenFrac );
 
+			// Compute the margin sizes
+			t.marginTopPx = t.f2p( t.marginTopFrac * 2 ); // additional mobile multiplier
+			t.vertSpacingPx = t.f2p( t.vertSpacingFrac );
+			t.offsetTopPx = t.marginTopPx;
 
+			// Get the font sizes
+			t.fontSizePx = Math.max( t.f2p( t.fontSizeFrac ), t.minFontSize) * t.mobileTextMult * 1.3;
+			t.titleSizePx = Math.max( t.f2p( t.titleSizeFrac ), t.minTitleSize) * t.mobileTextMult;
+			t.menuSizeFrac = t.menuSizeFracMobile;
 
-		// set this ahead of time because it changes when a scroll bar is added
-		t.origWindowW = $( window ).width();
-		t.windowW = t.origWindowW;
-		t.windowH = $( window ).height();
-		// Clamp the window width
-		t.windowW = Math.min(t.windowW, t.maxWindowW);
-		// Get the left offset of all items
-		t.windowL = (t.origWindowW - t.windowW) / 2.0;
+			// Colors
+			t.menuColor = t.light;
+			t.menuColorClick = t.menuColor;
+			t.titleColor = t.dark;
+			t.homeCaptionColor = t.medium;
+			
 
-		// Fade durations
-		t.fadeMs = 740 * t.slideAmt;
-		t.moveMs = 750 * t.slideAmt;
-		// Number of pixels of upward movement on loading
-		var moveAmtFrac = 0.12 * t.slideAmt;
-		t.moveAmtPx = t.f2p( moveAmtFrac );
+			
+		} else {
 
-		// Change the margin depending on the window size
-		var minWidth = 375;
-		var maxWidth = 1042;
-		t.marginSideFrac = t.marginSideFracOrig * map(t.windowW, minWidth, maxWidth, 0, 1, true);
-		t.marginSideFrac = Math.max(t.marginSideFrac, 0.01);
-		t.marginSidePx = t.f2p( t.marginSideFrac );
-		t.marginBetweenPx = t.f2p( t.marginBetweenFrac );
+			// dimensions 
+			t.origWindowW = $( window ).width();
+			t.windowW = Math.min(t.origWindowW, t.maxWindowW);
+			t.windowH = $( window ).height();
 
-		// var imgAreaFrac = map(windowW, minWidth, maxWidth, maxImgArea, minImgArea, true, 1)
+			// left offset of all items
+			t.windowL = (t.origWindowW - t.windowW) / 2.0;
 
-		// Compute the maring sizes
-		t.marginTopPx = t.f2p( t.marginTopFrac );
-		t.vertSpacingPx = t.f2p( t.vertSpacingFrac );
-		t.offsetTopPx = t.marginTopPx;
+			// Fade durations
+			t.fadeMs = 740 * t.slideAmt;
+			t.moveMs = 750 * t.slideAmt;
+			// Number of pixels of upward movement on loading
+			var moveAmtFrac = 0.12 * t.slideAmt;
+			t.moveAmtPx = t.f2p( moveAmtFrac );
 
-		// Get the font sizes
-		t.fontSizePx = Math.max( t.f2p( t.fontSizeFrac ), t.minFontSize);
-		t.titleSizePx = Math.max( t.f2p( t.titleSizeFrac ), t.minTitleSize);
+			// Change the margin depending on the window size
+			var minWidth = 375;
+			var maxWidth = 1042;
+			t.marginSideFrac = t.marginSideFracOrig * map(t.windowW, minWidth, maxWidth, 0, 1, true);
+			t.marginSideFrac = Math.max(t.marginSideFrac, 0.01);
+			t.marginSidePx = t.f2p( t.marginSideFrac );
+			t.marginBetweenFrac = t.marginBetweenFracOrig;
+			t.marginBetweenPx = t.f2p( t.marginBetweenFrac );
+
+			// Compute the margin sizes
+			t.marginTopPx = t.f2p( t.marginTopFrac );
+			t.vertSpacingPx = t.f2p( t.vertSpacingFrac );
+			t.offsetTopPx = t.marginTopPx;
+
+			// Get the font sizes
+			t.fontSizePx = Math.max( t.f2p( t.fontSizeFrac ), t.minFontSize);
+			t.titleSizePx = Math.max( t.f2p( t.titleSizeFrac ), t.minTitleSize);
+			t.menuSizeFrac = t.menuSizeFracDesktop;
+
+			// Colors
+			t.menuColor = t.lighter;
+			t.titleColor = t.dark;
+			t.homeCaptionColor = t.light;
+			t.menuColorClick = t.medium;
+		}
 	}
 
 	// compute all variables when this class is initialized

@@ -33,6 +33,8 @@
 
 // - access archive by scrolling down to bottom, then up to top, then back down to bottom
 
+// - make "about" fade out after clicking on it
+
 // Photos:
 // - burn edges
 
@@ -57,6 +59,7 @@ var mailKey = "mailto";
 var w = new Params();
 console.log(w.windowW);
 console.log(w);
+console.log(window.devicePixelRatio);
 
 // Stores all projects for home
 var projects;
@@ -73,11 +76,11 @@ var about = {};
 var menu = {};
 var bKeepMenu = true;
 var emailLink = "mailto:ben@bensnell.io?subject=Hello!";
-//				     ID 		TEXT 			URL_SUFFIX 		HEX_COLOR
-var menuElems = [ 	["logo", 	"Ben Snell", 	"", 			w.dark],
-					["about", 	"about", 		"about", 		w.lighter],
-					["and", 	"  &  ", 		null, 			w.lighter],
-					["inquire", "inquire", 		emailLink, 		w.lighter]
+//				     ID 		TEXT 			URL_SUFFIX
+var menuElems = [ 	["logo", 	"Ben Snell", 	""],
+					["about", 	"about", 		"about"],
+					["and", 	"  &  ", 		null],
+					["inquire", "inquire", 		emailLink]
 				];
 
 // Fonts we're using
@@ -225,7 +228,7 @@ function initMenuItems() {
 										element[1],
 										(element[2]==null) ? "" : (element[2].includes(mailKey) ? element[2] : (mainURL + (element[2]=="" ? "" : "/"+element[2]))),
 										element[0]=="logo" ? fonts["title"] : fonts["menu"],
-										element[3],
+										element[0]=="logo" ? w.titleColor : w.menuColor,
 										["menu"],
 										element[0]=="and" ? "default" : "pointer");
 			menu[ element[0] ] = { "txt": para };
@@ -250,7 +253,7 @@ function initHome() {
 
 		    // Text
 			element["txtID"] = "txt" + element["projectID"];
-			element["txt"] = getTextElement( element["txtID"], element["title"], element["url"], fonts["body"], w.light, ["async"]);
+			element["txt"] = getTextElement( element["txtID"], element["title"], element["url"], fonts["body"], w.homeCaptionColor, ["async"]);
     	});
 	};
 
@@ -488,10 +491,10 @@ function showMenuItems() {
 					menu[element[0]], 
 					[ menu[element[0]]["txt"] ], 
 					"queue_" + $(menu[element[0]]["txt"]).attr("id"), 
-					{color: w.medium}, 
+					{color: w.menuColorClick}, 
 					w.fadeMs * fadeFrac, 
 					0, 
-					{color: element[3]}, 
+					{color: w.menuColor}, 
 					w.fadeMs * fadeFrac, 
 					0);
 			}
@@ -512,15 +515,19 @@ function showMenuItems() {
 
 		xOffset += item.width();
 	});
-
 }
 function showHome() {
 
 	anticipatePageHeightAndScroll();
 
 	// Create the foundation for an image layout
-	var colWidth = (1 - (w.marginSideFrac*2+w.marginBetweenFrac)) * w.windowW / 2.0;
-	var layout = new ColumnLayout(2, colWidth, w.marginBetweenPx, 1);
+	if (w.onMobile) {
+		var colWidth = (1 - (w.marginSideFrac*2)) * w.windowW;
+		var layout = new MobileLayout(colWidth);
+	} else {
+		var colWidth = (1 - (w.marginSideFrac*2+w.marginBetweenFrac)) * w.windowW / 2.0;
+		var layout = new DesktopLayout(2, colWidth, w.marginBetweenPx, 1);
+	}
 
 	// For each project ...
 	var prevDoneAnimating = null;
@@ -558,6 +565,11 @@ function showHome() {
 				thisRect.x, 
 				thisRect.b() + w.fontSizePx*0.55 + moveAmtPx, 
 				colWidth);
+
+			// if mobile, add the text offset
+			if (w.onMobile) {
+				layout.addOffset(0, $( element["txt"] ).height());
+			}
 
 			// On hovering over the image, show the text below it
 			// (this has been extensively tested -- this works really well!)
@@ -1040,12 +1052,6 @@ $( window ).on('popstate', function() {
 	
 	exitAndLoad( pageID );
 });
-
-
-
-
-
-
 
 
 $( window ).scroll( function() {

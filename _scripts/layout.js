@@ -1,6 +1,63 @@
 // Layout helpers
 
-function ColumnLayout(nCols, colWidth, colMargin, indexOffset) {
+function MobileLayout(colWidth) {
+	// one column only
+
+	// params
+	this.vertMarginFrac = 0.13;
+
+	// ==========
+
+	// calculations
+	this.colWidth = colWidth;
+
+	this.imgCounter = -1;
+	this.rects = [];
+	this.vertMarginPx = w.f2p(this.vertMarginFrac);
+
+	// hacky for now
+	this.addOffset = function(dx, dy) {
+		if (this.rects.length > 0) {
+			this.rects[this.rects.length-1].x += dx;
+			this.rects[this.rects.length-1].y += dy;
+		}
+	}
+
+	this.getImagePosition = function(imgW, imgH) {
+
+	  	// Increment the counters
+	  	this.imgCounter += 1;
+
+	  	// Create the variables that will be output
+	  	var x, y, w, h;
+
+	  	// Set the final width and height
+	  	w = imgW;
+	  	h = imgH;
+	  	// Adjust to fit within the column
+	  	var mult = this.colWidth / imgW;
+	  	w *= mult;
+  		h *= mult;
+
+	  	// Find the x location
+	  	x = 0;
+
+	  	// now find the y location
+	  	y = 0;
+	  	if (this.rects.length > 0) {
+	  		y = this.rects[this.rects.length-1].b() + this.vertMarginPx;
+	  	}
+
+	  	// now save and output
+	  	var outRect = new rect(x, y, w, h)
+
+	  	this.rects.push(outRect);
+
+	  	return outRect;
+	};
+}
+
+function DesktopLayout(nCols, colWidth, colMargin, indexOffset) {
 
     this.nCols = nCols;
     this.colWidth = colWidth;
