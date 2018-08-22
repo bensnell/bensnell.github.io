@@ -82,6 +82,25 @@ function Params() {
 
 		var t = this;
 
+		
+		
+		// if (window.mobilecheck()) {
+
+		// 	// t.windowW = t.
+
+		// } else {
+
+		// 	t.windowW = t.origWindowW;
+		// 	t.windowH = $( window ).height();
+		// 	// Clamp the window width
+		// 	t.windowW = Math.min(t.windowW, t.maxWindowW);
+		// 	// Get the left offset of all items
+		// 	t.windowL = (t.origWindowW - t.windowW) / 2.0;
+
+		// }
+
+
+
 		// set this ahead of time because it changes when a scroll bar is added
 		t.origWindowW = $( window ).width();
 		t.windowW = t.origWindowW;
@@ -89,33 +108,33 @@ function Params() {
 		// Clamp the window width
 		t.windowW = Math.min(t.windowW, t.maxWindowW);
 		// Get the left offset of all items
-		t.windowL = ($( window ).width() - t.windowW) / 2.0;
+		t.windowL = (t.origWindowW - t.windowW) / 2.0;
 
 		// Fade durations
 		t.fadeMs = 740 * t.slideAmt;
 		t.moveMs = 750 * t.slideAmt;
 		// Number of pixels of upward movement on loading
 		var moveAmtFrac = 0.12 * t.slideAmt;
-		t.moveAmtPx = moveAmtFrac * t.windowW;
+		t.moveAmtPx = t.f2p( moveAmtFrac );
 
 		// Change the margin depending on the window size
 		var minWidth = 375;
 		var maxWidth = 1042;
 		t.marginSideFrac = t.marginSideFracOrig * map(t.windowW, minWidth, maxWidth, 0, 1, true);
 		t.marginSideFrac = Math.max(t.marginSideFrac, 0.01);
-		t.marginSidePx = t.windowW * t.marginSideFrac;
-		t.marginBetweenPx = t.windowW * t.marginBetweenFrac;
+		t.marginSidePx = t.f2p( t.marginSideFrac );
+		t.marginBetweenPx = t.f2p( t.marginBetweenFrac );
 
 		// var imgAreaFrac = map(windowW, minWidth, maxWidth, maxImgArea, minImgArea, true, 1)
 
 		// Compute the maring sizes
-		t.marginTopPx = t.marginTopFrac * t.windowW;
-		t.vertSpacingPx = t.vertSpacingFrac * t.windowW;
+		t.marginTopPx = t.f2p( t.marginTopFrac );
+		t.vertSpacingPx = t.f2p( t.vertSpacingFrac );
 		t.offsetTopPx = t.marginTopPx;
 
 		// Get the font sizes
-		t.fontSizePx = Math.max(t.fontSizeFrac * t.windowW, t.minFontSize);
-		t.titleSizePx = Math.max(t.titleSizeFrac * t.windowW, t.minTitleSize);
+		t.fontSizePx = Math.max( t.f2p( t.fontSizeFrac ), t.minFontSize);
+		t.titleSizePx = Math.max( t.f2p( t.titleSizeFrac ), t.minTitleSize);
 	}
 
 	// compute all variables when this class is initialized

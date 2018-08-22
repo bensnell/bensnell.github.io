@@ -38,8 +38,6 @@
 
 // ==============================================
 
-console.log(window.mobilecheck());
-
 // Website designed to work and be readable on desktop/tablet for screens > 768 px
 // https://www.websitedimensions.com
 // Website designed to change to mobile design if window.mobilecheck() returns true
@@ -57,6 +55,8 @@ var mailKey = "mailto";
 
 // window parameters
 var w = new Params();
+console.log(w.windowW);
+console.log(w);
 
 // Stores all projects for home
 var projects;
