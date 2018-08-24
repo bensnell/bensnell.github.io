@@ -418,6 +418,10 @@ function setFooterHeight(height) {
 
 	setPageHeight( getElemsHeight() + height );
 }
+function finishPageLayout() {
+	// make sure there's space at the bottom
+	setFooterHeight( w.f2p(w.footerFrac) );
+}
 function setScrollTop(scrollTop) {
 
 	$( window ).scrollTop(scrollTop);
@@ -640,7 +644,7 @@ function showHome() {
 
 		// When the final image is done animating, set the height of the body a little bit higher
 		if (index == projects.length-1) {
-			$.when( thisDoneAnimating ).done( function() { return setFooterHeight( w.f2p(w.footerFrac) ); }).promise();
+			$.when( thisDoneAnimating ).done( finishPageLayout ).promise();
 		}
 
 		// Stagger image loading so everything loads faster
@@ -661,7 +665,7 @@ function showAbout() {
 	// var mobileMarginFrac = 0.025;
 	var imgWidthFrac = 0.55;
 	var txtWidthFrac = 0.55;
-	var vertMarginFrac = 0.08;
+	var vertMarginFrac = 0.07;
 
 	anticipatePageHeightAndScroll();
 
@@ -678,7 +682,7 @@ function showAbout() {
 			setImgPosDim( 
 				$(about["img"]), 
 				w.windowL + w.f2p(1-imgWidthFrac)/2.0, 
-				w.marginTopPx, 
+				w.marginTopPx + w.f2p(vertMarginFrac)/2, 
 				imgWidthPx, 
 				imgHeightPx);
 
@@ -689,7 +693,7 @@ function showAbout() {
 			setTxtPosDim(
 				$(about["txt"]),
 				w.windowL + w.f2p(1-txtWidthFrac)/2.0,
-				w.marginTopPx + imgHeightPx + w.f2p(vertMarginFrac), // plus more
+				w.marginTopPx + w.f2p(vertMarginFrac)/2 + imgHeightPx + w.f2p(vertMarginFrac), // plus more
 				w.f2p(txtWidthFrac));
 
 			def.resolve();
@@ -744,7 +748,7 @@ function showAbout() {
 		setTimeout( function() { $(about["txt"]).fadeIn({queue:false, duration: w.fadeMs * fadeFrac}); def.resolve(); }, 1.5 * displayOffsetMs);
 	};
 
-	return consecCall( [loadAbt, layoutAbt, animateAbt] );
+	return consecCall( [loadAbt, layoutAbt, animateAbt, finishPageLayout] );
 }
 function showProject() {
 
@@ -1025,7 +1029,7 @@ function showProject() {
 		}
 
 		if (index == project["images"].length-1) {
-			$.when( thisDoneAnimating ).done( function() { return setFooterHeight( w.f2p(w.footerFrac) ); }).promise();
+			$.when( thisDoneAnimating ).done( finishPageLayout ).promise();
 		}
 
 		// Stagger image loading so everything loads faster
