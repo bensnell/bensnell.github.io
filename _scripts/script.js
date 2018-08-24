@@ -12,6 +12,7 @@
 // DONE - create about page
 // NO - add about blurb on home
 // - create inquire page
+// - add phone number to About or Inquire?
 
 // DONE - fix font sizes on mobile, tablet
 // DONE - fix layout on tablet for project
@@ -25,8 +26,12 @@
 // - add instagram button
 
 // - add favicon
-// - add website title
-// - add website page titles
+// DONE - add website title
+// DONE - add website page titles
+
+// - hover arrows on mobile over the image sets
+
+// - create custom 404 page
 
 // - keep images in memory to load previously visited paged faster
 // - OR, on back button, load images closest to window viewport first
@@ -39,6 +44,8 @@
 
 // - combine about & inquire into one ?
 // - OR: "Please send inquiries to: ben@bensnell.io <a>Send me an email here.</a>"
+
+// - improve SEO (page-specific titles, tags, descriptions in HTML) (?)
 
 // Photos:
 // - burn edges
@@ -751,8 +758,6 @@ function showAbout() {
 	return consecCall( [loadAbt, layoutAbt, animateAbt, finishPageLayout] );
 }
 function showProject() {
-
-	console.log(w.windowW);
 
 	anticipatePageHeightAndScroll();
 
