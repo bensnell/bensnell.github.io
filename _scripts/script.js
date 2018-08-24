@@ -647,48 +647,83 @@ function showAbout() {
 	var img2txtWidthFrac = 0.4;
 	var marginFrac = 0.025;
 
+	// var mobileMarginFrac = 0.025;
+	var mobileColFrac = 0.6;
+	var vertMarginFrac = 0.05;
+
 	anticipatePageHeightAndScroll();
 
 	var loadAbt = function(def) {
-
 		beginLoadingImg( about["img"] );
 		$( about["img"] ).on("load", function() { def.resolve(); });
 	};
 	var layoutAbt = function(def) {
 
-		// Set the location of all elements
-		var colWidthPx = w.f2p(columnFrac);
-		var imgWidthPx = img2txtWidthFrac * (colWidthPx * (1-marginFrac));
-		var marginWidthPx = w.f2p(marginFrac);
-		var txtWidthPx = colWidthPx - (imgWidthPx+marginWidthPx);
-		var sideMarginPx = w.f2p(1-columnFrac) / 2.0;
+		var layoutAbtMobile = function() {
 
 
-		var imgHeightPx = getNewImageHeight(about["img"], imgWidthPx);
-		var vertCenter = Math.max( $(window).height()/2 - imgHeightPx/2, w.marginTopPx);
-		setImgPosDim( 
-			$(about["img"]), 
-			w.windowL + sideMarginPx, 
-			vertCenter, 
-			imgWidthPx, 
-			imgHeightPx);
 
-		$(about["txt"]).css("font-size", w.fontSizePx);
-		$(about["txt"]).css("letter-spacing", (w.titleLetterSpacing/2*w.fontSizePx*0.8) + "px"); // .1993
-		$(about["txt"]).css("line-height", (w.fontSizePx * 1.4) + "px"); // .1993
+			var colWidthPx = w.f2p(mobileColFrac);
+			var sideMarginPx = w.f2p(1-mobileColFrac)/2.0;
 
-		setTxtPosDim(
-			$(about["txt"]),
-			w.windowL + sideMarginPx + imgWidthPx + marginWidthPx,
-			0,
-			txtWidthPx);
-		setTxtPosDim(
-			$(about["txt"]),
-			null,
-			$(window).height()/2 - $(about["txt"]).height()/2);
+			var imgHeightPx = getNewImageHeight(about["img"], colWidthPx);
+			setImgPosDim( 
+				$(about["img"]), 
+				w.windowL + sideMarginPx, 
+				w.marginTopPx, 
+				colWidthPx, 
+				imgHeightPx);
 
+			$(about["txt"]).css("font-size", w.fontSizePx);
+			$(about["txt"]).css("letter-spacing", (w.titleLetterSpacing/2*w.fontSizePx*0.8) + "px"); // .1993
+			$(about["txt"]).css("line-height", (w.fontSizePx * 1.4) + "px"); // .1993
 
-		def.resolve();
+			setTxtPosDim(
+				$(about["txt"]),
+				w.windowL + sideMarginPx,
+				w.marginTopPx + imgHeightPx + w.f2p(vertMarginFrac), // plus more
+				colWidthPx);
+
+			def.resolve();
+		}
+
+		var layoutAbtDesktop = function() {
+
+			// Set the location of all elements
+			var colWidthPx = w.f2p(columnFrac);
+			var imgWidthPx = img2txtWidthFrac * (colWidthPx * (1-marginFrac));
+			var marginWidthPx = w.f2p(marginFrac);
+			var txtWidthPx = colWidthPx - (imgWidthPx+marginWidthPx);
+			var sideMarginPx = w.f2p(1-columnFrac) / 2.0;
+
+			var imgHeightPx = getNewImageHeight(about["img"], imgWidthPx);
+			var vertCenter = Math.max( $(window).height()/2 - imgHeightPx/2, w.marginTopPx);
+			setImgPosDim( 
+				$(about["img"]), 
+				w.windowL + sideMarginPx, 
+				vertCenter, 
+				imgWidthPx, 
+				imgHeightPx);
+
+			$(about["txt"]).css("font-size", w.fontSizePx);
+			$(about["txt"]).css("letter-spacing", (w.titleLetterSpacing/2*w.fontSizePx*0.8) + "px"); // .1993
+			$(about["txt"]).css("line-height", (w.fontSizePx * 1.4) + "px"); // .1993
+
+			setTxtPosDim(
+				$(about["txt"]),
+				w.windowL + sideMarginPx + imgWidthPx + marginWidthPx,
+				0,
+				txtWidthPx);
+			setTxtPosDim(
+				$(about["txt"]),
+				null,
+				$(window).height()/2 - $(about["txt"]).height()/2);
+
+			def.resolve();
+		}
+
+		if (w.onMobile) layoutAbtMobile();
+		else layoutAbtDesktop();
 	};
 	var animateAbt = function(def) {
 
@@ -808,7 +843,7 @@ function showProject() {
 
 					if (w.onMobile) {	// mobile
 						// x doesn't change	
-						yOffset += (ty-topOffsets[index]) + imgVertMarginPx;
+						yOffset += (ty-topOffsets[index]) + imgVertMarginPx*1.8;
 					} else {			// desktop
 						// x doesn't change
 						// y doesn't change
