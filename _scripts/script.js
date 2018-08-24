@@ -684,7 +684,7 @@ function showAbout() {
 
 			$(about["txt"]).css("font-size", w.fontSizePx);
 			$(about["txt"]).css("letter-spacing", (w.titleLetterSpacing/2*w.fontSizePx*0.8) + "px"); // .1993
-			$(about["txt"]).css("line-height", (w.fontSizePx * 1.4) + "px"); // .1993
+			$(about["txt"]).css("line-height", w.bodyLineHeight + "px"); // .1993
 
 			setTxtPosDim(
 				$(about["txt"]),
@@ -715,7 +715,7 @@ function showAbout() {
 
 			$(about["txt"]).css("font-size", w.fontSizePx);
 			$(about["txt"]).css("letter-spacing", (w.titleLetterSpacing/2*w.fontSizePx*0.8) + "px"); // .1993
-			$(about["txt"]).css("line-height", (w.fontSizePx * 1.4) + "px"); // .1993
+			$(about["txt"]).css("line-height", w.bodyLineHeight + "px"); // .1993
 
 			setTxtPosDim(
 				$(about["txt"]),
@@ -747,6 +747,8 @@ function showAbout() {
 	return consecCall( [loadAbt, layoutAbt, animateAbt] );
 }
 function showProject() {
+
+	console.log(w.windowW);
 
 	anticipatePageHeightAndScroll();
 
@@ -845,7 +847,7 @@ function showProject() {
 					var desc = $( project["text"][4]["txt"] );
 					desc.css("font-size", w.fontSizePx);
 					desc.css("letter-spacing", (w.titleLetterSpacing/2*w.fontSizePx*0.8) + "px"); // .1993
-					desc.css("line-height", (w.fontSizePx * 1.4) + "px"); // .1993
+					desc.css("line-height", w.bodyLineHeight + "px"); // .1993
 					setTxtPosDim(desc, tx, ty, tw, null);
 					ty += desc.height();
 
@@ -955,7 +957,7 @@ function showProject() {
 
 							$(caption).css("font-size", w.fontSizePx*0.9);
 							$(caption).css("letter-spacing", (w.titleLetterSpacing/2*w.fontSizePx*0.8) + "px"); // .1993
-							$(caption).css("line-height", (w.fontSizePx * 1.4) + "px"); // .1993
+							$(caption).css("line-height", w.bodyLineHeight + "px"); // .1993
 
 							var addlCaptionOffset = $(caption).height() * 0.2;
 							setTxtPosDim( $(caption), ix+iw/2-$(caption).width()/2, iy+ih+addlCaptionOffset);

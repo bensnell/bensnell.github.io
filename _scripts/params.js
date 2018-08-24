@@ -27,11 +27,12 @@ function Params() {
 	this.fontSizeFrac = 0.015; // .015 // 0.018
 	this.minFontSize = 10;
 	this.bodyTopOffset = 0.2; // 0.35
+	this.bodyLineHeightFrac = 1.403; // of body font size
 
 	// Title font
 	this.titleSizeFrac = 0.065; // 0.075 // 0.09 // 0.055
 	this.minTitleSize = 40;
-	this.titleTopOffset = 0.6; // 0.7 // 0.5
+	this.titleTopOffset = 0.61; // 0.7 // 0.5
 	this.titleLeftOffset = 0.5; // 0.37
 	this.bTitleAbove = true;
 	this.titleLineHeight = 1.1; // 1.25
@@ -54,14 +55,28 @@ function Params() {
 	this.light = "#BBBBBB";
 	this.lighter = "#DDDDDD";
 
+
 	// MOBILE PARAMS
+
+	// // good without the meta-screen display tag:
+	// // multiplier on all text for mobile
+	// this.mobileTextMult = 1.85;
+	// // margin
+	// this.mobileSideMarginFrac = 0.025;
+	// this.mobileMarginBetweenFrac = 0.025; // unneeded
+	// this.onMobile = false;
+	// this.menuSizeFracMobile = 0.5;
+	// this.mobileFontMult = 1.3;
+
+	// good with the meta-tag
 	// multiplier on all text for mobile
-	this.mobileTextMult = 1.85;
+	this.mobileTextMult = 1.12;
 	// margin
 	this.mobileSideMarginFrac = 0.025;
 	this.mobileMarginBetweenFrac = 0.025; // unneeded
 	this.onMobile = false;
 	this.menuSizeFracMobile = 0.5;
+	this.mobileFontMult = 1.21;
 	
 
 
@@ -90,6 +105,7 @@ function Params() {
 	this.titleColor = null;
 	this.homeCaptionColor = null;
 	this.subheadingSizeFrac = null;
+	this.bodyLineHeight = null;
 
 	// fraction (in terms of windowW) to pixels
 	this.f2p = function(f) { return f*this.windowW; };
@@ -131,10 +147,11 @@ function Params() {
 			t.offsetTopPx = t.marginTopPx;
 
 			// Get the font sizes
-			t.fontSizePx = Math.max( t.f2p( t.fontSizeFrac ), t.minFontSize) * t.mobileTextMult * 1.3;
+			t.fontSizePx = Math.max( t.f2p( t.fontSizeFrac ), t.minFontSize) * t.mobileTextMult * t.mobileFontMult;
 			t.titleSizePx = Math.max( t.f2p( t.titleSizeFrac ), t.minTitleSize) * t.mobileTextMult;
 			t.menuSizeFrac = t.menuSizeFracMobile;
 			t.subheadingSizeFrac = t.subheadingSizeFracMobile;
+			t.bodyLineHeight = t.fontSizePx * t.bodyLineHeightFrac;
 
 			// Colors
 			t.menuColor = t.light;
@@ -180,6 +197,7 @@ function Params() {
 			t.titleSizePx = Math.max( t.f2p( t.titleSizeFrac ), t.minTitleSize);
 			t.menuSizeFrac = t.menuSizeFracDesktop;
 			t.subheadingSizeFrac = t.subheadingSizeFracDesktop;
+			t.bodyLineHeight = t.fontSizePx * t.bodyLineHeightFrac;
 
 			// Colors
 			t.menuColor = t.lighter;
