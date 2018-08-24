@@ -13,10 +13,10 @@
 // NO - add about blurb on home
 // - create inquire page
 
-// - fix font sizes on mobile, tablet
-// - fix layout on tablet for project
-// - fix layout on mobile for project, home
-// - make all text black on mobile
+// DONE - fix font sizes on mobile, tablet
+// DONE - fix layout on tablet for project
+// DONE - fix layout on mobile for project, home
+// DONE - make all text black on mobile
 
 // - extend clickable project icon across image and text (close the gap between them)
 
@@ -443,6 +443,17 @@ function markPageUnvisited(pageID) {
 
 	dict[pageID]["scrollTop"] = 0;
 	dict[pageID]["pageHeight"] = undefined;
+}
+
+function setPageTitle(pageID) {
+
+	if (pageID == "home") {
+		document.title = "Ben Snell";
+	} else if (pageID == "about") {
+		document.title = "About | Ben Snell";
+	} else {
+		document.title = findElementWithKeyValueInArray(project["text"], "id", "title")["content"] + " | Ben Snell";
+	}
 }
 
 // Display Images and Text
@@ -1040,6 +1051,9 @@ function show(pageID) {
 
 	// recompute all parameters
 	w.recompute();
+
+	// Set the page title
+	setPageTitle(pageID);
 
 	// show all items
 	showAllItems(pageID);
