@@ -648,8 +648,9 @@ function showAbout() {
 	var marginFrac = 0.025;
 
 	// var mobileMarginFrac = 0.025;
-	var mobileColFrac = 0.6;
-	var vertMarginFrac = 0.05;
+	var imgWidthFrac = 0.55;
+	var txtWidthFrac = 0.55;
+	var vertMarginFrac = 0.08;
 
 	anticipatePageHeightAndScroll();
 
@@ -661,17 +662,13 @@ function showAbout() {
 
 		var layoutAbtMobile = function() {
 
-
-
-			var colWidthPx = w.f2p(mobileColFrac);
-			var sideMarginPx = w.f2p(1-mobileColFrac)/2.0;
-
-			var imgHeightPx = getNewImageHeight(about["img"], colWidthPx);
+			var imgWidthPx = w.f2p(imgWidthFrac);
+			var imgHeightPx = getNewImageHeight(about["img"], imgWidthPx);
 			setImgPosDim( 
 				$(about["img"]), 
-				w.windowL + sideMarginPx, 
+				w.windowL + w.f2p(1-imgWidthFrac)/2.0, 
 				w.marginTopPx, 
-				colWidthPx, 
+				imgWidthPx, 
 				imgHeightPx);
 
 			$(about["txt"]).css("font-size", w.fontSizePx);
@@ -680,9 +677,9 @@ function showAbout() {
 
 			setTxtPosDim(
 				$(about["txt"]),
-				w.windowL + sideMarginPx,
+				w.windowL + w.f2p(1-txtWidthFrac)/2.0,
 				w.marginTopPx + imgHeightPx + w.f2p(vertMarginFrac), // plus more
-				colWidthPx);
+				w.f2p(txtWidthFrac));
 
 			def.resolve();
 		}
