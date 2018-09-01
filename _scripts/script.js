@@ -909,9 +909,11 @@ function showProject() {
 					// First, create clickable divs
 					var rct = new rect(ix, iy, iw, ih); 
 					var divR = getDivElement(index + "_rightButton", "", ["async"], "e-resize");
-					setTxtPosDim( $(divR), rct.x + rct.w/3*2, rct.y, rct.w/3, rct.h);
+					// setTxtPosDim( $(divR), rct.x + rct.w/3*2, rct.y, rct.w/3, rct.h); // 1/3
+					setTxtPosDim( $(divR), rct.x + rct.w/2, rct.y, rct.w/2, rct.h); // 1/2
 					var divL = getDivElement(index + "_leftButton", "", ["async"], "w-resize");
-					setTxtPosDim( $(divL), rct.x, rct.y, rct.w/3, rct.h);
+					// setTxtPosDim( $(divL), rct.x, rct.y, rct.w/3, rct.h); // 1/3
+					setTxtPosDim( $(divL), rct.x, rct.y, rct.w/2, rct.h); // 1/2
 					
 					// Then, on click of these divs:
 					// imgSet: array of images (with one visible)
