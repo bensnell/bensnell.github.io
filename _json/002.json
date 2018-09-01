@@ -1,0 +1,20 @@
+{
+	"title" : "LIDAR Photography",
+	"dimensions" : "91 x 122 cm",
+	"material" : "paper, ink",
+	"description" : "none",
+	"date" : "2016",
+
+	"globalExt" : "jpg",
+	"numDigits" : 3,
+	"images" : [
+		1,
+		2,
+		3
+	],
+	"captions" : {
+		"1" : "Forest, Within",
+		"2" : "Forest, Far",
+		"3" : "Forest, Below"
+	}
+}
