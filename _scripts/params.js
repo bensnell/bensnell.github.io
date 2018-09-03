@@ -27,7 +27,8 @@ function Params() {
 	this.fontSizeFrac = 0.015; // .015 // 0.018
 	this.minFontSize = 10;
 	this.bodyTopOffset = 0.2; // 0.35
-	this.bodyLineHeightFrac = 1.403; // of body font size
+	this.bodyLineHeightFrac = 1.5; // 1.403 // of body font size
+	this.bodyLetterSpacing = 0.04; // 0.07
 
 	// Title font
 	this.titleSizeFrac = 0.065; // 0.075 // 0.09 // 0.055
@@ -36,7 +37,7 @@ function Params() {
 	this.titleLeftOffset = 0.5; // 0.37
 	this.bTitleAbove = true;
 	this.titleLineHeight = 1.1; // 1.25
-	this.titleLetterSpacing = 0.14;
+	this.titleLetterSpacing = 0.14; // 0.14
 
 	// layout params
 	this.columnOffset = 1;

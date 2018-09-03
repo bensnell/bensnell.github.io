@@ -581,7 +581,7 @@ function showHome() {
 
 			// Set the text attributes
 			$( element["txt"] ).css("font-size", w.fontSizePx);
-			$( element["txt"] ).css("letter-spacing", (w.titleLetterSpacing/2*w.fontSizePx) + "px"); // .1993
+			$( element["txt"] ).css("letter-spacing", (w.bodyLetterSpacing*w.fontSizePx) + "px"); // .1993
 			$( element["txt"] ).css("z-index", 0);
 			// set position
 			setTxtPosDim( 
@@ -694,7 +694,7 @@ function showAbout() {
 				imgHeightPx);
 
 			$(about["txt"]).css("font-size", w.fontSizePx);
-			$(about["txt"]).css("letter-spacing", (w.titleLetterSpacing/2*w.fontSizePx*0.8) + "px"); // .1993
+			$(about["txt"]).css("letter-spacing", (w.bodyLetterSpacing*w.fontSizePx*0.8) + "px"); // .1993
 			$(about["txt"]).css("line-height", w.bodyLineHeight + "px"); // .1993
 
 			setTxtPosDim(
@@ -725,7 +725,7 @@ function showAbout() {
 				imgHeightPx);
 
 			$(about["txt"]).css("font-size", w.fontSizePx);
-			$(about["txt"]).css("letter-spacing", (w.titleLetterSpacing/2*w.fontSizePx*0.8) + "px"); // .1993
+			$(about["txt"]).css("letter-spacing", (w.bodyLetterSpacing*w.fontSizePx*0.8) + "px"); // .1993
 			$(about["txt"]).css("line-height", w.bodyLineHeight + "px"); // .1993
 
 			setTxtPosDim(
@@ -827,35 +827,35 @@ function showProject() {
 					// title
 					var title = $( project["text"][0]["txt"] );
 					title.css("font-size", w.titleSizePx * w.subheadingSizeFrac);
-					title.css("letter-spacing", (w.titleLetterSpacing/2*w.fontSizePx) + "px"); // .1993
+					title.css("letter-spacing", (w.bodyLetterSpacing*w.fontSizePx) + "px"); // .1993
 					setTxtPosDim(title, tx, ty, tw, null);
 					ty += title.height() + w.fontSizePx * 0.1;
 
 					// dimensions
 					var dims = $( project["text"][1]["txt"] );
 					dims.css("font-size", w.titleSizePx * w.subheadingSizeFrac * 0.7);
-					dims.css("letter-spacing", (w.titleLetterSpacing/2*w.fontSizePx * 0.7) + "px");
+					dims.css("letter-spacing", (w.bodyLetterSpacing*w.fontSizePx * 0.7) + "px");
 					setTxtPosDim(dims, tx, ty, tw, null);
 					ty += dims.height() + w.fontSizePx * 0.1;
 
 					// material
 					var mat = $( project["text"][2]["txt"] );
 					mat.css("font-size", w.titleSizePx * w.subheadingSizeFrac * 0.7);
-					mat.css("letter-spacing", (w.titleLetterSpacing/2*w.fontSizePx * 0.7) + "px");
+					mat.css("letter-spacing", (w.bodyLetterSpacing*w.fontSizePx * 0.7) + "px");
 					setTxtPosDim(mat, tx, ty, tw, null);
 					ty += mat.height() + w.fontSizePx * 0.1;
 
 					// date
 					var date = $( project["text"][3]["txt"] );
 					date.css("font-size", w.titleSizePx * w.subheadingSizeFrac * 0.7);
-					date.css("letter-spacing", (w.titleLetterSpacing/2*w.fontSizePx * 0.7) + "px");
+					date.css("letter-spacing", (w.bodyLetterSpacing*w.fontSizePx * 0.7) + "px");
 					setTxtPosDim(date, tx, ty, tw, null);
 					ty += date.height() + w.fontSizePx * 1.4;
 
 					// description
 					var desc = $( project["text"][4]["txt"] );
 					desc.css("font-size", w.fontSizePx);
-					desc.css("letter-spacing", (w.titleLetterSpacing/2*w.fontSizePx*0.8) + "px"); // .1993
+					desc.css("letter-spacing", (w.bodyLetterSpacing*w.fontSizePx*0.8) + "px"); // .1993
 					desc.css("line-height", w.bodyLineHeight + "px"); // .1993
 					setTxtPosDim(desc, tx, ty, tw, null);
 					ty += desc.height();
@@ -872,6 +872,8 @@ function showProject() {
 				// Set the x, y, w, h
 				var ix = 0, iy = 0, iw = 0, ih = 0;
 				var layoutFirstImage = function() {
+
+					// if (!(i == 0)) return;
 
 					// Determine the position and dimensions of the image
 					ix = w.windowL + w.marginSidePx;
@@ -967,7 +969,7 @@ function showProject() {
 						if (caption != null) {
 
 							$(caption).css("font-size", w.fontSizePx*0.9);
-							$(caption).css("letter-spacing", (w.titleLetterSpacing/2*w.fontSizePx*0.8) + "px"); // .1993
+							$(caption).css("letter-spacing", (w.bodyLetterSpacing*w.fontSizePx*0.8) + "px"); // .1993
 							$(caption).css("line-height", w.bodyLineHeight + "px"); // .1993
 
 							var addlCaptionOffset = $(caption).height() * 0.2;
@@ -980,6 +982,7 @@ function showProject() {
 
 					// Store the offset for this image
 					topOffsets.push( topOffsets[topOffsets.length-1] + yOffset);
+					if (w.onMobile && i == 0 && index == 0) topOffsets[0] = iy - imgVertMarginPx*2;
 					
 					// resolve promise
 					thisDoneLayout.resolve();
