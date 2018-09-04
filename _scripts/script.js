@@ -47,6 +47,8 @@
 
 // - improve SEO (page-specific titles, tags, descriptions in HTML) (?)
 
+// - prevent flippable images from showing before being laid out
+
 // Photos:
 // - burn edges
 
@@ -922,7 +924,7 @@ function showProject(bLayoutOnly=false) {
 				// This should be the first image in the set (i.e. "(element.length > 1 && i == 1)"
 				// but artifacts result from the second image being shown before it is laid out completely; thus,
 				// a quick fix is to wait for all in a set to load before offerring flippability
-				if (element.length > 1 && i == (element.length-1)) {
+				if (element.length > 1 && i == 1) {
 
 					// First, create clickable divs
 					var rct = new rect(ix, iy, iw, ih); 
