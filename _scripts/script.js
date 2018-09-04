@@ -468,14 +468,14 @@ function setPageTitle(pageID) {
 }
 
 // Display Images and Text
-function showMenuItems() {
+function showMenuItems(bLayoutOnly=false) {
 
 	// you need to change both of these numbers if you change one
 	var andFrac = 0.71; 
 	var andOffsetMult = 2.2;
 
 	// If we're keeping the menu, don't change it
-	if (bKeepMenu && $( "#"+menuElems[0][0] ).is(":visible")) return;
+	if (!bLayoutOnly && bKeepMenu && $( "#"+menuElems[0][0] ).is(":visible")) return;
 
 	var menuItems = [];
 	var menuWidth = 0;
@@ -510,7 +510,7 @@ function showMenuItems() {
 			if (item.attr("id") != "and") {
 				// on hovering over these items, they become darker
 				var fadeFrac = 0.4;
-				setupAnimateOnHover(
+				setupAnimateOnHover(  	// will this be duplicated? [BUG] ?
 					[ menu[element[0]]["txt"] ], 
 					menu[element[0]], 
 					[ menu[element[0]]["txt"] ], 
@@ -540,7 +540,7 @@ function showMenuItems() {
 		xOffset += item.width();
 	});
 }
-function showHome() {
+function showHome(bLayoutOnly=false) {
 
 	anticipatePageHeightAndScroll();
 
@@ -556,6 +556,7 @@ function showHome() {
 	// For each project ...
 	var prevDoneAnimating = null;
 	var prevDoneLayout = null;
+	var bDelay = bLayoutOnly ? 0 : 1;
     $.each(projects, function(index, element) {
 
     	// Make promises 
@@ -637,17 +638,17 @@ function showHome() {
 
 			// Load logo text
 			if (index == 0) {
-				showMenuItems();
+				showMenuItems(bLayoutOnly);
 			}
 
-			setTimeout( function() { thisDoneAnimating.resolve(); }, Math.max(w.moveMs, w.fadeMs));
+			setTimeout( function() { thisDoneAnimating.resolve(); }, Math.max(w.moveMs, w.fadeMs)*bDelay);
 		};
 
 		// When this image is done loading and the previous image is done laying out, lay this out
 		$.when( thisDoneLoading, prevDoneLayout ).done( layoutImage ).promise();
 
 		// When this image is done laying out, animate it after a brief pause
-		$.when( thisDoneLayout ).done( function() { setTimeout( animateImage, w.delayDisplayMs*delayFrac ); }).promise();
+		$.when( thisDoneLayout ).done( function() { setTimeout( animateImage, w.delayDisplayMs*delayFrac*bDelay ); }).promise();
 
 		// When the final image is done animating, set the height of the body a little bit higher
 		if (index == projects.length-1) {
@@ -656,14 +657,14 @@ function showHome() {
 
 		// Stagger image loading so everything loads faster
 		var startLoading = function() { $( element["img"] ).attr( 'src', $( element["img"] ).attr( 'src-tmp' ) ); };
-    	setTimeout( startLoading, index * w.delayLoadingMs * delayFrac);
+    	setTimeout( startLoading, index * w.delayLoadingMs * delayFrac * bDelay);
 
     	// Save these promises
 	    prevDoneLayout = thisDoneLayout;
 	    prevDoneAnimating = thisDoneAnimating;
     });
 }
-function showAbout() {
+function showAbout(bLayoutOnly=false) {
 
 	var columnFrac = 0.5;
 	var img2txtWidthFrac = 0.4;
@@ -673,6 +674,8 @@ function showAbout() {
 	var imgWidthFrac = 0.55;
 	var txtWidthFrac = 0.55;
 	var vertMarginFrac = 0.07;
+
+	var bDelay = bLayoutOnly ? 0 : 1;
 
 	anticipatePageHeightAndScroll();
 
@@ -750,14 +753,14 @@ function showAbout() {
 		var fadeFrac = 0.6; // compared to home
 
 		// show all items
-		setTimeout( showMenuItems, 0 * displayOffsetMs);
-		setTimeout( function() { $(about["img"]).fadeIn({queue:false, duration: w.fadeMs * fadeFrac}); }, 1 * displayOffsetMs);
-		setTimeout( function() { $(about["txt"]).fadeIn({queue:false, duration: w.fadeMs * fadeFrac}); def.resolve(); }, 1.5 * displayOffsetMs);
+		setTimeout( function() { return showMenuItems(bLayoutOnly); }, 0 * displayOffsetMs * bDelay);
+		setTimeout( function() { $(about["img"]).fadeIn({queue:false, duration: w.fadeMs * fadeFrac}); }, 1 * displayOffsetMs * bDelay);
+		setTimeout( function() { $(about["txt"]).fadeIn({queue:false, duration: w.fadeMs * fadeFrac}); def.resolve(); }, 1.5 * displayOffsetMs * bDelay);
 	};
 
 	return consecCall( [loadAbt, layoutAbt, animateAbt, finishPageLayout] );
 }
-function showProject() {
+function showProject(bLayoutOnly=false) {
 
 	anticipatePageHeightAndScroll();
 
@@ -785,6 +788,7 @@ function showProject() {
 	var imgVertMarginPx = w.f2p( imgVertMarginFrac );
 	var delayLoadingMs = w.delayLoadingMs * delayFrac;
 	var delayDisplayMs = w.delayDisplayMs * delayFrac;
+	var bDelay = bLayoutOnly ? 0 : 1;
 
 	// Draw all images and load text with the first image set
 	var prevDoneAnimating = null;
@@ -1014,7 +1018,7 @@ function showProject() {
 						if (bAnimate) $( e["txt"] ).animate({top: "-="+w.moveAmtPx}, w.moveMs*moveFrac, "easeOutCubic");
 					});
 				}
-				setTimeout(showText, (w.onMobile ? 0 : delayTextMs));
+				setTimeout(showText, (w.onMobile ? 0 : delayTextMs) * bDelay);
 			}
 
 			// If there's a caption, animate it, too
@@ -1030,12 +1034,12 @@ function showProject() {
 			animateCaption();
 
 			// resolve this promise
-			setTimeout( function() { thisDoneAnimating.resolve(); }, Math.max(w.moveMs*moveFrac, w.fadeMs*moveFrac));
+			setTimeout( function() { thisDoneAnimating.resolve(); }, Math.max(w.moveMs*moveFrac, w.fadeMs*moveFrac) * bDelay);
 		};
-		$.when( thisDoneLayout, prevBeginsAnimating ).done( function() { setTimeout( animateFirstImage, delayDisplayMs ); }).promise();
+		$.when( thisDoneLayout, prevBeginsAnimating ).done( function() { setTimeout( animateFirstImage, delayDisplayMs * bDelay ); }).promise();
 
 		if (index == 0) {
-			$.when( thisDoneLayout ).done( function() { setTimeout( showMenuItems, Math.max(delayDisplayMs-delayTextMs,0) ); }).promise();
+			$.when( thisDoneLayout ).done( function() { setTimeout( function() { return showMenuItems(bLayoutOnly); }, Math.max(delayDisplayMs-delayTextMs,0) * bDelay ); }).promise();
 		}
 
 		if (index == project["images"].length-1) {
@@ -1045,7 +1049,7 @@ function showProject() {
 		// Stagger image loading so everything loads faster
 		$.each(element, function(i, e) {
 			var startLoading = function() { $( e["img"] ).attr( 'src', $( e["img"] ).attr( 'src-tmp' ) ); };
-			setTimeout( startLoading, index*delayLoadingMs + i*delayLoadingMs/(element.length+1) );
+			setTimeout( startLoading, (index*delayLoadingMs + i*delayLoadingMs/(element.length+1)) * bDelay );
 		});
 
     	// Save these promises
@@ -1054,25 +1058,25 @@ function showProject() {
 	    prevBeginsAnimating = thisBeginsAnimating;
 	});
 }
-function showAllItems(pageID) {
+function showAllItems(pageID, bLayoutOnly=false) {
 	if (pageID == "home") {
-		showHome();
+		showHome( bLayoutOnly );
 	} else if (pageID == "about") {
-		showAbout();
+		showAbout( bLayoutOnly );
 	} else {
-		showProject();
+		showProject( bLayoutOnly );
 	}
 }
-function show(pageID) {
+function show(pageID, bLayoutOnly=false) {
 
 	// recompute all parameters
 	w.recompute();
 
 	// Set the page title
-	setPageTitle(pageID);
+	if (!bLayoutOnly) setPageTitle(pageID);
 
 	// show all items
-	showAllItems(pageID);
+	showAllItems(pageID, bLayoutOnly);
 }
 
 // load a specific page within this domain (no fadeout!)
@@ -1160,15 +1164,24 @@ $( window ).on('popstate', function() {
 	exitAndLoad( pageID );
 });
 
-
 $( window ).scroll( function() {
-
 	saveThisScrollTop();
 });
 
-// $( window ).on( "resize", function() {
+// resize a page by re-laying out all items
+function resizePage() {
+	show(getThisPage(), true);
+}
 
-
-//     // resizeCanvas();
-
-// });
+var lastResizeMs = 0;
+var resizeDebounceMs = 200;
+$( window ).on( "resize", function() {
+	var thisTime = getTimeMs();
+	lastResizeMs = thisTime;
+    setTimeout( function() {
+    	if (thisTime == lastResizeMs) {
+    		// console.log("Let's resize now", thisTime%1000, lastResizeMs%1000);
+    		resizePage();
+    	}
+    }, resizeDebounceMs);
+});
