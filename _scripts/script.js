@@ -918,8 +918,11 @@ function showProject(bLayoutOnly=false) {
 					layoutFirstImage(); layoutProjectText(); 
 				}
 				
-				// At the first image in a set, make the set flippable
-				if (element.length > 1 && i == 0) {
+				// At the last image in a set, make the set flippable
+				// This should be the first image in the set (i.e. "(element.length > 1 && i == 1)"
+				// but artifacts result from the second image being shown before it is laid out completely; thus,
+				// a quick fix is to wait for all in a set to load before offerring flippability
+				if (element.length > 1 && i == (element.length-1)) {
 
 					// First, create clickable divs
 					var rct = new rect(ix, iy, iw, ih); 
@@ -1198,6 +1201,8 @@ $( window ).on( "resize", function() {
     }, resizeDebounceMs);
 });
 
-$(window).on("orientationchange",function(){
-  resizePage()
+$( window ).on("orientationchange", function() {
+	// wait for window to change completely (this works most of the time, but isn't foolproof)
+	// ref: https://stackoverflow.com/questions/12452349/mobile-viewport-height-after-orientation-change
+	setTimeout( resizePage, 200);
 });
