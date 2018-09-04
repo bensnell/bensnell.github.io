@@ -1088,6 +1088,7 @@ function show(pageID, bLayoutOnly=false) {
 
 	// recompute all parameters
 	w.recompute();
+	console.log(w.windowW);
 
 	// Set the page title
 	if (!bLayoutOnly) setPageTitle(pageID);
