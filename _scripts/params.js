@@ -160,8 +160,6 @@ function Params() {
 			t.titleColor = t.dark;
 			t.homeCaptionColor = t.medium;
 			
-
-			
 		} else {
 
 			// dimensions 
@@ -211,6 +209,4 @@ function Params() {
 	// compute all variables when this class is initialized
 	this.recompute();
 }
-
-
 

@@ -1088,7 +1088,6 @@ function show(pageID, bLayoutOnly=false) {
 
 	// recompute all parameters
 	w.recompute();
-	console.log(w.windowW);
 
 	// Set the page title
 	if (!bLayoutOnly) setPageTitle(pageID);
@@ -1198,18 +1197,16 @@ $( window ).on( "resize", function() {
 	lastResizeMs = thisTime;
     setTimeout( function() {
     	if (thisTime == lastResizeMs) {
-    		// console.log("Let's resize now", thisTime%1000, lastResizeMs%1000);
     		resizePage();
     	}
     }, resizeDebounceMs);
 });
 
+// [BUG] This still doesn't work
 $( window ).on("orientationchange", function() {
-	console.log("orientation changed", $(window).width());
 	// wait for window to change completely (this works most of the time, but isn't foolproof)
 	// ref: https://stackoverflow.com/questions/12452349/mobile-viewport-height-after-orientation-change
 	setTimeout( function() { 
-		console.log("timeout ended", $(window).width());
 		return resizePage();
 	}, 200);
 });
