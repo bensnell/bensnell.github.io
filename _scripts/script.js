@@ -1204,7 +1204,11 @@ $( window ).on( "resize", function() {
 });
 
 $( window ).on("orientationchange", function() {
+	console.log("orientation changed", $(window).width());
 	// wait for window to change completely (this works most of the time, but isn't foolproof)
 	// ref: https://stackoverflow.com/questions/12452349/mobile-viewport-height-after-orientation-change
-	setTimeout( resizePage, 200);
+	setTimeout( function() { 
+		console.log("timeout ended", $(window).width());
+		return resizePage();
+	}, 200);
 });
