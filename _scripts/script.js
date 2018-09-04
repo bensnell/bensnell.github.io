@@ -1197,3 +1197,7 @@ $( window ).on( "resize", function() {
     	}
     }, resizeDebounceMs);
 });
+
+$(window).on("orientationchange",function(){
+  resizePage()
+});
