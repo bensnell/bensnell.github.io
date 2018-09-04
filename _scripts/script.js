@@ -494,7 +494,7 @@ function showMenuItems(bLayoutOnly=false) {
 				w.windowL + w.windowW/2 - $( logo ).width()/2,
 				w.titleSizePx*w.titleTopOffset );
 			
-			item.fadeIn({queue: false, duration: w.fadeMs});
+			if (!bLayoutOnly) item.fadeIn({queue: false, duration: w.fadeMs});
 
 		} else { // all other menu items
 
@@ -535,7 +535,7 @@ function showMenuItems(bLayoutOnly=false) {
 			xOffset,
 			thisY );
 
-		item.fadeIn({queue: false, duration: w.fadeMs}); 
+		if (!bLayoutOnly) item.fadeIn({queue: false, duration: w.fadeMs}); 
 
 		xOffset += item.width();
 	});
@@ -627,14 +627,16 @@ function showHome(bLayoutOnly=false) {
 		var thisDoneAnimating = $.Deferred();
 		var animateImage = function() {
 
-			// at the end of fading in, save the page height
-			$( element["img"] ).fadeIn({queue: false, duration: w.fadeMs});
-			$( element["img"] ).animate({top: "-="+moveAmtPx}, {duration: w.moveMs, easing: "easeOutCubic"});
+			if (!bLayoutOnly) {
+				// at the end of fading in, save the page height
+				$( element["img"] ).fadeIn({queue: false, duration: w.fadeMs});
+				$( element["img"] ).animate({top: "-="+moveAmtPx}, {duration: w.moveMs, easing: "easeOutCubic"});
 
-			// $( element["txt"] ).css("opacity", 0.5);
-			$( element["txt"] ).fadeIn({queue: false, duration: w.fadeMs}); 
-			// $( element["txt"] ).animate({opacity: 0.5}, {queue: false, duration: w.fadeMs});
-			$( element["txt"] ).animate({top: "-="+moveAmtPx}, {duration: w.moveMs, easing: "easeOutCubic"});
+				// $( element["txt"] ).css("opacity", 0.5);
+				$( element["txt"] ).fadeIn({queue: false, duration: w.fadeMs}); 
+				// $( element["txt"] ).animate({opacity: 0.5}, {queue: false, duration: w.fadeMs});
+				$( element["txt"] ).animate({top: "-="+moveAmtPx}, {duration: w.moveMs, easing: "easeOutCubic"});
+			}
 
 			// Load logo text
 			if (index == 0) {
@@ -754,8 +756,15 @@ function showAbout(bLayoutOnly=false) {
 
 		// show all items
 		setTimeout( function() { return showMenuItems(bLayoutOnly); }, 0 * displayOffsetMs * bDelay);
-		setTimeout( function() { $(about["img"]).fadeIn({queue:false, duration: w.fadeMs * fadeFrac}); }, 1 * displayOffsetMs * bDelay);
-		setTimeout( function() { $(about["txt"]).fadeIn({queue:false, duration: w.fadeMs * fadeFrac}); def.resolve(); }, 1.5 * displayOffsetMs * bDelay);
+		var animateImg = function() { 
+			if (!bLayoutOnly) $(about["img"]).fadeIn({queue:false, duration: w.fadeMs * fadeFrac}); 
+		};
+		setTimeout( animateImg , 1 * displayOffsetMs * bDelay);
+		var animateTxt = function() { 
+			if (!bLayoutOnly) $(about["txt"]).fadeIn({queue:false, duration: w.fadeMs * fadeFrac}); 
+			def.resolve(); 
+		};
+		setTimeout( animateTxt , 1.5 * displayOffsetMs * bDelay);
 	};
 
 	return consecCall( [loadAbt, layoutAbt, animateAbt, finishPageLayout] );
@@ -1005,33 +1014,36 @@ function showProject(bLayoutOnly=false) {
 			thisBeginsAnimating.resolve();
 
 			// animate the image
-			setTimeout( function() {
-				$( element[0]["img"] ).fadeIn({queue: false, duration: w.fadeMs*moveFrac}); 
-				if (bAnimate) $( element[0]["img"] ).animate({top: "-="+w.moveAmtPx}, w.moveMs*moveFrac, "easeOutCubic");
-			}, 	(w.onMobile ? delayTextMs : 0));
+			if (!bLayoutOnly) {
+				setTimeout( function() {
+					$( element[0]["img"] ).fadeIn({queue: false, duration: w.fadeMs*moveFrac}); 
+					if (bAnimate) $( element[0]["img"] ).animate({top: "-="+w.moveAmtPx}, w.moveMs*moveFrac, "easeOutCubic");
+				}, 	(w.onMobile ? delayTextMs : 0) * bDelay);
 
-			if (index == 0) {
-				// animate the text
-				var showText = function() {
-					$.each(project["text"], function(i, e) {
-						$( e["txt"] ).fadeIn({queue: false, duration: w.fadeMs*moveFrac}); 
-						if (bAnimate) $( e["txt"] ).animate({top: "-="+w.moveAmtPx}, w.moveMs*moveFrac, "easeOutCubic");
+
+				if (index == 0) {
+					// animate the text
+					var showText = function() {
+						$.each(project["text"], function(i, e) {
+							$( e["txt"] ).fadeIn({queue: false, duration: w.fadeMs*moveFrac}); 
+							if (bAnimate) $( e["txt"] ).animate({top: "-="+w.moveAmtPx}, w.moveMs*moveFrac, "easeOutCubic");
+						});
+					}
+					setTimeout(showText, (w.onMobile ? 0 : delayTextMs) * bDelay);
+				}
+
+				// If there's a caption, animate it, too
+				var animateCaption = function() {
+					var caption = null;
+					$.each(element, function(ii, ee) {
+						if (ee["caption"]) caption = ee["caption"];
 					});
+					if (caption != null) {
+						$(caption).fadeIn({queue: false, duration: w.fadeMs*moveFrac});
+					}
 				}
-				setTimeout(showText, (w.onMobile ? 0 : delayTextMs) * bDelay);
+				animateCaption();
 			}
-
-			// If there's a caption, animate it, too
-			var animateCaption = function() {
-				var caption = null;
-				$.each(element, function(ii, ee) {
-					if (ee["caption"]) caption = ee["caption"];
-				});
-				if (caption != null) {
-					$(caption).fadeIn({queue: false, duration: w.fadeMs*moveFrac});
-				}
-			}
-			animateCaption();
 
 			// resolve this promise
 			setTimeout( function() { thisDoneAnimating.resolve(); }, Math.max(w.moveMs*moveFrac, w.fadeMs*moveFrac) * bDelay);
