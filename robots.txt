@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /_scripts/
+Disallow: /_lib/
+Disallow: /_json/
+Disallow: /_fonts/
+
+SITEMAP: http://bensnell.io/sitemap.txt
