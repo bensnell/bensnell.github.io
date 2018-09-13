@@ -4,4 +4,4 @@ Disallow: /_lib/
 Disallow: /_json/
 Disallow: /_fonts/
 
-SITEMAP: http://bensnell.io/sitemap.txt
+SITEMAP: http://bensnell.io/sitemap.xml
