@@ -1,4 +1,9 @@
 // TODO
+
+// - inquire on phone causes two windows to open (this only happens in developer mode on desktop?)
+
+// - prevent magnification from changing layout
+
 // DONE - remove extra footer space on home when loaded from loadURL
 
 // DONE - add functionality to flip through image sets
@@ -315,11 +320,23 @@ function initProject(pageID) {
     		});
 
     		// store all image paths
-    		var attrDict = function(element) {
+    		// var attrDict = function(element) {
+    		// 	return {
+    		// 		"id" : element,
+    		// 		"bVideo" : (element.length > data["numDigits"]) ? true : false,
+    		// 		"path" : (element.length > data["numDigits"]) ? getVimeoPath(element) : (pathPrefix()+"_assets/"+projectID+"/"+element+"."+data["globalExt"])
+    		// 	};
+    		// }
+    		// [REV to include GIFs and other file types]
+	   		var attrDict = function(element) {
+    			var bVideo = element.length > data["numDigits"] && !element.includes(".");
+    			var bOtherType = !isNumeric(element);
+    			var filename = bOtherType ? element : (element+"."+data["globalExt"]);
     			return {
     				"id" : element,
-    				"bVideo" : (element.length > data["numDigits"]) ? true : false,
-    				"path" : (element.length > data["numDigits"]) ? getVimeoPath(element) : (pathPrefix()+"_assets/"+projectID+"/"+element+"."+data["globalExt"])
+    				"bVideo" : bVideo,
+    				"bOtherType" : bOtherType,
+    				"path" : bVideo ? getVimeoPath(element) : (pathPrefix()+"_assets/"+projectID+"/"+filename)
     			};
     		}
     		project["images"] = project["images"].map(function(e) { 
@@ -727,7 +744,7 @@ function showAbout(bLayoutOnly=false) {
 			setImgPosDim( 
 				$(about["img"]), 
 				w.windowL + sideMarginPx, 
-				vertCenter, 
+				Math.max(vertCenter, w.marginTopPx), // [ Changed ]
 				imgWidthPx, 
 				imgHeightPx);
 
@@ -743,7 +760,7 @@ function showAbout(bLayoutOnly=false) {
 			setTxtPosDim(
 				$(about["txt"]),
 				null,
-				$(window).height()/2 - $(about["txt"]).height()/2);
+				Math.max($(window).height()/2 - $(about["txt"]).height()/2, w.marginTopPx)); // [Changed]
 
 			def.resolve();
 		}
@@ -988,9 +1005,13 @@ function showProject(bLayoutOnly=false) {
 
 							$(caption).css("font-size", w.fontSizePx*0.9);
 							$(caption).css("letter-spacing", (w.bodyLetterSpacing*w.fontSizePx*0.8) + "px"); // .1993
-							$(caption).css("line-height", w.bodyLineHeight + "px"); // .1993
+							$(caption).css("line-height", w.bodyLineHeight*0.9 + "px"); // .1993 // [ is mult too big ? ] [ DIFF ]
 
-							var addlCaptionOffset = $(caption).height() * 0.2;
+							$(caption).css("width", iw);
+							$(caption).css("text-align", "center");
+
+							// var addlCaptionOffset = $(caption).height() * 0.2; // This gets too large with large captions, so do this instead:
+							var addlCaptionOffset = w.fontSizePx * 0.536; // $(caption).height() * 0.2
 							setTxtPosDim( $(caption), ix+iw/2-$(caption).width()/2, iy+ih+addlCaptionOffset);
 							captionOffset += $(caption).height() + addlCaptionOffset;
 							yOffset += captionOffset;

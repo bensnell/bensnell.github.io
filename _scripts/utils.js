@@ -485,3 +485,7 @@ function findElementWithKeyValueInArray(array, key, value) {
 	}
 	return null;
 }
+
+function isNumeric(num){
+  return !isNaN(num)
+}
