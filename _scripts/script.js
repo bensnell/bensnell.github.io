@@ -87,6 +87,7 @@ var project = {};
 // arrows for animating image sets
 // var arrows = {};
 var about = {};
+var inquire = {};
 
 // Stores the logo at the top of the page
 var menu = {};
@@ -96,7 +97,7 @@ var emailLink = "mailto:ben@bensnell.io?subject=Hello!";
 var menuElems = [ 	["logo", 	"Ben Snell", 	""],
 					["about", 	"about", 		"about"],
 					["and", 	"  &  ", 		null],
-					["inquire", "inquire", 		emailLink]
+					["inquire", "inquire", 		"inquire"]
 				];
 
 // Fonts we're using
@@ -296,6 +297,22 @@ function initAbout() {
 
 	return [aboutLoaded, dictLoaded];
 }
+function initInquire() {
+
+	// Init the inquire json
+	var loadInquire = function(data) { 
+		// add the description
+		inquire['txt'] = getTextElement('inquire_txt', data["text"], "", fonts['body'], w.dark, ['async']);
+	};
+	var inquireLoaded = $.Deferred();
+	var jsonPath = pathPrefix() + "_json/inquire.json";
+	$.get(jsonPath, loadInquire).done( function() { inquireLoaded.resolve(); });
+
+	// make sure the dict is loaded
+	var dictLoaded = loadHomeData();
+
+	return [inquireLoaded, dictLoaded];
+}
 function initProject(pageID) {
 
 	// Make sure the dictionary is loaded
@@ -403,6 +420,8 @@ function initPageSpecificItems(pageID) {
 		return initHome();
 	} else if (pageID == "about") {
 		return initAbout();
+	} else if (pageID == "inquire") {
+		return initInquire();
 	} else {
 		return initProject(pageID);
 	}
@@ -481,6 +500,8 @@ function setPageTitle(pageID) {
 		document.title = "Ben Snell";
 	} else if (pageID == "about") {
 		document.title = "About | Ben Snell";
+	} else if (pageID == "inquire") {
+		document.title = "Inquire | Ben Snell";
 	} else {
 		document.title = findElementWithKeyValueInArray(project["text"], "id", "title")["content"] + " | Ben Snell";
 	}
@@ -787,6 +808,48 @@ function showAbout(bLayoutOnly=false) {
 	};
 
 	return consecCall( [loadAbt, layoutAbt, animateAbt, finishPageLayout] );
+}
+function showInquire(bLayoutOnly=false) {
+
+	var bDelay = bLayoutOnly ? 0 : 1;
+
+	anticipatePageHeightAndScroll();
+
+	var layoutInq = function(def) {
+
+		$(inquire["txt"]).css("font-size", w.fontSizePx);
+		$(inquire["txt"]).css("letter-spacing", (w.bodyLetterSpacing*w.fontSizePx*0.8) + "px"); // .1993
+		$(inquire["txt"]).css("line-height", w.bodyLineHeight*1.5 + "px"); // .1993
+		$(inquire["txt"]).css("text-align", "center");
+
+		setTxtPosDim(
+			$(inquire["txt"]),
+			0,
+			0,
+			$(window).width());
+
+		setTxtPosDim(
+			$(inquire["txt"]),
+			0,
+			Math.max($(window).height()/2 - $(inquire["txt"]).height()/2, w.marginTopPx));
+
+		def.resolve();
+	};
+	var animateInq = function(def) {
+
+		var displayOffsetMs = 150;
+		var fadeFrac = 0.6; // compared to home
+
+		// show all items
+		setTimeout( function() { return showMenuItems(bLayoutOnly); }, 0 * displayOffsetMs * bDelay);
+		var animateTxt = function() { 
+			if (!bLayoutOnly) $(inquire["txt"]).fadeIn({queue:false, duration: w.fadeMs * fadeFrac}); 
+			def.resolve(); 
+		};
+		setTimeout( animateTxt , 1 * displayOffsetMs * bDelay);
+	};
+
+	return consecCall( [layoutInq, animateInq, finishPageLayout] );
 }
 function showProject(bLayoutOnly=false) {
 
@@ -1101,6 +1164,8 @@ function showAllItems(pageID, bLayoutOnly=false) {
 		showHome( bLayoutOnly );
 	} else if (pageID == "about") {
 		showAbout( bLayoutOnly );
+	} else if (pageID == "inquire") {
+		showInquire( bLayoutOnly );
 	} else {
 		showProject( bLayoutOnly );
 	}
