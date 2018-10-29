@@ -115,7 +115,6 @@ function DesktopLayout(nCols, colWidth, colMargin, indexOffset) {
 	  	// Intersecting images are not likely
 	  	for (var i = 0; i < this.rects.length; i++) {
 	  		if (this.rects[i].intersects(thisRect)) {
-	  			// console.log(this.rects[i], thisRect);
 	  			like *= (1 - this.intersectionInhibitor);
 	  			break;
 	  		}
@@ -237,8 +236,8 @@ function DesktopLayout(nCols, colWidth, colMargin, indexOffset) {
 	  		});
 
 	  		// Sort to find the highest likelihood
-			likes.sort( function(a,b) { return a[1] < b[1]; } );
-			// console.log(likes);
+	  		// THIS WAS CHANGED IN LATER OCTOBER. a[1] < b[1] used to work but doesn't anymore
+			likes = likes.sort( function(a,b) { return b[1] - a[1]; } );
 
 			// Save the y value of the highest rated location
 			center = likes[0][0].y
