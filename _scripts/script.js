@@ -124,6 +124,8 @@ var fontLib = [ [	"Cochin",		"cochin.ttc"	],
 				[	"Didot_b",		"didot_bold.ttf"],
 				];
 
+// Instagram icon
+icon_ig = {};
 
 stopScrollRestoration();
 
@@ -149,10 +151,11 @@ function pathPrefix() {
 }
 
 // Fadeout all async elements
-function fadeOut() {
+function fadeOut(bForceAll = false) {
 	var fadeOutMs = 200;
 
-	var elems = bKeepMenu ? $( ".async" ) : $( ".async, .menu" );
+	var searchElems = bForceAll ? ".async, .menu" : (bKeepMenu ? ".async" : ".async, .menu" );
+	var elems = $( searchElems );
 
 	elems.each( function(index, element) {
 		// Fade them out
@@ -177,6 +180,13 @@ function loadFonts() {
 		}
 	}); 
 	return null;
+}
+
+function loadIcons() {
+	// Load the instagram icon
+	icon_ig["img"] = getImageElement("icon_ig", pathPrefix() + "_assets/misc/instagram_icon.svg", "https://www.instagram.com/snellicious/", ["menu"]);
+	$( icon_ig["img"] ).attr( 'src', $( icon_ig["img"] ).attr( 'src-tmp' ) );
+
 }
 
 // parse reference data to use later on
@@ -579,6 +589,21 @@ function showMenuItems(bLayoutOnly=false) {
 
 		xOffset += item.width();
 	});
+
+	// Fade in the icons
+	ig_size = w.titleSizePx * 0.5;
+	ig_padding = w.titleSizePx * 0.1;
+	scrollSize = w.onMobile ? 0 : 15;  // size of the scroll bar
+	$( icon_ig["img"] ).attr("width", ig_size);
+	$( icon_ig["img"] ).attr("height", ig_size);				
+	$( icon_ig["img"] ).css("top", ig_padding);
+	// $( icon_ig["img"] ).css("left", w.windowW + w.windowL - w.marginSidePx - ig_size); // inline
+	$( icon_ig["img"] ).css("left", $( window ).width() - scrollSize - ig_size - ig_padding ); //- ig_size - ig_padding); 
+	$( icon_ig["img"] ).css("z-index", 1);
+	$( icon_ig["img"] ).fadeIn({queue: false, duration: w.fadeMs});
+	// Possible solution to changing color in JS: 
+	// https://stackoverflow.com/questions/24933430/img-src-svg-changing-the-fill-color
+
 }
 function showHome(bLayoutOnly=false) {
 
@@ -1233,9 +1258,9 @@ function loadURL(toUrl) {
 
 	} else {
 		// fade out
-		fadeOut();
+		// fadeOut(true);
 		// load an external url
-		window.open(toUrl, '_self');
+		window.open(toUrl, '_blank');
 		// window.location.href = toUrl;		
 	}
 }
@@ -1251,7 +1276,7 @@ $( window ).on("load", function() {
 });
 
 // When the window is ready, initialize fonts and load the page
-$.when( windowReady, windowLoaded ).done( loadFonts, loadPage ).promise();
+$.when( windowReady, windowLoaded ).done( loadFonts, loadIcons, loadPage ).promise();
 
 // load new page if the forward or back button is pressed
 $( window ).on('popstate', function() {
