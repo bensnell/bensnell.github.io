@@ -3,11 +3,6 @@
 	"imgExt" : "jpg",
 	"projects" : [
 		{
-			"projectID" : "005",
-			"title" : "Dio\n\\ On the becoming of one's creation.\n2018",
-			"url" : "http://bensnell.io/dio"
-		},
-		{
 			"projectID" : "004",
 			"title" : "G53, DMS\n\\ On mechanical signatures, fingerprints.\n2018",
 			"url" : "http://bensnell.io/g53-dms"
