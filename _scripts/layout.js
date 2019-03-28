@@ -86,7 +86,7 @@ function DesktopLayout(nCols, colWidth, colMargin, indexOffset) {
     // Bounds on acceptable amounts of white space
     this.spaceLoMeanMult = 0.3;
     this.spaceLoStdevMult = 0.1;
-    this.spaceHiMeanMult = 1.6;
+    this.spaceHiMeanMult = 1.85; // If images start to stack, increase this
     this.spaceHiStdevMult = 0.1;
 
     // amount of intersection to set 

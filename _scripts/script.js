@@ -195,10 +195,17 @@ function parseHomeData(data) {
 	if (!emptyDict(dict)) return;
 
 	// Save projects
-	projects = data["projects"];
+	projects = []
+	$.each(data["projects"], function(index, element) {
+		if (element["unlisted"] && element["unlisted"] == "true") {
+			// don't add it
+		} else {
+			projects.push(element);
+		}
+	});
 
 	// Parse projects into an accessible dictionary
-	$.each(projects, function(index, element) {
+	$.each(data["projects"], function(index, element) {
 		dict[ getPage(element["url"]) ] = { "projectID" : element["projectID"] }
 	});
 	// also add home and menu items (minus logo)
