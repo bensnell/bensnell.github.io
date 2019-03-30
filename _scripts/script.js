@@ -740,16 +740,21 @@ function showHome(bLayoutOnly=false) {
 }
 function showAbout(bLayoutOnly=false) {
 
-	var columnFrac = 0.5;
-	var img2txtWidthFrac = 0.4;
+	// Desktop Params
+	var columnFrac = 0.6;
+	var img2txtWidthFrac = 0.35;
 	var marginFrac = 0.025;
 
+	// Mobile params
 	// var mobileMarginFrac = 0.025;
-	var imgWidthFrac = 0.55;
-	var txtWidthFrac = 0.55;
+	var imgWidthFrac = 0.7;
+	var txtWidthFrac = 0.7;
 	var vertMarginFrac = 0.07;
 
 	var bDelay = bLayoutOnly ? 0 : 1;
+
+	// Should the desktop photo be centered in the text or at the top?
+	// var bDesktopImgTop = true; // not implemented
 
 	anticipatePageHeightAndScroll();
 
@@ -792,15 +797,7 @@ function showAbout(bLayoutOnly=false) {
 			var txtWidthPx = colWidthPx - (imgWidthPx+marginWidthPx);
 			var sideMarginPx = w.f2p(1-columnFrac) / 2.0;
 
-			var imgHeightPx = getNewImageHeight(about["img"], imgWidthPx);
-			var vertCenter = Math.max( $(window).height()/2 - imgHeightPx/2, w.marginTopPx);
-			setImgPosDim( 
-				$(about["img"]), 
-				w.windowL + sideMarginPx, 
-				Math.max(vertCenter, w.marginTopPx), // [ Changed ]
-				imgWidthPx, 
-				imgHeightPx);
-
+			// Set the location of the text
 			$(about["txt"]).css("font-size", w.fontSizePx);
 			$(about["txt"]).css("letter-spacing", (w.bodyLetterSpacing*w.fontSizePx*0.8) + "px"); // .1993
 			$(about["txt"]).css("line-height", w.bodyLineHeight + "px"); // .1993
@@ -814,6 +811,16 @@ function showAbout(bLayoutOnly=false) {
 				$(about["txt"]),
 				null,
 				Math.max($(window).height()/2 - $(about["txt"]).height()/2, w.marginTopPx)); // [Changed]
+
+			// Set the location of the image
+			var imgHeightPx = getNewImageHeight(about["img"], imgWidthPx);
+			var vertCenter = Math.max( $(window).height()/2 - imgHeightPx/2, w.marginTopPx);
+			setImgPosDim( 
+				$(about["img"]), 
+				w.windowL + sideMarginPx, 
+				Math.max(vertCenter, w.marginTopPx), //w.marginTopPx), // [ Changed ]
+				imgWidthPx, 
+				imgHeightPx);
 
 			def.resolve();
 		}
