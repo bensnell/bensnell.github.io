@@ -7,9 +7,9 @@
 	"globalExt" : "jpg",
 	"numDigits" : 3,
 	"images" : [
-		2,
-		3, 
-		4,
-		1
+		1,
+		2, 
+		3,
+		4
 	]
 }
