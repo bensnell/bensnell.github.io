@@ -304,6 +304,9 @@ function initAbout() {
 		// add the image and about description
 		about["img"] = getImageElement("about_img", pathPrefix() + data["imgPath"], "", ["async"], false);
 		about["txt"] = getTextElement("about_txt", data["description"], "", fonts["body"], w.dark, ["async"]);
+
+		// Footer (call to actions)
+		about["ftr"] = getTextElement("about_footer", data["footer"], "", fonts["body"], w.dark, ["async"]);
 	};
 	var aboutLoaded = $.Deferred();
 	var jsonPath = pathPrefix() + "_json/about.json";
@@ -785,6 +788,25 @@ function showAbout(bLayoutOnly=false) {
 				w.marginTopPx + w.f2p(vertMarginFrac)/2 + imgHeightPx + w.f2p(vertMarginFrac), // plus more
 				w.f2p(txtWidthFrac));
 
+
+			// Footer info:
+			var footerFontFrac = 0.8;
+			$(about["ftr"]).css("font-size", w.fontSizePx*footerFontFrac);
+			$(about["ftr"]).css("letter-spacing", (w.bodyLetterSpacing*w.fontSizePx*1.4) + "px"); // .1993
+			$(about["ftr"]).css("line-height", w.bodyLineHeight + "px"); // .1993
+			$(about["ftr"]).css("text-align", "center");
+
+			var contentBottom = Math.max(
+				parseInt($(about["txt"]).css("top"),10) + $(about["txt"]).height(), 
+				parseInt($(about["img"]).css("top"),10) + $(about["img"]).height()) + w.f2p(w.footerFrac)*2;
+			var pageBottom = $(window).height() - $(about["ftr"]).height() - w.f2p(w.footerFrac)*1;
+			var ftrY = Math.max(contentBottom, pageBottom)
+
+			setTxtPosDim(
+				$(about["ftr"]),
+				$(window).width()/2 - $(about["ftr"]).width()/2,
+				ftrY);
+
 			def.resolve();
 		}
 
@@ -822,6 +844,24 @@ function showAbout(bLayoutOnly=false) {
 				imgWidthPx, 
 				imgHeightPx);
 
+			// Set the location of the footer
+			var footerFontFrac = 0.8;
+			$(about["ftr"]).css("font-size", w.fontSizePx*footerFontFrac);
+			$(about["ftr"]).css("letter-spacing", (w.bodyLetterSpacing*w.fontSizePx*0.8*footerFontFrac) + "px"); // .1993
+			$(about["ftr"]).css("line-height", w.bodyLineHeight + "px"); // .1993
+			$(about["ftr"]).css("text-align", "center");
+
+			var contentBottom = Math.max(
+				parseInt($(about["txt"]).css("top"),10) + $(about["txt"]).height(), 
+				parseInt($(about["img"]).css("top"),10) + $(about["img"]).height()) + w.f2p(w.footerFrac)*1.1;
+			var pageBottom = $(window).height() - $(about["ftr"]).height() - w.f2p(w.footerFrac)*1;
+			var ftrY = Math.max(contentBottom, pageBottom)
+
+			setTxtPosDim(
+				$(about["ftr"]),
+				$(window).width()/2 - $(about["ftr"]).width()/2,
+				ftrY);
+
 			def.resolve();
 		}
 
@@ -841,6 +881,7 @@ function showAbout(bLayoutOnly=false) {
 		setTimeout( animateImg , 1 * displayOffsetMs * bDelay);
 		var animateTxt = function() { 
 			if (!bLayoutOnly) $(about["txt"]).fadeIn({queue:false, duration: w.fadeMs * fadeFrac}); 
+			if (!bLayoutOnly) $(about["ftr"]).fadeIn({queue:false, duration: w.fadeMs * fadeFrac+bDelay*displayOffsetMs}); 
 			def.resolve(); 
 		};
 		setTimeout( animateTxt , 1.5 * displayOffsetMs * bDelay);

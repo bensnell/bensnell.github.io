@@ -1,4 +1,5 @@
 {
 	"imgPath" : "_assets/about/001.jpg",
-	"description" : "Ben Snell is an artist based in New York. His practice investigates materialities and ecologies of computation. Using contemporary techniques in dialogue with traditional motifs, he situates technology as a mirror to reveal the self as a computational being. With emphasis on inquiry and introspection, his work takes the form of drawings, photography and sculpture. He holds a B.A. in Experiential Art and Design from Carnegie Mellon University and was recently an Artist in Residence at Pier 9 Autodesk."
+	"description" : "Ben Snell is an artist based in New York. His practice investigates materialities and ecologies of computation. Using contemporary techniques in dialogue with traditional motifs, he situates technology as a mirror to reveal the self as a computational being. With emphasis on inquiry and introspection, his work takes the form of drawings, photography and sculpture. He holds a B.A. in Experiential Art and Design from Carnegie Mellon University and was recently an Artist in Residence at Pier 9 Autodesk.",
+	"footer" : "<a href='https://tinyletter.com/bensnell' target='_blank'>Subscribe to my Newsletter</a>\n<a href='https://www.instagram.com/snellicious/' target='_blank'>Follow me on Instagram</a>"
 }
