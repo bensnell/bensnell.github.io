@@ -1,0 +1,33 @@
+{
+	"title" : "G53, UR10",
+	"dimensions" : "1.22 x 1.22 m",
+	"material" : "paper, ink",
+	"date" : "2018",
+	"description" : "Drawing a simple spiral with a robot (here, a UR10 robotic arm) reveals its characteristic essence of being and moving in response to an imperfect world. Everything from the robot’s gait to how it grips the pen, contributes to chaotic behaviors that manifest in subtle patterns of movement in the marks drawn—in essence, the fingerprint of the machine.\n\nIn the robot’s language, ‘G53’ means ‘home’. Thus, when I ask it to draw a spiral, it wanders closer and closer to home, literally in the sense of approaching G53 and metaphorically in the sense of revealings its character to us. The act of mark making is my attempt to call forth the personality of our companion species, and in such, help us find a home for them in our world and in our hearts.\n\n<div style='font-size:10px; line-height: 18px; color: rgb(153,153,153)'>Supported in part by ATONATON.</div>",
+	"globalExt" : "jpg",
+	"numDigits" : 3,
+	"images" : [
+		[1, 11],
+		[2, 12],
+		[3, 13],
+		[4, 14],
+		[5, 15],
+		[6, 16],
+		[7, 17],
+		[8, 18],
+		[9, 19],
+		[10, 20]
+	],
+	"captions" : {
+		"1" : "G53, UR10 #001",
+		"2" : "G53, UR10 #002",
+		"3" : "G53, UR10 #011",
+		"4" : "G53, UR10 #012",
+		"5" : "G53, UR10 #013",
+		"6" : "G53, UR10 #014",
+		"7" : "G53, UR10 #021",
+		"8" : "G53, UR10 #022",
+		"9" : "G53, UR10 #023",
+		"10" : "G53, UR10 #024"
+	}
+}
