@@ -14,7 +14,7 @@ function Params() {
 	this.delayDisplayMs = 150; // 200 // 150
 
 	// Margin Sizes (fractions of width)
-	this.marginTopFrac = 0.19; // 0.075 // 0.13 // 0.169 // 0.146 // 0.17
+	this.marginTopFrac = 0.19; // Th amount without news is 0.19
 	this.vertSpacingFrac = 0.050;
 	this.marginSideFracOrig = 0.085;
 	this.marginBetweenFracOrig = 0.05;
@@ -33,7 +33,7 @@ function Params() {
 	// Title font
 	this.titleSizeFrac = 0.065; // 0.075 // 0.09 // 0.055
 	this.minTitleSize = 40;
-	this.titleTopOffset = 0.61; // 0.7 // 0.5
+	this.titleTopOffset = 0.61; // Without news, this is 0.61
 	this.titleLeftOffset = 0.5; // 0.37
 	this.bTitleAbove = true;
 	this.titleLineHeight = 1.1; // 1.25
@@ -45,7 +45,6 @@ function Params() {
 	this.menuSizeFracDesktop = 0.35;
 	this.subheadingSizeFracDesktop = 0.3;
 	this.subheadingSizeFracMobile = 0.38;
-
 
 	this.footerFrac = 0.05;
 
@@ -107,6 +106,7 @@ function Params() {
 	this.homeCaptionColor = null;
 	this.subheadingSizeFrac = null;
 	this.bodyLineHeight = null;
+	this.headerPx = null;
 
 	// fraction (in terms of windowW) to pixels
 	this.f2p = function(f) { return f*this.windowW; };
@@ -159,6 +159,9 @@ function Params() {
 			t.menuColorClick = t.menuColor;
 			t.titleColor = t.dark;
 			t.homeCaptionColor = t.medium;
+
+			// Header
+			t.headerPx = t.titleSizePx * 0.5;
 			
 		} else {
 
@@ -203,6 +206,9 @@ function Params() {
 			t.titleColor = t.dark;
 			t.homeCaptionColor = t.light;
 			t.menuColorClick = t.medium;
+
+			// Header
+			t.headerPx = t.titleSizePx * 0.5;
 		}
 	}
 

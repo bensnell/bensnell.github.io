@@ -126,6 +126,7 @@ var fontLib = [ [	"Cochin",		"cochin.ttc"	],
 
 // Instagram icon
 icon_ig = {};
+icon_news = {};
 
 stopScrollRestoration();
 
@@ -186,6 +187,13 @@ function loadIcons() {
 	// Load the instagram icon
 	icon_ig["img"] = getImageElement("icon_ig", pathPrefix() + "_assets/misc/instagram_icon.svg", "https://www.instagram.com/snellicious/", ["menu"]);
 	$( icon_ig["img"] ).attr( 'src', $( icon_ig["img"] ).attr( 'src-tmp' ) );
+
+	// Create news div
+	icon_news["div"] = getDivElement("news_div", "https://www.phillips.com/detail/BEN-SNELL/NY000219/10", ["menu"], "pointer");
+	$( icon_news["div"] ).hide()
+	icon_news["div"].innerHTML = "<i>News:</i> AI Sculpture 'Dio' ☞ Phillips Auction";
+
+	// menu[ "news_div" ] = { "div" : newsDiv };
 
 }
 
@@ -268,6 +276,7 @@ function initMenuItems() {
 			menu[ element[0] ] = { "txt": para };
 		}
 	});
+
 	return null;
 }
 function initHome() {
@@ -552,7 +561,7 @@ function showMenuItems(bLayoutOnly=false) {
 
 			setTxtPosDim(item, 
 				w.windowL + w.windowW/2 - $( logo ).width()/2,
-				w.titleSizePx*w.titleTopOffset );
+				w.titleSizePx*w.titleTopOffset + w.headerPx);
 			
 			if (!bLayoutOnly) item.fadeIn({queue: false, duration: w.fadeMs});
 
@@ -600,9 +609,28 @@ function showMenuItems(bLayoutOnly=false) {
 		xOffset += item.width();
 	});
 
+	// Fade in the bar at the top
+	$( icon_news["div"] ).css("background-color", "#f4f4f4");
+	$( icon_news["div"] ).css("color", "#999999");
+	$( icon_news["div"] ).css("font-family", fonts["body"]);
+	$( icon_news["div"] ).attr("align", "center");
+	$( icon_news["div"] ).css("font-size", w.headerPx * 0.5);
+	$( icon_news["div"] ).css("letter-spacing", (w.bodyLetterSpacing*w.headerPx * 0.5) + "px"); // .1993
+	$( icon_news["div"] ).css("padding", w.headerPx * 0.15);
+	// $( icon_news["div"] ).css("font-size", w.titleSizePx * w.menuSizeFrac*0.8);
+	// $( icon_news["div"] ).css("padding", w.titleSizePx * w.menuSizeFrac*0.8*0.2);
+	icon_news["div"].style.width = "100%";
+	icon_news["div"].style.height = w.headerPx;
+	$( icon_news["div"] ).css("top", 0);
+	$( icon_news["div"] ).css("left", 0);
+	// $( icon_news["div"] ).css("line-height", ig_size/2 - w.titleSizePx*w.menuSizeFrac/2.0);
+	// $( icon_news["div"] ).attr("height", ig_size);	
+	$( icon_news["div"] ).fadeIn({queue: false, duration: w.fadeMs});
+
 	// Fade in the icons
-	ig_size = w.titleSizePx * 0.5;
-	ig_padding = w.titleSizePx * 0.1;
+	// ig_size = w.titleSizePx * 0.5;
+	ig_size = w.headerPx * 0.8;
+	ig_padding = ig_size * 0.2;
 	scrollSize = w.onMobile ? 0 : 15;  // size of the scroll bar
 	$( icon_ig["img"] ).attr("width", ig_size);
 	$( icon_ig["img"] ).attr("height", ig_size);				
@@ -646,7 +674,7 @@ function showHome(bLayoutOnly=false) {
 			var origRect = layout.getImagePosition($( element["img"] ).width(), $( element["img"] ).height());
 			var thisRect = origRect.getCopy();
 			// transform this rectangle into the screen's coordinate system
-			thisRect.transform(w.windowL + w.marginSidePx, w.marginTopPx);
+			thisRect.transform(w.windowL + w.marginSidePx, w.marginTopPx + w.headerPx);
 
 			// Set the image attributes
 			$( element["img"] ).attr("width", thisRect.w);
@@ -774,7 +802,7 @@ function showAbout(bLayoutOnly=false) {
 			setImgPosDim( 
 				$(about["img"]), 
 				w.windowL + w.f2p(1-imgWidthFrac)/2.0, 
-				w.marginTopPx + w.f2p(vertMarginFrac)/2, 
+				w.marginTopPx + w.headerPx + w.f2p(vertMarginFrac)/2, 
 				imgWidthPx, 
 				imgHeightPx);
 
@@ -785,7 +813,7 @@ function showAbout(bLayoutOnly=false) {
 			setTxtPosDim(
 				$(about["txt"]),
 				w.windowL + w.f2p(1-txtWidthFrac)/2.0,
-				w.marginTopPx + w.f2p(vertMarginFrac)/2 + imgHeightPx + w.f2p(vertMarginFrac), // plus more
+				w.marginTopPx + w.headerPx + w.f2p(vertMarginFrac)/2 + imgHeightPx + w.f2p(vertMarginFrac), // plus more
 				w.f2p(txtWidthFrac));
 
 
@@ -832,15 +860,15 @@ function showAbout(bLayoutOnly=false) {
 			setTxtPosDim(
 				$(about["txt"]),
 				null,
-				Math.max($(window).height()/2 - $(about["txt"]).height()/2, w.marginTopPx)); // [Changed]
+				Math.max($(window).height()/2 - $(about["txt"]).height()/2, w.marginTopPx + w.headerPx)); // [Changed]
 
 			// Set the location of the image
 			var imgHeightPx = getNewImageHeight(about["img"], imgWidthPx);
-			var vertCenter = Math.max( $(window).height()/2 - imgHeightPx/2, w.marginTopPx);
+			var vertCenter = Math.max( $(window).height()/2 - imgHeightPx/2, w.marginTopPx + w.headerPx);
 			setImgPosDim( 
 				$(about["img"]), 
 				w.windowL + sideMarginPx, 
-				Math.max(vertCenter, w.marginTopPx), //w.marginTopPx), // [ Changed ]
+				Math.max(vertCenter, w.marginTopPx + w.headerPx), //w.marginTopPx), // [ Changed ]
 				imgWidthPx, 
 				imgHeightPx);
 
@@ -911,7 +939,7 @@ function showInquire(bLayoutOnly=false) {
 		setTxtPosDim(
 			$(inquire["txt"]),
 			0,
-			Math.max($(window).height()/2 - $(inquire["txt"]).height()/2, w.marginTopPx));
+			Math.max($(window).height()/2 - $(inquire["txt"]).height()/2, w.marginTopPx + w.headerPx));
 
 		def.resolve();
 	};
@@ -965,7 +993,7 @@ function showProject(bLayoutOnly=false) {
 	var prevDoneAnimating = null;
 	var prevDoneLayout = null;
 	var prevBeginsAnimating = null;
-	var topOffsets = [w.marginTopPx + (bAnimate ? w.moveAmtPx : 0)]; // offsets (not including the top margin) for each image set
+	var topOffsets = [w.marginTopPx + w.headerPx + (bAnimate ? w.moveAmtPx : 0)]; // offsets (not including the top margin) for each image set
 	// var topOffset = 0; // doesn't include top margin
 	$.each(project["images"], function(index, _element) {
 
