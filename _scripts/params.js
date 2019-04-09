@@ -161,7 +161,7 @@ function Params() {
 			t.homeCaptionColor = t.medium;
 
 			// Header
-			t.headerPx = t.titleSizePx * 0.5;
+			t.headerPx = t.titleSizePx * 0.5 * 1.1;
 			
 		} else {
 
