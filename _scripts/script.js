@@ -860,11 +860,11 @@ function showAbout(bLayoutOnly=false) {
 			setTxtPosDim(
 				$(about["txt"]),
 				null,
-				Math.max($(window).height()/2 - $(about["txt"]).height()/2, w.marginTopPx + w.headerPx)); // [Changed]
+				Math.max(($(window).height()-w.headerPx)/2 - $(about["txt"]).height()/2 + w.headerPx, w.marginTopPx + w.headerPx)); // [Changed]
 
 			// Set the location of the image
 			var imgHeightPx = getNewImageHeight(about["img"], imgWidthPx);
-			var vertCenter = Math.max( $(window).height()/2 - imgHeightPx/2, w.marginTopPx + w.headerPx);
+			var vertCenter = Math.max( ($(window).height()-w.headerPx)/2 - imgHeightPx/2 + w.headerPx, w.marginTopPx + w.headerPx);
 			setImgPosDim( 
 				$(about["img"]), 
 				w.windowL + sideMarginPx, 
@@ -939,7 +939,7 @@ function showInquire(bLayoutOnly=false) {
 		setTxtPosDim(
 			$(inquire["txt"]),
 			0,
-			Math.max($(window).height()/2 - $(inquire["txt"]).height()/2, w.marginTopPx + w.headerPx));
+			Math.max(($(window).height()-w.headerPx)/2 - $(inquire["txt"]).height()/2 + w.headerPx, w.marginTopPx + w.headerPx));
 
 		def.resolve();
 	};
