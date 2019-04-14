@@ -189,7 +189,7 @@ function loadIcons() {
 	$( icon_ig["img"] ).attr( 'src', $( icon_ig["img"] ).attr( 'src-tmp' ) );
 
 	// Create news div
-	icon_news["div"] = getDivElement("news_div", "https://www.phillips.com/detail/BEN-SNELL/NY000219/10", ["menu"], "pointer");
+	icon_news["div"] = getDivElement("news_div", "https://www.phillips.com/article/42361496/media-and-materiality-in-conversation-with-ben-snell", ["menu"], "pointer");
 	$( icon_news["div"] ).hide()
 	icon_news["div"].innerHTML = "<i>News:</i> AI Sculpture 'Dio' ☞ Phillips Auction";
 
