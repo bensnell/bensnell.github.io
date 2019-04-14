@@ -161,7 +161,8 @@ function Params() {
 			t.homeCaptionColor = t.medium;
 
 			// Header
-			t.headerPx = t.titleSizePx * 0.5 * 1.1;
+			// t.headerPx = t.titleSizePx * 0.5 * 1.1;
+			t.headerPx = t.origWindowW * 0.074; // lets headline be larger on larger phones
 			
 		} else {
 
