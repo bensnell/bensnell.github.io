@@ -123,6 +123,8 @@ var fontLib = [ [	"Cochin",		"cochin.ttc"	],
 				[	"Didot_i",		"didot_italic.ttf"],
 				[	"Didot_b",		"didot_bold.ttf"],
 				];
+// New ones:
+// https://p22.com/family-Mackinac
 
 // Instagram icon
 icon_ig = {};
@@ -191,7 +193,7 @@ function loadIcons() {
 	// Create news div
 	icon_news["div"] = getDivElement("news_div", "https://www.phillips.com/article/42361496/media-and-materiality-in-conversation-with-ben-snell", ["menu"], "pointer");
 	$( icon_news["div"] ).hide()
-	icon_news["div"].innerHTML = "<i>News:</i> AI Sculpture 'Dio' ☞ Phillips Auction";
+	icon_news["div"].innerHTML = "<i>News:</i> AI Sculpture 'Dio' Sells at Phillips";
 
 	// menu[ "news_div" ] = { "div" : newsDiv };
 
