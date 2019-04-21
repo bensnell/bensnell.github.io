@@ -106,12 +106,17 @@ function Params() {
 	this.homeCaptionColor = null;
 	this.subheadingSizeFrac = null;
 	this.bodyLineHeight = null;
-	this.headerPx = null;
+	this.headerPx = 0;
+	this.bHeader = false;
 
 	// fraction (in terms of windowW) to pixels
 	this.f2p = function(f) { return f*this.windowW; };
 	// pixels to fraction (in terms of windowW)
 	this.p2f = function(p) { return p/this.windowW; };
+
+	this.setHeader = function(bHeader) {
+		this.bHeader = bHeader;
+	}
 
 	this.recompute = function() {
 
@@ -162,7 +167,7 @@ function Params() {
 
 			// Header
 			// t.headerPx = t.titleSizePx * 0.5 * 1.1;
-			t.headerPx = t.origWindowW * 0.074; // lets headline be larger on larger phones
+			if (t.bHeader) t.headerPx = t.origWindowW * 0.074; // lets headline be larger on larger phones
 			
 		} else {
 
@@ -209,7 +214,7 @@ function Params() {
 			t.menuColorClick = t.medium;
 
 			// Header
-			t.headerPx = t.titleSizePx * 0.5;
+			if (t.bHeader) t.headerPx = t.titleSizePx * 0.5;
 		}
 	}
 

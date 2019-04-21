@@ -59,6 +59,18 @@
 
 // ==============================================
 
+// ======================
+// ======== NEWS ========
+// ======================
+
+// Change this to add a news story
+var bNewsHeadline = true
+var newsHeadline = "<i>News:</i> AI Sculpture 'Dio' Sells at Phillips"
+var newsHeadlineURL = "https://www.phillips.com/detail/BEN-SNELL/NY000219/10"
+
+
+// ==============================================
+
 // Website designed to work and be readable on desktop/tablet for screens > 768 px
 // https://www.websitedimensions.com
 // Website designed to change to mobile design if window.mobilecheck() returns true
@@ -76,6 +88,8 @@ var mailKey = "mailto";
 
 // window parameters
 var w = new Params();
+// set whether we have a news headline
+w.setHeader(bNewsHeadline);
 
 // Stores all projects for home
 var projects;
@@ -191,9 +205,11 @@ function loadIcons() {
 	$( icon_ig["img"] ).attr( 'src', $( icon_ig["img"] ).attr( 'src-tmp' ) );
 
 	// Create news div
-	icon_news["div"] = getDivElement("news_div", "https://www.phillips.com/article/42361496/media-and-materiality-in-conversation-with-ben-snell", ["menu"], "pointer");
-	$( icon_news["div"] ).hide()
-	icon_news["div"].innerHTML = "<i>News:</i> AI Sculpture 'Dio' Sells at Phillips";
+	if (bNewsHeadline) {
+		icon_news["div"] = getDivElement("news_div", newsHeadlineURL, ["menu"], "pointer");
+		$( icon_news["div"] ).hide()
+		icon_news["div"].innerHTML = newsHeadline;
+	}
 
 	// menu[ "news_div" ] = { "div" : newsDiv };
 
@@ -611,23 +627,25 @@ function showMenuItems(bLayoutOnly=false) {
 		xOffset += item.width();
 	});
 
-	// Fade in the bar at the top
-	$( icon_news["div"] ).css("background-color", "#f4f4f4");
-	$( icon_news["div"] ).css("color", "#999999");
-	$( icon_news["div"] ).css("font-family", fonts["body"]);
-	$( icon_news["div"] ).attr("align", "center");
-	$( icon_news["div"] ).css("font-size", w.headerPx * 0.5);
-	$( icon_news["div"] ).css("letter-spacing", (w.bodyLetterSpacing*w.headerPx * 0.5) + "px"); // .1993
-	$( icon_news["div"] ).css("padding", w.headerPx * 0.15);
-	// $( icon_news["div"] ).css("font-size", w.titleSizePx * w.menuSizeFrac*0.8);
-	// $( icon_news["div"] ).css("padding", w.titleSizePx * w.menuSizeFrac*0.8*0.2);
-	icon_news["div"].style.width = "100%";
-	icon_news["div"].style.height = w.headerPx;
-	$( icon_news["div"] ).css("top", 0);
-	$( icon_news["div"] ).css("left", 0);
-	// $( icon_news["div"] ).css("line-height", ig_size/2 - w.titleSizePx*w.menuSizeFrac/2.0);
-	// $( icon_news["div"] ).attr("height", ig_size);	
-	$( icon_news["div"] ).fadeIn({queue: false, duration: w.fadeMs});
+	if (bNewsHeadline) {
+		// Fade in the bar at the top
+		$( icon_news["div"] ).css("background-color", "#f4f4f4");
+		$( icon_news["div"] ).css("color", "#999999");
+		$( icon_news["div"] ).css("font-family", fonts["body"]);
+		$( icon_news["div"] ).attr("align", "center");
+		$( icon_news["div"] ).css("font-size", w.headerPx * 0.5);
+		$( icon_news["div"] ).css("letter-spacing", (w.bodyLetterSpacing*w.headerPx * 0.5) + "px"); // .1993
+		$( icon_news["div"] ).css("padding", w.headerPx * 0.15);
+		// $( icon_news["div"] ).css("font-size", w.titleSizePx * w.menuSizeFrac*0.8);
+		// $( icon_news["div"] ).css("padding", w.titleSizePx * w.menuSizeFrac*0.8*0.2);
+		icon_news["div"].style.width = "100%";
+		icon_news["div"].style.height = w.headerPx;
+		$( icon_news["div"] ).css("top", 0);
+		$( icon_news["div"] ).css("left", 0);
+		// $( icon_news["div"] ).css("line-height", ig_size/2 - w.titleSizePx*w.menuSizeFrac/2.0);
+		// $( icon_news["div"] ).attr("height", ig_size);	
+		$( icon_news["div"] ).fadeIn({queue: false, duration: w.fadeMs});
+	}
 
 	// Fade in the icons
 	// ig_size = w.titleSizePx * 0.5;

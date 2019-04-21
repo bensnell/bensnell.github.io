@@ -75,13 +75,13 @@ function DesktopLayout(nCols, colWidth, colMargin, indexOffset) {
 
     this.maxIters = 1;
     this.nSamples = 10;
-    this.searchRadiusMult = 1.5; // mult of the col radius
+    this.searchRadiusMult = 1.8; // mult of the col radius // increase this if they start to stick
 
     // Inhibitors 
     // 1 = full inhibition
     this.intersectionInhibitor = 1;
     this.containmentInhibitor = 1; 
-    this.edgeStDevMult = 0.08; // as a function of column width
+    this.edgeStDevMult = 0.05; // as a function of column width
 
     // Bounds on acceptable amounts of white space
     this.spaceLoMeanMult = 0.3;
@@ -105,17 +105,21 @@ function DesktopLayout(nCols, colWidth, colMargin, indexOffset) {
     // Get the likelihood of a specific rectangle given existing rectangles
     this.getLikelihood = function(thisRect) {
 
+    	// console.log("Rectangle: ", thisRect);
+
 	  	like = 1;
 
 	  	// Anything off the edge of the page is unacceptable
 	  	if (thisRect.y < 0) {
 	  		like *= 0;
+	  		// console.log("\toff page ", like);
 	  	}
 
 	  	// Intersecting images are not likely
 	  	for (var i = 0; i < this.rects.length; i++) {
 	  		if (this.rects[i].intersects(thisRect)) {
 	  			like *= (1 - this.intersectionInhibitor);
+	  			// console.log("\tIntersecting rect ", like);
 	  			break;
 	  		}
 	  	}
@@ -125,6 +129,7 @@ function DesktopLayout(nCols, colWidth, colMargin, indexOffset) {
 	  	for (var i = 0; i < this.rects.length; i++) {
 	  		if ( this.rects[i].inx(thisRect, "AandB", 1, "self") == 1 || thisRect.inx(this.rects[i], "AandB", 1, "self") == 1 ) {
 	  			like *= (1 - this.containmentInhibitor);
+	  			// console.log("\tContained image ", like);
 	  			break;
 	  		}
 	  	}
@@ -140,6 +145,7 @@ function DesktopLayout(nCols, colWidth, colMargin, indexOffset) {
 			like *= (1 - gaussian(this.rects[i].y, thisRect.b(), this.edgeStDevPx, true));
 			like *= (1 - gaussian(this.rects[i].b(), thisRect.y, this.edgeStDevPx, true));
 			like *= (1 - gaussian(this.rects[i].b(), thisRect.b(), this.edgeStDevPx, true));
+			// console.log("\tEdges ", like);
 	  	}	  	
 	  	
 	  	// Impose bounds on the largest and smallest amount of white space
@@ -149,6 +155,7 @@ function DesktopLayout(nCols, colWidth, colMargin, indexOffset) {
 	  		if (this.rects[i].inx(thisRect, "AandB", 0, "self") >= this.intersectionThreshold) {
 	  			// rectangles are stacked
 	  			bottom = this.rects[i].b();
+	  			// console.log("\tWhite bounds ", like);
 	  			break;
 	  		}
 	  	}
@@ -156,18 +163,23 @@ function DesktopLayout(nCols, colWidth, colMargin, indexOffset) {
 	  	// if (this.rects.length != 0) bottom = this.rects[this.rects.length-1].b();
 	  	// Apply the inhibitors
 	  	var diff = thisRect.y - bottom;
-	  	// Lower bound on the white space -- only applied if bottom != 0
-	  	if (bottom != 0) {
-		  	like *= (1 - logisticSimple(diff, this.spaceLoMeanPx, this.spaceLoStdevPx, false));
-		}
+	  	// Lower bound on the white space
+		// (This allows for adjustable attenuation on the top most posts)
+		var lowBoundAttenuation = (bottom==0) ? 0.01 : 1.0;
+	  	like *= (1 - lowBoundAttenuation*logisticSimple(diff, this.spaceLoMeanPx, this.spaceLoStdevPx, false));
+
+
 	  	// Higher bound on the white space
 	  	like *= (1 - logisticSimple(diff, this.spaceHiMeanPx, this.spaceHiStdevPx, true));
+	  	// console.log("\thigher bound ", like);
 
 
 	  	// If an image has no neighbors above, push it higher upwards
 
 
 	  	// If there has been a lot of overlap, make room with some white space (?)
+
+	  	// console.log("New value: ",(thisRect.y-bottom)/colWidth * (1-like));
 
 
 	  	return like;
@@ -176,6 +188,8 @@ function DesktopLayout(nCols, colWidth, colMargin, indexOffset) {
 
  	// Return a rect describing the image location within the column matrix
  	this.getImagePosition = function(imgW, imgH) {
+
+ 		console.log("New Position");
 
 	  	// Increment the counters
 	  	this.imgCounter += 1;
@@ -227,17 +241,35 @@ function DesktopLayout(nCols, colWidth, colMargin, indexOffset) {
 	  		// For each location, find the overall likelihood
 	  		var likes = []
 	  		var self = this;
+	  		var loLikelihood = 1;
+	  		var hiLikelihood = 0;
 	  		$.each(yLocs, function(index, element) {
 
 	  			// Add the likelihood
 	  			var thisRect = new rect(x, element, w, h);
 	  			var thisLike = self.getLikelihood( thisRect );
 	  			likes.push( [ thisRect, thisLike ]);
+
+	  			if (thisLike > hiLikelihood) hiLikelihood = thisLike;
+	  			if (thisLike < loLikelihood) loLikelihood = thisLike;
 	  		});
+
+	  		// Sometimes, likelihoods are within less than a percent of each other. In these
+	  		// situations, where they are nearly indistinguishable, choose the rectangle
+	  		// higher up on the page.
+	  		var likelihoodTopSimilarityRange = 0.001; // fraction of top values that become indistinguishable
+	  		var maxAcceptableLikelihood = hiLikelihood-(hiLikelihood - loLikelihood)*likelihoodTopSimilarityRange;
+	  		// console.log(maxAcceptableLikelihood);
+	  		for (var i = 0; i < likes.length; i++) {
+	  			likes[i][1] = Math.min(likes[i][1], maxAcceptableLikelihood);
+	  		}
+
 
 	  		// Sort to find the highest likelihood
 	  		// THIS WAS CHANGED IN LATER OCTOBER. a[1] < b[1] used to work but doesn't anymore
 			likes = likes.sort( function(a,b) { return b[1] - a[1]; } );
+
+	  		// console.log(likes);
 
 			// Save the y value of the highest rated location
 			center = likes[0][0].y
