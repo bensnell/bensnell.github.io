@@ -65,8 +65,8 @@
 
 // Change this to add a news story
 var bNewsHeadline = true
-var newsHeadline = "<i>News:</i> AI Sculpture 'Dio' Sells at Phillips"
-var newsHeadlineURL = "https://www.phillips.com/detail/BEN-SNELL/NY000219/10"
+var newsHeadline = "<i>News:</i> 'Dio' Longlisted for The Lumen Prize"
+var newsHeadlineURL = "https://lumenprize.com/"
 
 
 // ==============================================
@@ -208,7 +208,11 @@ function loadIcons() {
 	if (bNewsHeadline) {
 		icon_news["div"] = getDivElement("news_div", newsHeadlineURL, ["menu"], "pointer");
 		$( icon_news["div"] ).hide()
-		icon_news["div"].innerHTML = newsHeadline;
+		icon_news["div"].innerHTML = " "; //newsHeadline;
+
+		icon_news["txt"] = getTextElement("news_txt", newsHeadline, newsHeadlineURL, fonts["body"], w.titleColor, ["menu"]);
+		$(icon_news["txt"]).hide()
+
 	}
 
 	// menu[ "news_div" ] = { "div" : newsDiv };
@@ -628,7 +632,7 @@ function showMenuItems(bLayoutOnly=false) {
 	});
 
 	if (bNewsHeadline) {
-		// Fade in the bar at the top
+		// Fade in the bar
 		$( icon_news["div"] ).css("background-color", "#f4f4f4");
 		$( icon_news["div"] ).css("color", "#999999");
 		$( icon_news["div"] ).css("font-family", fonts["body"]);
@@ -644,7 +648,21 @@ function showMenuItems(bLayoutOnly=false) {
 		$( icon_news["div"] ).css("left", 0);
 		// $( icon_news["div"] ).css("line-height", ig_size/2 - w.titleSizePx*w.menuSizeFrac/2.0);
 		// $( icon_news["div"] ).attr("height", ig_size);	
-		$( icon_news["div"] ).fadeIn({queue: false, duration: w.fadeMs});
+		if (!bLayoutOnly) $( icon_news["div"] ).fadeIn({queue: false, duration: w.fadeMs});
+
+		// Fade in the text
+		$(icon_news["txt"]).css("color", "#999999");
+		$(icon_news["txt"]).css("font-family", fonts["body"]);
+		$(icon_news["txt"]).css("font-size", w.headerPx * 0.5);
+		$(icon_news["txt"]).css("letter-spacing", (w.bodyLetterSpacing*w.headerPx * 0.5) + "px"); // .1993
+		setTxtPosDim($(icon_news["txt"]),
+			w.windowL + w.windowW/2 - $(icon_news["txt"]).width()/2,
+			w.headerPx/2 - $(icon_news["txt"]).height()/2*0.95);
+		if (!bLayoutOnly) $( icon_news["txt"] ).fadeIn({queue: false, duration: w.fadeMs});
+
+		console.log(w.headerPx, $(icon_news["txt"]).height());
+
+		// still some bug that lays out the text incorrectly
 	}
 
 	// Fade in the icons
