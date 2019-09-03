@@ -65,7 +65,7 @@
 
 // Change this to add a news story
 var bNewsHeadline = true
-var newsHeadline = "<i>News:</i> 'Dio' Longlisted for The Lumen Prize"
+var newsHeadline = "<i>News:</i> 'Dio' Shortlisted for The Lumen Prize"
 var newsHeadlineURL = "https://lumenprize.com/"
 
 
