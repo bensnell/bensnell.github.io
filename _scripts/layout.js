@@ -85,7 +85,7 @@ function DesktopLayout(nCols, colWidth, colMargin, indexOffset) {
 
     // Bounds on acceptable amounts of white space
     this.spaceLoMeanMult = 0.3;
-    this.spaceLoStdevMult = 0.1;
+    this.spaceLoStdevMult = 0.05;
     this.spaceHiMeanMult = 1.85; // If images start to stack, increase this
     this.spaceHiStdevMult = 0.1;
 
@@ -284,4 +284,11 @@ function DesktopLayout(nCols, colWidth, colMargin, indexOffset) {
 
 	  	return outRect;
 	};	
+
+	this.addOffset = function(dx, dy) {
+		if (this.rects.length > 0) {
+			this.rects[this.rects.length-1].x += dx;
+			this.rects[this.rects.length-1].y += dy;
+		}
+	};
 };
