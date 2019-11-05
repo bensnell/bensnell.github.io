@@ -65,8 +65,8 @@
 
 // Change this to add a news story
 var bNewsHeadline = true
-var newsHeadline = "<i>News:</i> 'Dio' Shortlisted for The Lumen Prize"
-var newsHeadlineURL = "https://lumenprize.com/"
+var newsHeadline = "<i>News:</i> AI Sculptures at Art Basel"
+var newsHeadlineURL = "https://coolhunting.com/culture/miami-art-week-2019-cadaf/"
 
 
 // ==============================================
