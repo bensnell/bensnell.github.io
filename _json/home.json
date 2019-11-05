@@ -3,15 +3,25 @@
 	"imgExt" : "jpg",
 	"projects" : [
 		{
+			"projectID" : "010",
+			"title" : "Inheritance\n\\ On intergenerational knowledge transfer.\n2019",
+			"url" : "http://bensnell.io/inheritance"
+		},
+		{
+			"projectID" : "004",
+			"title" : "G53, DMS\n\\ On mechanical signatures, fingerprints.\n2019",
+			"url" : "http://bensnell.io/g53-dms"
+		},
+		{
 			"projectID" : "005",
 			"title" : "Dio\n\\ On the becoming of one's creation.\n2018",
 			"url" : "http://bensnell.io/dio",
 			"unlisted" : "false"
 		},
 		{
-			"projectID" : "004",
-			"title" : "G53, DMS\n\\ On mechanical signatures, fingerprints.\n2019",
-			"url" : "http://bensnell.io/g53-dms"
+			"projectID" : "006",
+			"title" : "G53, UR10\n\\ On behavioral fingerprints.\n2018",
+			"url" : "http://bensnell.io/g53-ur10"
 		},
 		{
 			"projectID" : "003",
@@ -27,11 +37,6 @@
 			"projectID" : "001",
 			"title" : "G53, UR5\n\\ On mechanical signatures, fingerprints.\n2015",
 			"url" : "http://bensnell.io/g53-ur5"
-		},
-		{
-			"projectID" : "006",
-			"title" : "G53, UR10\n\\ On behavioral fingerprints.\n2018",
-			"url" : "http://bensnell.io/g53-ur10"
 		}
 	]
 }
