@@ -7,6 +7,7 @@
 	"globalExt" : "jpg",
 	"numDigits" : 3,
 	"images" : [
+		1,
 		2,
 		3,
 		4,
@@ -14,18 +15,17 @@
 		6,
 		7,
 		8,
-		9,
-		1
+		0
 	],
 	"captions" : {
-		"1" : "(Dream #0)",
-		"2" : "Mother (Dream #1)",
-		"3" : "(Dream #2)",
-		"4" : "Noble (Dream #3)",
-		"5" : "The Duel (Dream #4)",
-		"6" : "Dancer (Dream #5)",
-		"7" : "(Dream #6)",
-		"8" : "(Dream #7)",
-		"9" : "Sage (Dream #8)"
+		"0" : "(Machine #0)",
+		"1" : "Mother (Machine #1)",
+		"2" : "Keeper (Machine #2)",
+		"3" : "Noble (Machine #3)",
+		"4" : "Duel (Machine #4)",
+		"5" : "Dancer (Machine #5)",
+		"6" : "Maker (Machine #6)",
+		"7" : "Idol (Machine #7)",
+		"8" : "Sage (Machine #8)"
 	}
 }
