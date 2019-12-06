@@ -18,14 +18,14 @@
 		0
 	],
 	"captions" : {
-		"0" : "Twister (Machine #0)",
-		"1" : "Mother (Machine #1)",
-		"2" : "Keeper (Machine #2)",
-		"3" : "Noble (Machine #3)",
-		"4" : "Duel (Machine #4)",
-		"5" : "Dancer (Machine #5)",
-		"6" : "Maker (Machine #6)",
-		"7" : "Idol (Machine #7)",
-		"8" : "Sage (Machine #8)"
+		"0" : "Twister (Machine #0)\n7 1/4 x 12 1/2 x 5 1/2 in (18.4 x 31.8 x 14 cm)",
+		"1" : "Mother (Machine #1)\n8 x 12 1/2 x 6 1/2 in (20.3 x 31.8 x 16.6 cm)",
+		"2" : "Keeper (Machine #2)\n7 1/2 x 12 x 6 in (18.9 x 30.3 x 15.4 cm)",
+		"3" : "Noble (Machine #3)\n5 5/8 x 12 3/4 x 4 3/4 in (14.3 x 32.3 x 12 cm)",
+		"4" : "Duel (Machine #4)\n5 3/4 x 12 1/2 x 5 1/2 in (14.6 x 31.8 x 14 cm)",
+		"5" : "Dancer (Machine #5)\n9 1/4 x 12 1/8 x 6 7/8 in (23.4 x 30.8 x 17.5 cm)",
+		"6" : "Maker (Machine #6)\n7 1/4 x 12 x 5 5/8 in (18.5 x 30.6 x 14.4 cm)",
+		"7" : "Idol (Machine #7)\n5 1/8 x 12 5/8 x 5 3/4 in (13.1 x 32 x 14.5 cm)",
+		"8" : "Sage (Machine #8)\n7 3/4 x 12 1/2 x 6 in (19.7 x 31.8 x 15.4 cm)"
 	}
 }
