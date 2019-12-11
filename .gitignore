@@ -2,3 +2,4 @@
 .backup/*
 .backup/
 .tmp/
+*.DS_Store

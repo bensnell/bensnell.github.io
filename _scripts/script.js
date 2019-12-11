@@ -64,7 +64,7 @@
 // ======================
 
 // Change this to add a news story
-var bNewsHeadline = true
+var bNewsHeadline = false
 var newsHeadline = "<i>News:</i> AI Sculptures at Art Basel"
 var newsHeadlineURL = "https://coolhunting.com/culture/miami-art-week-2019-cadaf/"
 
