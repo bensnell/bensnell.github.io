@@ -107,6 +107,7 @@ function Params() {
 	this.subheadingSizeFrac = null;
 	this.bodyLineHeight = null;
 	this.headerPx = 0;
+	this.igPx = 0;
 	this.bHeader = false;
 
 	// fraction (in terms of windowW) to pixels
@@ -167,7 +168,9 @@ function Params() {
 
 			// Header
 			// t.headerPx = t.titleSizePx * 0.5 * 1.1;
-			if (t.bHeader) t.headerPx = t.origWindowW * 0.074; // lets headline be larger on larger phones
+			t.igPx = t.origWindowW * 0.074;
+			if (t.bHeader) t.headerPx = t.igPx; // lets headline be larger on larger phones
+
 			
 		} else {
 
@@ -214,7 +217,8 @@ function Params() {
 			t.menuColorClick = t.medium;
 
 			// Header
-			if (t.bHeader) t.headerPx = t.titleSizePx * 0.5;
+			t.igPx = t.titleSizePx * 0.5;
+			if (t.bHeader) t.headerPx = t.igPx;
 		}
 	}
 

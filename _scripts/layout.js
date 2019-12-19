@@ -189,8 +189,6 @@ function DesktopLayout(nCols, colWidth, colMargin, indexOffset) {
  	// Return a rect describing the image location within the column matrix
  	this.getImagePosition = function(imgW, imgH) {
 
- 		console.log("New Position");
-
 	  	// Increment the counters
 	  	this.imgCounter += 1;
 

@@ -212,7 +212,6 @@ function loadIcons() {
 
 		icon_news["txt"] = getTextElement("news_txt", newsHeadline, newsHeadlineURL, fonts["body"], w.titleColor, ["menu"]);
 		$(icon_news["txt"]).hide()
-
 	}
 
 	// menu[ "news_div" ] = { "div" : newsDiv };
@@ -667,7 +666,7 @@ function showMenuItems(bLayoutOnly=false) {
 
 	// Fade in the icons
 	// ig_size = w.titleSizePx * 0.5;
-	ig_size = w.headerPx * 0.8;
+	ig_size = w.igPx * 0.8;
 	ig_padding = ig_size * 0.2;
 	scrollSize = w.onMobile ? 0 : 15;  // size of the scroll bar
 	$( icon_ig["img"] ).attr("width", ig_size);
@@ -813,8 +812,8 @@ function showHome(bLayoutOnly=false) {
 function showAbout(bLayoutOnly=false) {
 
 	// Desktop Params
-	var columnFrac = 0.77;
-	var img2txtWidthFrac = 0.37;
+	var columnFrac = 0.75;
+	var img2txtWidthFrac = 0.355;
 	var marginFrac = 0.025;
 
 	// Mobile params
