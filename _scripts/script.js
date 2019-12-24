@@ -813,7 +813,7 @@ function showAbout(bLayoutOnly=false) {
 
 	// Desktop Params
 	var columnFrac = 0.75;
-	var img2txtWidthFrac = 0.355;
+	var img2txtWidthFrac = 0.33;
 	var marginFrac = 0.025;
 
 	// Mobile params
