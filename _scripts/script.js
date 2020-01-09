@@ -64,9 +64,9 @@
 // ======================
 
 // Change this to add a news story
-var bNewsHeadline = false
-var newsHeadline = "<i>News:</i> AI Sculptures at Art Basel"
-var newsHeadlineURL = "https://coolhunting.com/culture/miami-art-week-2019-cadaf/"
+var bNewsHeadline = true
+var newsHeadline = "<i>News:</i> AI Sculptures at Sapar Contemporary"
+var newsHeadlineURL = "http://www.saparcontemporary.com/exhibitions#/art-andai"
 
 
 // ==============================================
