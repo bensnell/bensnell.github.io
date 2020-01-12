@@ -2,14 +2,14 @@
 	"homeFolderName" : "_assets/home",
 	"imgExt" : "jpg",
 	"projects" : [
-		{
+        {
 			"projectID" : "010",
-			"title" : "Inheritance\n\\ On intergenerational knowledge transfer.\n2019",
+			"title" : "Inheritance\n\\ On intergenerational knowledge transfer.\n2019 - 2020",
 			"url" : "http://bensnell.io/inheritance"
 		},
 		{
 			"projectID" : "004",
-			"title" : "G53, DMS\n\\ On mechanical signatures, fingerprints.\n2019",
+			"title" : "G53 DMS\n\\ On mechanical signatures, fingerprints.\n2019",
 			"url" : "http://bensnell.io/g53-dms"
 		},
 		{
@@ -20,7 +20,7 @@
 		},
 		{
 			"projectID" : "006",
-			"title" : "G53, UR10\n\\ On behavioral fingerprints.\n2018",
+			"title" : "G53 UR10\n\\ On behavioral fingerprints.\n2019",
 			"url" : "http://bensnell.io/g53-ur10"
 		},
 		{
@@ -35,7 +35,7 @@
 		},
 		{
 			"projectID" : "001",
-			"title" : "G53, UR5\n\\ On mechanical signatures, fingerprints.\n2018",
+			"title" : "G53 UR5\n\\ On mechanical signatures, fingerprints.\n2018",
 			"url" : "http://bensnell.io/g53-ur5"
 		}
 	]
