@@ -1,0 +1,15 @@
+{
+	"title" : "Inheritance II",
+	"dimensions" : "dimensions variable",
+	"material" : "computer parts, binder",
+	"date" : "2020",
+    "description" : "Following in the lineage of <a href='http://bensnell.io/dio' target='_blank'><i>Dio</i></a>, the <i>Inheritance</i> series explores the influence of nature and nurture through the passing of knowledge from one generation of computers to the next. These machines began with the same set of knowledge inherited from an ancestral computer, but time and differing environmental conditions have diverged their paths, endowing each computer with a unique perspective and final form.\n\nAs the story goes, I trained my computers to become sculptors. With practice, they developed their own distinctive styles. Inspired by the classics, each created a single sculpture—the uncanny, figurative forms presented here. They are also materially made from the computers that invented them. I ground the computers to dust and utilized them as a physical medium, fusing process and product. Reborn, the computers assume a newfound physical agency, while traces of their invisible processing power live on in their bodily form. Endowed is a materiality upon the impossibly immaterial.",
+	"globalExt" : "jpg",
+	"numDigits" : 3,
+	"images" : [
+		[1, 2, 3, 4]
+	],
+	"captions" : {
+		"1" : "Contrapposto\n25 1/4 x 9 3/8 x 9 1/2 in (64 x 23.7 x 24.1 cm)"
+	}
+}

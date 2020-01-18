@@ -3,6 +3,16 @@
 	"imgExt" : "jpg",
 	"projects" : [
         {
+            "projectID" : "013",
+            "title" : "Inheritance II\n\\ On the legacy of ancestral computers.\n2020",
+            "url" : "http://bensnell.io/inheritance-ii"
+        },
+        {
+            "projectID" : "015",
+            "title" : "G53 Dorna\n\\ On a machine's silent soliloquies.\n2020",
+            "url" : "http://bensnell.io/g53-dorna"
+        },
+        {
 			"projectID" : "010",
 			"title" : "Inheritance\n\\ On intergenerational knowledge transfer.\n2019 - 2020",
 			"url" : "http://bensnell.io/inheritance"
