@@ -65,8 +65,8 @@
 
 // Change this to add a news story
 var bNewsHeadline = true
-var newsHeadline = "<i>News:</i> AI Sculptures at Sapar Contemporary"
-var newsHeadlineURL = "http://www.saparcontemporary.com/exhibitions#/art-andai"
+var newsHeadline = "<i>News:</i> Solo Show at Blackbird Gallery"
+var newsHeadlineURL = "https://blackbird.gallery/exhibitions/14"
 
 
 // ==============================================
