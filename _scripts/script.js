@@ -102,6 +102,7 @@ var project = {};
 // var arrows = {};
 var about = {};
 var inquire = {};
+var news = {};
 
 // Stores the logo at the top of the page
 var menu = {};
@@ -110,6 +111,8 @@ var emailLink = "mailto:ben@bensnell.io?subject=Hello!";
 //				     ID 		TEXT 			URL_SUFFIX
 var menuElems = [ 	["logo", 	"Ben Snell", 	""],
 					["about", 	"about", 		"about"],
+					["comma",	",  ",			null],
+					["news", 	"news",			"news"],
 					["and", 	"  &  ", 		null],
 					["inquire", "inquire", 		"inquire"]
 				];
@@ -206,11 +209,11 @@ function loadIcons() {
 
 	// Create news div
 	if (bNewsHeadline) {
-		icon_news["div"] = getDivElement("news_div", newsHeadlineURL, ["menu"], "pointer");
+		icon_news["div"] = getDivElement("news_headline_div", newsHeadlineURL, ["menu"], "pointer");
 		$( icon_news["div"] ).hide()
 		icon_news["div"].innerHTML = " "; //newsHeadline;
 
-		icon_news["txt"] = getTextElement("news_txt", newsHeadline, newsHeadlineURL, fonts["body"], w.titleColor, ["menu"]);
+		icon_news["txt"] = getTextElement("news_headline_txt", newsHeadline, newsHeadlineURL, fonts["body"], w.titleColor, ["menu"]);
 		$(icon_news["txt"]).hide()
 	}
 
@@ -293,7 +296,7 @@ function initMenuItems() {
 										element[0]=="logo" ? fonts["title"] : fonts["menu"],
 										element[0]=="logo" ? w.titleColor : w.menuColor,
 										["menu"],
-										element[0]=="and" ? "default" : "pointer");
+										(element[0]=="and"||element[0]=="comma") ? "default" : "pointer");
 			menu[ element[0] ] = { "txt": para };
 		}
 	});
@@ -362,6 +365,22 @@ function initInquire() {
 	var dictLoaded = loadHomeData();
 
 	return [inquireLoaded, dictLoaded];
+}
+function initNews() {
+
+	// Init the news json
+	var loadNews = function(data) { 
+		// add the description
+		news['txt'] = getTextElement('news_txt', data["text"], "", fonts['body'], w.dark, ['async']);
+	};
+	var newsLoaded = $.Deferred();
+	var jsonPath = pathPrefix() + "_json/news.json";
+	$.get(jsonPath, loadNews).done( function() { newsLoaded.resolve(); });
+
+	// make sure the dict is loaded
+	var dictLoaded = loadHomeData();
+
+	return [newsLoaded, dictLoaded];
 }
 function initProject(pageID) {
 
@@ -472,6 +491,8 @@ function initPageSpecificItems(pageID) {
 		return initAbout();
 	} else if (pageID == "inquire") {
 		return initInquire();
+	} else if (pageID == "news") {
+		return initNews();
 	} else {
 		return initProject(pageID);
 	}
@@ -552,6 +573,8 @@ function setPageTitle(pageID) {
 		document.title = "About | Ben Snell";
 	} else if (pageID == "inquire") {
 		document.title = "Inquire | Ben Snell";
+	} else if (pageID == "news") {
+		document.title = "News | Ben Snell";
 	} else {
 		document.title = findElementWithKeyValueInArray(project["text"], "id", "title")["content"] + " | Ben Snell";
 	}
@@ -589,7 +612,7 @@ function showMenuItems(bLayoutOnly=false) {
 		} else { // all other menu items
 
 			// only set the sizes for now
-			item.css("font-size", w.titleSizePx * w.menuSizeFrac * (element[0]=="and" ? andFrac : 1));
+			item.css("font-size", w.titleSizePx * w.menuSizeFrac * ((element[0]=="and"||element[0]=="comma") ? andFrac : 1));
 			// item.css("letter-spacing", );
 			item.css("line-height", w.titleLineHeight);
 			item.css("z-index", w.bTitleAbove * 2 -1);
@@ -597,7 +620,7 @@ function showMenuItems(bLayoutOnly=false) {
 			menuItems.push( item );
 			menuWidth += item.width();
 
-			if (item.attr("id") != "and") {
+			if (item.attr("id") != "and" && item.attr("id") != "comma") {
 				// on hovering over these items, they become darker
 				var fadeFrac = 0.4;
 				setupAnimateOnHover(  	// will this be duplicated? [BUG] ?
@@ -620,7 +643,7 @@ function showMenuItems(bLayoutOnly=false) {
 	$.each(menuItems, function(index, item) {
 
 		// Layout the menu items
-		var thisY = ty + item.height() * (item.attr("id")=="and" ? 0.2/andFrac*andOffsetMult : 0.2);
+		var thisY = ty + item.height() * ((item.attr("id")=="and"||item.attr("id")=="comma") ? 0.2/andFrac*andOffsetMult : 0.2);
 		setTxtPosDim(item,
 			xOffset,
 			thisY );
@@ -658,8 +681,6 @@ function showMenuItems(bLayoutOnly=false) {
 			w.windowL + w.windowW/2 - $(icon_news["txt"]).width()/2,
 			w.headerPx/2 - $(icon_news["txt"]).height()/2*0.95);
 		if (!bLayoutOnly) $( icon_news["txt"] ).fadeIn({queue: false, duration: w.fadeMs});
-
-		console.log(w.headerPx, $(icon_news["txt"]).height());
 
 		// still some bug that lays out the text incorrectly
 	}
@@ -887,6 +908,8 @@ function showAbout(bLayoutOnly=false) {
 			var txtWidthPx = colWidthPx - (imgWidthPx+marginWidthPx);
 			var sideMarginPx = w.f2p(1-columnFrac) / 2.0;
 
+			console.log(w.windowL, colWidthPx, sideMarginPx);
+
 			// Set the location of the text
 			$(about["txt"]).css("font-size", w.fontSizePx);
 			$(about["txt"]).css("letter-spacing", (w.bodyLetterSpacing*w.fontSizePx*0.8) + "px"); // .1993
@@ -998,6 +1021,61 @@ function showInquire(bLayoutOnly=false) {
 	};
 
 	return consecCall( [layoutInq, animateInq, finishPageLayout] );
+}
+function showNews(bLayoutOnly=false) {
+
+	var bDelay = bLayoutOnly ? 0 : 1;
+
+	var columnFracDesktop = 0.55;
+	var columnFracMobile = 0.7;
+	var vertMarginFrac = 0.07;
+
+	if (!w.onMobile) vertMarginFrac = 0.0;
+
+	anticipatePageHeightAndScroll();
+
+	var layoutNews = function(def) {
+
+		var columnFrac = w.onMobile ? columnFracMobile : columnFracDesktop;
+
+		$(news["txt"]).css("font-size", w.fontSizePx);
+		$(news["txt"]).css("letter-spacing", (w.bodyLetterSpacing*w.fontSizePx*0.8) + "px"); // .1993
+		$(news["txt"]).css("line-height", w.bodyLineHeight + "px"); // .1993
+
+		setTxtPosDim(
+				$(news["txt"]),
+				w.windowL + w.f2p(1-columnFrac)/2.0,
+				Math.max(($(window).height()-w.headerPx)/2 - $(news["txt"]).height()/2 + w.headerPx + w.f2p(vertMarginFrac)/2, w.marginTopPx + w.headerPx + w.f2p(vertMarginFrac)/2),
+				w.f2p(columnFrac));
+
+		// setTxtPosDim(
+		// 	$(news["txt"]),
+		// 	w.windowL + sideMarginPx,
+		// 	0,
+		// 	colWidthPx);
+
+		// setTxtPosDim(
+		// 	$(news["txt"]),
+		// 	0,
+		// 	Math.max(($(window).height()-w.headerPx)/2 - $(news["txt"]).height()/2 + w.headerPx, w.marginTopPx + w.headerPx));
+
+		def.resolve();
+	};
+	var animateNews = function(def) {
+
+		var displayOffsetMs = 150;
+		var fadeFrac = 0.6; // compared to home
+
+		// show all items
+		setTimeout( function() { return showMenuItems(bLayoutOnly); }, 0 * displayOffsetMs * bDelay);
+		var animateTxt = function() { 
+			if (!bLayoutOnly) $(news["txt"]).fadeIn({queue:false, duration: w.fadeMs * fadeFrac}); 
+			def.resolve(); 
+		};
+		setTimeout( animateTxt , 1 * displayOffsetMs * bDelay);
+	};
+
+	return consecCall( [layoutNews, animateNews, finishPageLayout] );
 }
 function showProject(bLayoutOnly=false) {
 
@@ -1314,6 +1392,8 @@ function showAllItems(pageID, bLayoutOnly=false) {
 		showAbout( bLayoutOnly );
 	} else if (pageID == "inquire") {
 		showInquire( bLayoutOnly );
+	} else if (pageID == "news") {
+		showNews( bLayoutOnly );
 	} else {
 		showProject( bLayoutOnly );
 	}
