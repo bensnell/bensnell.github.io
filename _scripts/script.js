@@ -64,7 +64,7 @@
 // ======================
 
 // Change this to add a news story
-var bNewsHeadline = true
+var bNewsHeadline = false
 var newsHeadline = "<i>News:</i> Solo Show at Blackbird Gallery"
 var newsHeadlineURL = "https://blackbird.gallery/exhibitions/14"
 
