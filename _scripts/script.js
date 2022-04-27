@@ -83,7 +83,7 @@ var newsHeadlineURL = "https://blackbird.gallery/exhibitions/14"
 // body serif: Cambria, Cochin*, Century, Garamond
 
 var mainURL = "http://bensnell.io";
-var domainKey = "bensnell";	// used to check if we're in my domain
+var domainKey = "bensnell.io";	// used to check if we're in my domain
 var mailKey = "mailto";
 
 // window parameters
@@ -144,7 +144,28 @@ var fontLib = [ [	"Cochin",		"cochin.ttc"	],
 // https://p22.com/family-Mackinac
 
 // Instagram icon
-icon_ig = {};
+var icons = {
+	instagram: {
+		path: '_assets/misc/instagram_icon.svg',
+		url: 'https://www.instagram.com/snellicious/'
+	},
+	twitter: {
+		path: '_assets/misc/twitter_icon.svg',
+		url: 'https://twitter.com/snellicious_'
+	},
+	medium: {
+		path: '_assets/misc/medium_icon.svg',
+		url: 'https://bensnell.medium.com'
+	},
+	opensea: {
+		path: '_assets/misc/opensea_icon.svg',
+		url: 'https://opensea.io/collection/ben-snell'
+	},
+	// discord: {
+	// 	path: '_assets/misc/discord_icon.svg',
+	// 	url: 'https://discord.gg/bensnell#0967'
+	// }
+}
 icon_news = {};
 
 stopScrollRestoration();
@@ -156,7 +177,7 @@ function getPage(url) {
 	var pageID = "home";
 	if (elems.length != 0) {
 		var page = elems[elems.length-1];
-		pageID = (page.includes(domainKey) || page.includes("localhost")) ? "home" : page;
+		pageID = (page.includes(domainKey) || page.includes("localhost") || page.includes('127.0.0.1')) ? "home" : page;
 	}
 	return pageID;
 }
@@ -203,9 +224,16 @@ function loadFonts() {
 }
 
 function loadIcons() {
-	// Load the instagram icon
-	icon_ig["img"] = getImageElement("icon_ig", pathPrefix() + "_assets/misc/instagram_icon.svg", "https://www.instagram.com/snellicious/", ["menu"]);
-	$( icon_ig["img"] ).attr( 'src', $( icon_ig["img"] ).attr( 'src-tmp' ) );
+	// Load the social icons
+	Object.entries(icons).map(([icon_key, icon]) => {
+		icon.element = getImageElement(
+			"icon_"+icon_key, 
+			pathPrefix() + icon.path, 
+			icon.url, 
+			["menu"]
+		);
+		$( icon.element ).attr( 'src', $( icon.element ).attr( 'src-tmp' ) );
+	})
 
 	// Create news div
 	if (bNewsHeadline) {
@@ -686,20 +714,19 @@ function showMenuItems(bLayoutOnly=false) {
 	}
 
 	// Fade in the icons
-	// ig_size = w.titleSizePx * 0.5;
+	// Possible solution to changing color in JS: 
+	// https://stackoverflow.com/questions/24933430/img-src-svg-changing-the-fill-color
 	ig_size = w.igPx * 0.8;
 	ig_padding = ig_size * 0.2;
 	scrollSize = w.onMobile ? 0 : 15;  // size of the scroll bar
-	$( icon_ig["img"] ).attr("width", ig_size);
-	$( icon_ig["img"] ).attr("height", ig_size);				
-	$( icon_ig["img"] ).css("top", ig_padding);
-	// $( icon_ig["img"] ).css("left", w.windowW + w.windowL - w.marginSidePx - ig_size); // inline
-	$( icon_ig["img"] ).css("left", $( window ).width() - scrollSize - ig_size - ig_padding ); //- ig_size - ig_padding); 
-	$( icon_ig["img"] ).css("z-index", 1);
-	$( icon_ig["img"] ).fadeIn({queue: false, duration: w.fadeMs});
-	// Possible solution to changing color in JS: 
-	// https://stackoverflow.com/questions/24933430/img-src-svg-changing-the-fill-color
-
+	Object.entries(icons).map(([icon_key, icon], index) => {
+		$( icon.element ).attr("width", ig_size);
+		$( icon.element ).attr("height", ig_size);				
+		$( icon.element ).css("top", ig_padding);
+		$( icon.element ).css("left", $( window ).width() - scrollSize - ig_size*(index+1) - ig_padding*(index+1) );
+		$( icon.element ).css("z-index", 1);
+		$( icon.element ).fadeIn({queue: false, duration: w.fadeMs});
+	});
 }
 function showHome(bLayoutOnly=false) {
 
