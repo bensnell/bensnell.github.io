@@ -15,6 +15,7 @@ function Params() {
 
 	// Margin Sizes (fractions of width)
 	this.marginTopFrac = 0.19; // Th amount without news is 0.19
+	this.marginTopFracMobileMult = 2.6;
 	this.vertSpacingFrac = 0.050;
 	this.marginSideFracOrig = 0.085;
 	this.marginBetweenFracOrig = 0.05;
@@ -33,7 +34,8 @@ function Params() {
 	// Title font
 	this.titleSizeFrac = 0.065; // 0.075 // 0.09 // 0.055
 	this.minTitleSize = 40;
-	this.titleTopOffset = 0.61; // Without news, this is 0.61
+	this._titleTopOffset = 0.61; // Without news, this is 0.61
+	this.titleTopOffsetMobileMult = 2.1;
 	this.titleLeftOffset = 0.5; // 0.37
 	this.bTitleAbove = true;
 	this.titleLineHeight = 1.1; // 1.25
@@ -149,7 +151,7 @@ function Params() {
 			t.marginBetweenPx = t.f2p( t.marginBetweenFrac );
 
 			// Compute the margin sizes
-			t.marginTopPx = t.f2p( t.marginTopFrac * 2 ); // additional mobile multiplier
+			t.marginTopPx = t.f2p( t.marginTopFrac * t.marginTopFracMobileMult ); // additional mobile multiplier
 			t.vertSpacingPx = t.f2p( t.vertSpacingFrac );
 			t.offsetTopPx = t.marginTopPx;
 
@@ -170,6 +172,8 @@ function Params() {
 			// t.headerPx = t.titleSizePx * 0.5 * 1.1;
 			t.igPx = t.origWindowW * 0.074;
 			if (t.bHeader) t.headerPx = t.igPx; // lets headline be larger on larger phones
+
+			t.titleTopOffset = t._titleTopOffset * t.titleTopOffsetMobileMult;
 
 			
 		} else {
@@ -219,6 +223,8 @@ function Params() {
 			// Header
 			t.igPx = t.titleSizePx * 0.5;
 			if (t.bHeader) t.headerPx = t.igPx;
+
+			t.titleTopOffset = t._titleTopOffset;
 		}
 	}
 
