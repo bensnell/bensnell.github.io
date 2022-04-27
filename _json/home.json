@@ -3,6 +3,11 @@
 	"imgExt": "jpg",
 	"projects": [
 		{
+			"projectID": "020",
+			"title": "Ritual Nature\n\\ On finding one's nature.\n2021 - 2022",
+			"url": "http://bensnell.io/ritual-nature"
+		},
+		{
 			"projectID": "013",
 			"title": "Inheritance II\n\\ On the legacy of ancestral computers.\n2020",
 			"url": "http://bensnell.io/inheritance-ii"
