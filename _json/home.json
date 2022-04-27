@@ -1,52 +1,52 @@
 {
-	"homeFolderName" : "_assets/home",
-	"imgExt" : "jpg",
-	"projects" : [
-        {
-            "projectID" : "013",
-            "title" : "Inheritance II\n\\ On the legacy of ancestral computers.\n2020",
-            "url" : "http://bensnell.io/inheritance-ii"
-        },
-        {
-            "projectID" : "015",
-            "title" : "G53 Dorna\n\\ On a machine's silent soliloquies.\n2020",
-            "url" : "http://bensnell.io/g53-dorna"
-        },
-        {
-			"projectID" : "010",
-			"title" : "Inheritance\n\\ On intergenerational knowledge transfer.\n2019 - 2020",
-			"url" : "http://bensnell.io/inheritance"
+	"homeFolderName": "_assets/home",
+	"imgExt": "jpg",
+	"projects": [
+		{
+			"projectID": "013",
+			"title": "Inheritance II\n\\ On the legacy of ancestral computers.\n2020",
+			"url": "http://bensnell.io/inheritance-ii"
 		},
 		{
-			"projectID" : "004",
-			"title" : "G53 DMS\n\\ On mechanical signatures, fingerprints.\n2019",
-			"url" : "http://bensnell.io/g53-dms"
+			"projectID": "015",
+			"title": "G53 Dorna\n\\ On a machine's silent soliloquies.\n2020",
+			"url": "http://bensnell.io/g53-dorna"
 		},
 		{
-			"projectID" : "005",
-			"title" : "Dio\n\\ On the becoming of one's creation.\n2018",
-			"url" : "http://bensnell.io/dio",
-			"unlisted" : "false"
+			"projectID": "010",
+			"title": "Inheritance\n\\ On intergenerational knowledge transfer.\n2019 - 2020",
+			"url": "http://bensnell.io/inheritance"
 		},
 		{
-			"projectID" : "006",
-			"title" : "G53 UR10\n\\ On behavioral fingerprints.\n2019",
-			"url" : "http://bensnell.io/g53-ur10"
+			"projectID": "004",
+			"title": "G53 DMS\n\\ On mechanical signatures, fingerprints.\n2019",
+			"url": "http://bensnell.io/g53-dms"
 		},
 		{
-			"projectID" : "003",
-			"title" : "Jenny's Dreams\n\\ On originality and authorship.\n2018",
-			"url" : "http://bensnell.io/jenny"
+			"projectID": "005",
+			"title": "Dio\n\\ On the becoming of one's creation.\n2018",
+			"url": "http://bensnell.io/dio",
+			"unlisted": "false"
 		},
 		{
-			"projectID" : "002",
-			"title" : "LIDAR Photography\n\\ On intertwinedness of observer and observed.\n2018",
-			"url" : "http://bensnell.io/lidar-photography"
+			"projectID": "006",
+			"title": "G53 UR10\n\\ On behavioral fingerprints.\n2019",
+			"url": "http://bensnell.io/g53-ur10"
 		},
 		{
-			"projectID" : "001",
-			"title" : "G53 UR5\n\\ On mechanical signatures, fingerprints.\n2018",
-			"url" : "http://bensnell.io/g53-ur5"
+			"projectID": "003",
+			"title": "Jenny's Dreams\n\\ On originality and authorship.\n2018",
+			"url": "http://bensnell.io/jenny"
+		},
+		{
+			"projectID": "002",
+			"title": "LIDAR Photography\n\\ On intertwinedness of observer and observed.\n2018",
+			"url": "http://bensnell.io/lidar-photography"
+		},
+		{
+			"projectID": "001",
+			"title": "G53 UR5\n\\ On mechanical signatures, fingerprints.\n2018",
+			"url": "http://bensnell.io/g53-ur5"
 		}
 	]
 }
