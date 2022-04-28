@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.0] - 2022-04-27
+
 ### Changed
 - Domain key from `bensnell` to `bensnell.io`
 - Icon loading to use an object `icons` with paths and urls
