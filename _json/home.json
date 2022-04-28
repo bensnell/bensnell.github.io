@@ -3,14 +3,19 @@
 	"imgExt": "jpg",
 	"projects": [
 		{
-			"projectID": "020",
-			"title": "Ritual Nature\n\\ On finding one's nature.\n2021 - 2022",
-			"url": "http://bensnell.io/ritual-nature"
+			"projectID": "021",
+			"title": "Cattleya\n\\ On generative orchids.\n2022",
+			"url": "http://bensnell.io/cattleya"
 		},
 		{
 			"projectID": "013",
 			"title": "Inheritance II\n\\ On the legacy of ancestral computers.\n2020",
 			"url": "http://bensnell.io/inheritance-ii"
+		},
+		{
+			"projectID": "020",
+			"title": "Ritual Nature\n\\ On finding one's nature.\n2021 - 2022",
+			"url": "http://bensnell.io/ritual-nature"
 		},
 		{
 			"projectID": "015",

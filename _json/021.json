@@ -1,0 +1,43 @@
+{
+        "title": "Cattleya",
+        "dimensions": "square, infinite resolution",
+        "material": "<a href='https://tylerxhobbs.com/essays/2021/the-rise-of-long-form-generative-art' target='_blank'>long-form</a> generative NFT",
+        "date": "2022",
+        "description": "Darwin’s Orchid wasn’t discovered by Darwin, but he correctly hypothesized that its long blooms, up to a foot and a half tall, coevolved with a moth with a very long tongue—just long enough to extract its nectar. This flower embodies the great variety of and fascination with the orchid family. Orchids come in all shapes, sizes, colors, textures and scents—perhaps this is why they’ve entranced cultures dating back well over five millennia, becoming symbols of virility, beauty, peace and prosperity in the process. Named “Cattleya” after my first rare orchid, this work is my Ode to Orchids—a mystical flower that brings me endless delight.",
+        "globalExt": "jpg",
+        "numDigits": 3,
+        "images": [
+                0,
+                2,
+                1,
+                3,
+                4,
+                5,
+                7,
+                6,
+                8,
+                9,
+                12,
+                11,
+                10,
+                13,
+                14
+        ],
+        "captions": {
+                "0" : "Cattleya (0x4fd)",
+                "1" : "Cattleya (0x5b2)",
+                "2" : "Cattleya (0x8e4)",
+                "3" : "Cattleya (0x19e)",
+                "4" : "Cattleya (0x29a)",
+                "5" : "Cattleya (0x36c)",
+                "6" : "Cattleya (0x39c)",
+                "7" : "Cattleya (0x49d)",
+                "8" : "Cattleya (0x216)",
+                "9" : "Cattleya (0xa15)",
+                "10" : "Cattleya (0xb56)",
+                "11" : "Cattleya (0xd02)",
+                "12" : "Cattleya (0xd5d)",
+                "13" : "Cattleya (0xdeb)",
+                "14" : "Cattleya (0xe9b)"
+        }
+}
