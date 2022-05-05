@@ -257,7 +257,7 @@ function parseHomeData(data) {
 	// Save projects
 	projects = []
 	$.each(data["projects"], function(index, element) {
-		if (element["unlisted"] && element["unlisted"] == "true") {
+		if (element["unlisted"] && element["unlisted"] == true) {
 			// don't add it
 		} else {
 			projects.push(element);
