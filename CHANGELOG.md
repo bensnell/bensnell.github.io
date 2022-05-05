@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Unlisted projects can be specified with the `unlisted:boolean` key pair in *_json/home.json*.
+- Reorder social icons to start with Twitter and end with Instagram.
 
 ### Added
 - Initial Cattleya project (unlisted)

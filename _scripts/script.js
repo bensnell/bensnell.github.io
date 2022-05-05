@@ -149,10 +149,6 @@ var icons = {
 		path: '_assets/misc/instagram_icon.svg',
 		url: 'https://www.instagram.com/snellicious/'
 	},
-	twitter: {
-		path: '_assets/misc/twitter_icon.svg',
-		url: 'https://twitter.com/snellicious_'
-	},
 	medium: {
 		path: '_assets/misc/medium_icon.svg',
 		url: 'https://bensnell.medium.com'
@@ -160,6 +156,10 @@ var icons = {
 	opensea: {
 		path: '_assets/misc/opensea_icon.svg',
 		url: 'https://opensea.io/collection/ben-snell'
+	},
+	twitter: {
+		path: '_assets/misc/twitter_icon.svg',
+		url: 'https://twitter.com/snellicious_'
 	},
 	// discord: {
 	// 	path: '_assets/misc/discord_icon.svg',
