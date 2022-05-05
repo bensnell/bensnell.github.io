@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Unlisted projects can be specified with the `unlisted:boolean` key pair in *_json/home.json*.
+
+### Added
+- Initial Cattleya project (unlisted)
+
 ## [0.0.0] - 2022-04-27
 
 ### Changed
