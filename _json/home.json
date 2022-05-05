@@ -5,7 +5,8 @@
 		{
 			"projectID": "021",
 			"title": "Cattleya\n\\ On generative orchids.\n2022",
-			"url": "http://bensnell.io/cattleya"
+			"url": "http://bensnell.io/cattleya",
+			"unlisted" : true
 		},
 		{
 			"projectID": "013",
@@ -35,8 +36,7 @@
 		{
 			"projectID": "005",
 			"title": "Dio\n\\ On the becoming of one's creation.\n2018",
-			"url": "http://bensnell.io/dio",
-			"unlisted": "false"
+			"url": "http://bensnell.io/dio"
 		},
 		{
 			"projectID": "006",
