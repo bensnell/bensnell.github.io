@@ -155,7 +155,7 @@ var icons = {
 	},
 	opensea: {
 		path: '_assets/misc/opensea_icon.svg',
-		url: 'https://opensea.io/collection/ben-snell'
+		url: 'https://opensea.io/bensnell?tab=created'
 	},
 	twitter: {
 		path: '_assets/misc/twitter_icon.svg',
