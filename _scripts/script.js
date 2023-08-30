@@ -64,9 +64,9 @@
 // ======================
 
 // Change this to add a news story
-var bNewsHeadline = false
-var newsHeadline = "<i>News:</i> Solo Show at Blackbird Gallery"
-var newsHeadlineURL = "https://blackbird.gallery/exhibitions/14"
+var bNewsHeadline = true
+var newsHeadline = "<i>News:</i> Sculptures at Delaware Contemporary"
+var newsHeadlineURL = "https://www.decontemporary.org/mining-the-form"
 
 
 // ==============================================

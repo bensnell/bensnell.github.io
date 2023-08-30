@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 - tied up... availability
 
+### Changed
+- News headline activated with Gaia show
+
 ## [0.1.0] - 2022-04-27
 
 ### Changed
