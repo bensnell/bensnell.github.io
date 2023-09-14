@@ -693,7 +693,7 @@ function showMenuItems(bLayoutOnly=false) {
 		// $( icon_news["div"] ).css("font-size", w.titleSizePx * w.menuSizeFrac*0.8);
 		// $( icon_news["div"] ).css("padding", w.titleSizePx * w.menuSizeFrac*0.8*0.2);
 		icon_news["div"].style.width = "100%";
-		icon_news["div"].style.height = w.headerPx;
+		icon_news["div"].style.height = w.headerPx; // I don't think this actually does anything
 		$( icon_news["div"] ).css("top", 0);
 		$( icon_news["div"] ).css("left", 0);
 		// $( icon_news["div"] ).css("line-height", ig_size/2 - w.titleSizePx*w.menuSizeFrac/2.0);
