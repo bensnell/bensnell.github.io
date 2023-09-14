@@ -24,6 +24,7 @@ When you want to add a new project, follow these steps:
 			"url": "http://bensnell.io/my_project_key"
 	 }
    ```
+8. Link this new page in *sitemap.xml*.
 
 ## Usage
 
