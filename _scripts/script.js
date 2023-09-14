@@ -683,7 +683,7 @@ function showMenuItems(bLayoutOnly=false) {
 
 	if (bNewsHeadline) {
 		// Fade in the bar
-		$( icon_news["div"] ).css("background-color", "#f4f4f4");
+		$( icon_news["div"] ).css("background-image", "linear-gradient(90deg, #f2f2f2, #fcfcfc)");
 		$( icon_news["div"] ).css("color", "#999999");
 		$( icon_news["div"] ).css("font-family", fonts["body"]);
 		$( icon_news["div"] ).attr("align", "center");
@@ -701,12 +701,14 @@ function showMenuItems(bLayoutOnly=false) {
 		if (!bLayoutOnly) $( icon_news["div"] ).fadeIn({queue: false, duration: w.fadeMs});
 
 		// Fade in the text
+		scrollSize = w.onMobile ? 0 : 15;  // size of the scroll bar
 		$(icon_news["txt"]).css("color", "#999999");
 		$(icon_news["txt"]).css("font-family", fonts["body"]);
 		$(icon_news["txt"]).css("font-size", w.headerPx * 0.5);
 		$(icon_news["txt"]).css("letter-spacing", (w.bodyLetterSpacing*w.headerPx * 0.5) + "px"); // .1993
 		setTxtPosDim($(icon_news["txt"]),
-			w.windowL + w.windowW/2 - $(icon_news["txt"]).width()/2,
+			// Headline on the left, to mirror the icons on the right
+			scrollSize + w.igPx*0.4,
 			w.headerPx/2 - $(icon_news["txt"]).height()/2*0.95);
 		if (!bLayoutOnly) $( icon_news["txt"] ).fadeIn({queue: false, duration: w.fadeMs});
 
