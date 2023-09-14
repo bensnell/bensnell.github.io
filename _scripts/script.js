@@ -65,7 +65,7 @@
 
 // Change this to add a news story
 var bNewsHeadline = true
-var newsHeadline = "<i>News:</i> Sculptures at Delaware Contemporary"
+var newsHeadline = "<i>News:</i> Gaia at Delaware Contemporary"
 var newsHeadlineURL = "https://www.decontemporary.org/mining-the-form"
 
 
