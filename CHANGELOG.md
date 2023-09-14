@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - tied up, tied down, let loose, unwound project
 - Delaware Contemporary show news
-- Gaia page
+- Gaia page, unlisted
 
 ### Removed
 - tied up... availability

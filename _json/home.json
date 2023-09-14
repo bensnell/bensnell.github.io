@@ -5,7 +5,8 @@
 		{
 			"projectID": "023",
 			"title": "Gaia\n\\ On cyclical materialities.\n2023",
-			"url": "http://bensnell.io/gaia"
+			"url": "http://bensnell.io/gaia",
+			"unlisted" : true
 		},
 		{
 			"projectID": "022",
