@@ -3,6 +3,11 @@
 	"imgExt": "jpg",
 	"projects": [
 		{
+			"projectID": "023",
+			"title": "Gaia\n\\ On cyclical materialities.\n2023",
+			"url": "http://bensnell.io/gaia"
+		},
+		{
 			"projectID": "022",
 			"title": "tied up, tied down, let loose, unwound\n\\ On utility and ability.\n2023",
 			"url": "http://bensnell.io/tied-up-tied-down-let-loose-unwound"

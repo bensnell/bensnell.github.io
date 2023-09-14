@@ -1,0 +1,21 @@
+{
+        "title": "Gaia",
+        "dimensions": "dimensions variable",
+        "material": "computer parts, binder, wood, metal rods",
+        "date": "2023",
+        "description": "→ <i>On view at <a href='https://www.decontemporary.org/mining-the-form' target='_blank'>The Delaware Contemporary</a> through December 31, 2023.</i>\n\nThe Gaia subseries of sculptures juxtaposes dreamt forms with raw materials. Drawing from Kate Crawford’s <i>Atlas of AI</i>, the pieces are upheld by rough-hewn lumber, symbolic of the natural resources that enable advances in modern computing, including artificial intelligence. Here, AI returns from where it came, auric and agenic. Named after the Greek ancestral mother, these pieces pose a new computational ecology: one that links up the origins and afterlife of AI, revealing its cyclical, material nature.\n\nFollowing in the lineage of <a href='https://bensnell.io/dio' target='_blank'>Dio</a>, the Inheritance series explores the influence of nature and nurture through the passing of knowledge from one generation of computers to the next. These machines began with the same set of knowledge inherited from an ancestral computer, but time and differing environmental conditions have diverged their paths, endowing each computer with a unique perspective and final form.\n\nAs the story goes, I trained my computers to become sculptors. With practice, they developed their own distinctive styles. Inspired by the classics, each created a single sculpture—the uncanny, figurative forms presented here. They are also materially made from the computers that invented them. I ground the computers to dust and utilized them as a physical medium, fusing process and product. Reborn, the computers assume a newfound physical agency, while traces of their invisible processing power live on in their bodily form. Endowed is a materiality upon the impossibly immaterial.",
+        "globalExt": "jpg",
+        "numDigits": 3,
+        "images": [
+                [ 0, 1, 2, 3, 4 ],
+                [ 100, 101, 102, 103, 104 ],
+                [ 200, 201, 202, 203, 204 ],
+                [ 300, 301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311 ]
+        ],
+        "captions": {
+                "0" : "Gaia Miden\n34 x 16 x 8 in (86.4 x 40.6 x 20.3 cm)",
+                "100" : "Gaia Ena\n38 x 16 x 12 in (96.5 x 40.6 x 30.5 cm)",
+                "200" : "Gaia Dyo\n24 x 11 x 12 in (61 x 27.9 x 30.5 cm)",
+                "300" : "Gaia Tria\n45 x 18 1/2 x 18 in (114.3 x 47 x 45.7 cm)"
+        }
+}
