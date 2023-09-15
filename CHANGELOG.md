@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - News headline activated with Gaia show
 - News headline aligned to left side of window
 - News headline bar has a slight gradient from gray to light gray
+- Adjust Jenny's Dreams description
 
 ## [0.1.0] - 2022-04-27
 
