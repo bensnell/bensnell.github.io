@@ -9,16 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - tied up, tied down, let loose, unwound project
 - Delaware Contemporary show news
-- Gaia page, unlisted
+- Gaia page listed
 
 ### Removed
 - tied up... availability
+- Delaware Contemporary show news removed
 
 ### Changed
 - News headline activated with Gaia show
 - News headline aligned to left side of window
 - News headline bar has a slight gradient from gray to light gray
 - Adjust Jenny's Dreams description
+- Adjust Gaia text
 
 ## [0.1.0] - 2022-04-27
 
