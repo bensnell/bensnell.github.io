@@ -1,37 +1,86 @@
 # Art Portfolio Website
 
-## Table Of Contents
+The source for [bensnell.io](https://bensnell.io).
 
-## Project Details
+## How publishing works
 
-## Installation
+Push your changes to `master`. GitHub Pages builds the site with [Jekyll](https://jekyllrb.com) and publishes it, usually within a minute. You can follow each build in the repository's **Actions** tab, where it's listed as "pages build and deployment".
+
+Nothing needs to be built on your computer, and nothing generated is committed. If a build fails (for example, because of a typo in a project file's front matter), the previous version of the site stays live, and the Actions tab shows the error.
+
+Each page is sent as full HTML, so search engines and the Internet Archive can read it. When the page loads, the scripts in `_scripts/` replace that plain version with the animated site. The scripts read the same content from the JSON files in `_json/`, which Jekyll generates from the project files.
+
+## Where things live
+
+| What | Where |
+| --- | --- |
+| Projects, one file each | `_projects/<address>.html`. The file name is the page's address: `_projects/dio.html` is bensnell.io/dio |
+| Homepage order | `_data/homepage.yml` |
+| About, News, Inquire | `about/index.html`, `news/index.html`, `inquire/index.html` |
+| Images | `_assets/<project number>/`, with homepage thumbnails in `_assets/home/` |
+| Site settings: name, location, social profiles, Google Analytics ID | `_config.yml` |
+| Page templates: titles, descriptions, structured data | `_layouts/`, `_includes/` |
+| Animation and layout scripts | `_scripts/` |
+
+## Project files
+
+Each project file has labeled fields between the `---` lines, then the description. Descriptions are written like before, as text with HTML for italics and links, but without JSON escaping. A blank line starts a new paragraph.
+
+```yaml
+---
+number: '005'                 # image folder: _assets/005/
+title: Dio
+dimensions: 40 x 15.9 x 9.5 cm
+material: computer, resin
+year: '2018'
+home:
+  subtitle: On the becoming of one's creation.
+  # title: Only if the homepage title differs from `title`
+  # year: Only if the homepage year differs from `year`
+# search_description: Optional. The text under the title in Google results.
+#                     Leave it out to use the start of the description.
+images:
+  - 1                         # a single image: _assets/005/001.jpg
+  - image: 2                  # a single image with a caption
+    caption: A caption
+  - set: [3, 4, 5]            # a set to flip through (click left/right)
+    caption: |-
+      A caption for the set
+      that spans two lines
+  - video: 188222790          # a Vimeo video, by ID
+    size: [421, 140]          # width and height
+---
+I trained my computer to become a sculptor. ...
+
+<i><a href='https://www.phillips.com/...' target='_blank'>Auctioned at Phillips</a></i>
+```
+
+A few rules:
+- Write image numbers without leading zeros (`7`, not `007`). They're padded to three digits automatically.
+- Put quotes around the project `number`, a `year`, and any text that contains `: ` or ` #`.
+- All images are `.jpg`.
 
 ### New Project Checklist
 
-When you want to add a new project, follow these steps:
+1. If this project is not already in [Inventory](https://docs.google.com/spreadsheets/d/10KQ1D8si8kD-kuloa2qy4XtZ03lnMzTqB7bYyU_997w/edit?usp=sharing), add it and create a new project number, padded to three digits (e.g. `024`).
+2. Choose the page's address, e.g. `ritual-nature`: lowercase letters, numbers and hyphens, not starting or ending with a hyphen.
+3. Put the project's images in *_assets/<number>/*, named *000.jpg*, *001.jpg*, *002.jpg* and so on. Optimize them for the web (longest side under 2000 px, medium JPEG quality).
+4. Add a homepage thumbnail at *_assets/home/<number>.jpg*.
+5. Create *_projects/<address>.html* by copying an existing project file, then fill it in.
+6. Add the address to *_data/homepage.yml* where it should appear on the homepage.
 
-1. If this project is not already in [Inventory](https://docs.google.com/spreadsheets/d/10KQ1D8si8kD-kuloa2qy4XtZ03lnMzTqB7bYyU_997w/edit?usp=sharing), add it (and create a new project ID). Note its project ID, hereafter stored in `my_project_id`. This value should be padded with zeros to three digits, e.g. `021` for the 21st project.
-2. Identify a key for this project, hereafter stored in `my_project_key`. This key should be unique across all projects and will be used in the url for the project.. For example, a key might be `ritual-nature`. This key should be all lowercase alphanumeric digits and hyphens, and not beginning or ending with a hyphen.
-3. Create a new folder at the top level of this repository with the title `my_project_key` and copy into it an *index.html* from another project folder. Inside this *index.html*, rename the `<title>` attribute the full, proper name of your project, e.g. `Ritual Nature`.
-4. Create a new folder *_assets/my_project_id* and place inside of it all assets you'll need for the project page. All of these assets should have the extension *.jpg* and should be optimized for web performance (max dimension < 2000 with medium jpeg quality). All assets should have unique numbered names padded with three zeros, e.g. *000.jpg*, *001.jpg*, *002.jpg*, etc.
-5. Copy the file *_json/template.json* to *_json/my_project_id* and fill it in with all project information. You can reference images using their number, e.g. `0`, `1`, `2`, etc.
-6. Add a homepage image titled *my_project_id.jpg* in the folder *_assets/home*.
-7. Add a listing object to the `projects` array in the json file *_json/home.json* following the form:
-   ```json
-   {
-			"projectID": "my_project_id",
-			"title": "My Title\n\\ My subtitle.\nYear",
-			"url": "http://bensnell.io/my_project_key"
-	 }
-   ```
-8. Link this new page in *sitemap.xml*.
+The page, its title and Google description, the sitemap and the data for the scripts are all generated from these.
 
-## Usage
+## Google Analytics
 
-## Troubleshooting
+The GA4 measurement ID is `ga4_id` in `_config.yml`. Set it to `""` to turn analytics off.
 
-## Roadmap
+## Preview locally (optional)
 
-## License
+To see changes before pushing:
 
-## Notes
+1. Install Ruby once (on a Mac: `brew install ruby`).
+2. Run `bundle install` in this folder once.
+3. Run `bundle exec jekyll serve`, then open http://localhost:4000. The site rebuilds each time you save a file.
+
+The preview is built in `_site/`, which git ignores.

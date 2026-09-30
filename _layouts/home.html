@@ -1,0 +1,25 @@
+---
+layout: base
+---
+<div id="static">
+{% include static-header.html %}
+	<main>
+		<ul class="static-projects">
+		{%- for slug in site.data.homepage %}
+			{%- assign project_url = "/" | append: slug | append: "/" -%}
+			{%- assign project = site.projects | where: "url", project_url | first -%}
+			{%- if project %}
+			<li>
+				<a href="{{ project.url }}">
+					<img src="/_assets/home/{{ project.number }}.jpg" alt="{{ project.title | escape }} by {{ site.author.name }}" loading="lazy">
+					<span class="static-project-title">{{ project.home.title | default: project.title }}</span>
+					<span>{{ project.home.subtitle }}</span>
+					<span>{{ project.home.year | default: project.year }}</span>
+				</a>
+			</li>
+			{%- endif -%}
+		{%- endfor %}
+		</ul>
+	</main>
+{% include static-footer.html %}
+</div>

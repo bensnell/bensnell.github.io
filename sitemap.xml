@@ -1,42 +1,15 @@
+---
+# Generated list of every page, for search engines. Don't edit; it updates itself.
+layout: null
+sitemap: false
+---
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"> 
-  <url>
-    <loc>http://bensnell.io</loc>
-  </url>
-  <url>
-    <loc>http://bensnell.io/about</loc>
-  </url>
-  <url>
-    <loc>http://bensnell.io/inquire</loc>
-  </url>
-  <url>
-    <loc>http://bensnell.io/dio</loc>
-  </url>
-  <url>
-    <loc>http://bensnell.io/g53-dms</loc>
-  </url>
-  <url>
-    <loc>http://bensnell.io/jenny</loc>
-  </url>
-  <url>
-  	<loc>http://bensnell.io/lidar-photography</loc>
-  </url>
-  <url>
-    <loc>http://bensnell.io/g53-ur5</loc>
-  </url>
-  <url>
-    <loc>http://bensnell.io/g53-ur10</loc>
-  </url>
-  <url>
-    <loc>http://bensnell.io/ritual-nature</loc>
-  </url>
-  <url>
-    <loc>http://bensnell.io/cattleya</loc>
-  </url>
-  <url>
-    <loc>http://bensnell.io/tied-up-tied-down-let-loose-unwound</loc>
-  </url>
-  <url>
-    <loc>http://bensnell.io/gaia</loc>
-  </url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{%- assign pages = site.html_pages | where_exp: "p", "p.sitemap != false" %}
+{%- for p in pages %}
+	<url><loc>{{ p.url | absolute_url }}</loc></url>
+{%- endfor %}
+{%- for p in site.projects %}
+	<url><loc>{{ p.url | absolute_url }}</loc></url>
+{%- endfor %}
 </urlset>

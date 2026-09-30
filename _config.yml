@@ -1,0 +1,62 @@
+# Site settings. See README.md for how publishing works.
+
+title: Ben Snell
+url: https://bensnell.io
+
+# Google Analytics 4 measurement ID. Leave empty ("") to turn analytics off.
+ga4_id: "G-ZVVKR0N949"
+
+# Who the site is about. Used for page titles and for Google's structured data.
+author:
+  name: Ben Snell
+  alternate_name: Benjamin Snell
+  job_title: Artist
+  description: "Ben Snell is an artist in Asheville, NC who amplifies the inner dialogues of machines. Best known for Dio, an AI-generated sculpture sold at Phillips."
+  image: /_assets/about/001.jpg
+  locality: Asheville
+  region: NC
+  country: US
+  alumni_of: Carnegie Mellon University
+  # Profiles Google should connect to you
+  profiles:
+    - name: Instagram
+      url: https://www.instagram.com/snellicious/
+    - name: Twitter
+      url: https://twitter.com/snellicious_
+    - name: Medium
+      url: https://bensnell.medium.com
+    - name: OpenSea
+      url: https://opensea.io/bensnell
+
+# Folders starting with "_" are skipped by Jekyll unless listed here
+include:
+  - _assets
+  - _fonts
+  - _lib
+  - _scripts
+  - _json
+
+exclude:
+  - README.md
+  - CHANGELOG.md
+  - Gemfile
+  - Gemfile.lock
+  - .vscode
+  - vendor
+
+# One file per project in _projects/. The file name is the page's address,
+# e.g. _projects/dio.html -> bensnell.io/dio
+collections:
+  projects:
+    output: true
+    permalink: /:name/
+
+defaults:
+  - scope:
+      path: ""
+      type: projects
+    values:
+      layout: project
+
+# The site has its own design; don't apply GitHub Pages' default theme
+theme: null

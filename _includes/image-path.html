@@ -1,0 +1,6 @@
+{%- comment -%}
+  Sets `image_path` for a project image, e.g. number "005" + image 3 -> /_assets/005/003.jpg
+{%- endcomment -%}
+{%- capture padded -%}00{{ include.image }}{%- endcapture -%}
+{%- assign padded = padded | slice: -3, 3 -%}
+{%- capture image_path -%}/_assets/{{ include.number }}/{{ padded }}.jpg{%- endcapture -%}

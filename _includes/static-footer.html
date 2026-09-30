@@ -1,0 +1,5 @@
+	<footer>
+		{%- for profile in site.author.profiles %}
+		<a href="{{ profile.url }}">{{ profile.name }}</a>{% unless forloop.last %} ·{% endunless %}
+		{%- endfor %}
+	</footer>

@@ -1,7 +1,4 @@
 User-agent: *
-Disallow: /_scripts/
-Disallow: /_lib/
-Disallow: /_json/
-Disallow: /_fonts/
+Allow: /
 
-SITEMAP: http://bensnell.io/sitemap.xml
+Sitemap: https://bensnell.io/sitemap.xml

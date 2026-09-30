@@ -1,0 +1,13 @@
+---
+layout: base
+---
+<div id="static">
+{% include static-header.html %}
+	<main>
+		<h1>{{ page.title }}</h1>
+		<img class="static-portrait" src="/{{ page.image }}" alt="Portrait of {{ site.author.name }}">
+		<div class="static-text">{{ content | strip }}</div>
+		<p class="static-text static-note">{{ page.footer }}</p>
+	</main>
+{% include static-footer.html %}
+</div>

@@ -1,0 +1,8 @@
+	<header>
+		{%- if page.url == "/" %}
+		<h1 class="static-site"><a href="/">{{ site.author.name }}</a></h1>
+		{%- else %}
+		<p class="static-site"><a href="/">{{ site.author.name }}</a></p>
+		{%- endif %}
+		<nav><a href="/about/">about</a>, <a href="/news/">news</a> &amp; <a href="/inquire/">inquire</a></nav>
+	</header>

@@ -1,0 +1,59 @@
+{%- assign person_id = "/#person" | absolute_url -%}
+{
+	"@context": "https://schema.org",
+	"@graph": [
+		{
+			"@type": "Person",
+			"@id": {{ person_id | jsonify }},
+			"name": {{ site.author.name | jsonify }},
+			"alternateName": {{ site.author.alternate_name | jsonify }},
+			"url": {{ "/" | absolute_url | jsonify }},
+			"image": {{ site.author.image | absolute_url | jsonify }},
+			"jobTitle": {{ site.author.job_title | jsonify }},
+			"description": {{ site.author.description | jsonify }},
+			"address": {
+				"@type": "PostalAddress",
+				"addressLocality": {{ site.author.locality | jsonify }},
+				"addressRegion": {{ site.author.region | jsonify }},
+				"addressCountry": {{ site.author.country | jsonify }}
+			},
+			"alumniOf": {
+				"@type": "CollegeOrUniversity",
+				"name": {{ site.author.alumni_of | jsonify }}
+			},
+			"sameAs": {{ site.author.profiles | map: "url" | jsonify }}
+		}
+{%- if include.is_home %},
+		{
+			"@type": "WebSite",
+			"@id": {{ "/#website" | absolute_url | jsonify }},
+			"url": {{ "/" | absolute_url | jsonify }},
+			"name": {{ site.author.name | jsonify }},
+			"about": { "@id": {{ person_id | jsonify }} },
+			"publisher": { "@id": {{ person_id | jsonify }} }
+		}
+{%- endif %}
+{%- if include.is_project %}
+		{%- include project-image-numbers.html images=page.images -%}
+		{%- assign artwork_images = "" | split: "" -%}
+		{%- for n in image_numbers -%}
+			{%- include image-path.html number=page.number image=n -%}
+			{%- assign image_url = image_path | absolute_url -%}
+			{%- assign artwork_images = artwork_images | push: image_url -%}
+		{%- endfor -%},
+		{
+			"@type": "VisualArtwork",
+			"@id": {{ include.canonical | append: "#artwork" | jsonify }},
+			"name": {{ page.title | append: "" | jsonify }},
+			"url": {{ include.canonical | jsonify }},
+			"mainEntityOfPage": {{ include.canonical | jsonify }},
+			"creator": { "@id": {{ person_id | jsonify }} },
+			"dateCreated": {{ page.year | append: "" | slice: 0, 4 | jsonify }},
+			"artMedium": {{ page.material | append: "" | jsonify }},
+			"size": {{ page.dimensions | append: "" | jsonify }},
+			"description": {{ include.description | jsonify }},
+			"image": {{ artwork_images | jsonify }}
+		}
+{%- endif %}
+	]
+}
