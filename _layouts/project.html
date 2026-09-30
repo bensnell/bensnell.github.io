@@ -1,0 +1,42 @@
+---
+layout: base
+---
+{%- capture newline %}
+{% endcapture -%}
+<div id="static">
+{% include static-header.html %}
+	<main>
+		<article>
+			<h1>{{ page.title }}</h1>
+			<p class="static-details">{{ page.dimensions }}<br>{{ page.material }}<br>{{ page.year }}</p>
+			<div class="static-text">{{ content | strip }}</div>
+			{%- for img in page.images %}
+			<figure>
+				{%- if img.video %}
+				<a href="https://vimeo.com/{{ img.video }}">Watch the video on Vimeo</a>
+				{%- else -%}
+					{%- assign numbers = "" | split: "" -%}
+					{%- if img.set -%}
+						{%- assign numbers = img.set -%}
+					{%- elsif img.image -%}
+						{%- assign numbers = numbers | push: img.image -%}
+					{%- else -%}
+						{%- assign numbers = numbers | push: img -%}
+					{%- endif -%}
+					{%- capture alt -%}
+						{{ page.title }} by {{ site.author.name }}{% if img.caption %}: {{ img.caption | split: newline | first | strip_html }}{% endif %}
+					{%- endcapture -%}
+					{%- for n in numbers -%}
+						{%- include image-path.html number=page.number image=n %}
+				<img src="{{ image_path }}" alt="{{ alt | strip | escape }}" loading="lazy">
+					{%- endfor -%}
+				{%- endif -%}
+				{%- if img.caption %}
+				<figcaption class="static-text">{{ img.caption }}</figcaption>
+				{%- endif %}
+			</figure>
+			{%- endfor %}
+		</article>
+	</main>
+{% include static-footer.html %}
+</div>

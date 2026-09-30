@@ -1,3 +1,9 @@
+---
+# Generated from inquire/index.html. Don't edit the output; edit that file instead.
+layout: null
+sitemap: false
+---
+{%- assign source = site.pages | where: "url", "/inquire/" | first -%}
 {
-	"text" : "<i>Please send all inquiries to </i><a href='mailto:ben@bensnell.io' target='blank'>ben@bensnell.io</a>\n<i>or call </i><a href='tel:310-994-8035'>+1 310 994 8035</a><i> from 9-5 EST</i>"
+	"text": {{ source.content | strip | jsonify }}
 }

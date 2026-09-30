@@ -50,7 +50,7 @@
 // - combine about & inquire into one ?
 // - OR: "Please send inquiries to: ben@bensnell.io <a>Send me an email here.</a>"
 
-// - improve SEO (page-specific titles, tags, descriptions in HTML) (?)
+// DONE - improve SEO (page-specific titles, tags, descriptions in HTML)
 
 // - prevent flippable images from showing before being laid out
 
@@ -82,7 +82,7 @@ var newsHeadlineURL = "https://www.decontemporary.org/mining-the-form"
 // title serif: Andale, Baskerville, Batang*, Bell MT, Bookman Old Style, CAllisto MT, Cochin*, Consolas, Didot
 // body serif: Cambria, Cochin*, Century, Garamond
 
-var mainURL = "http://bensnell.io";
+var mainURL = "https://bensnell.io";
 var domainKey = "bensnell.io";	// used to check if we're in my domain
 var mailKey = "mailto";
 
@@ -233,6 +233,7 @@ function loadIcons() {
 			["menu"]
 		);
 		$( icon.element ).attr( 'src', $( icon.element ).attr( 'src-tmp' ) );
+		$( icon.element ).attr( 'alt', icon_key );
 	})
 
 	// Create news div
@@ -345,6 +346,7 @@ function initHome() {
     		element["imgID"] = "img" + element["projectID"];
     		var imgPath = pathPrefix() + data["homeFolderName"] + "/" + element["projectID"] + "." + data["imgExt"];
     		element["img"] = getImageElement( element["imgID"], imgPath, element["url"], ["async"]);
+    		element["img"].setAttribute("alt", element["title"].split("\n")[0] + " by Ben Snell");
 
 		    // Text
 			element["txtID"] = "txt" + element["projectID"];
@@ -364,6 +366,7 @@ function initAbout() {
 	var loadAbout = function(data) { 
 		// add the image and about description
 		about["img"] = getImageElement("about_img", pathPrefix() + data["imgPath"], "", ["async"], false);
+		about["img"].setAttribute("alt", "Portrait of Ben Snell");
 		about["txt"] = getTextElement("about_txt", data["description"], "", fonts["body"], w.dark, ["async"]);
 
 		// Footer (call to actions)
@@ -420,8 +423,10 @@ function initProject(pageID) {
     $.when( dictLoaded ).done( function() {
 
     	var projectID = dict[pageID]["projectID"];
-    	var projectJsonPath = pathPrefix() + "_json/" + projectID + ".json";
-    	var loadProjectJson = function(data) { 
+    	// all projects are in one file, keyed by projectID
+    	var projectJsonPath = pathPrefix() + "_json/projects.json";
+    	var loadProjectJson = function(allProjects) {
+    		var data = allProjects[projectID];
 
     		// store all image ids
     		var padImg = function(element) {
@@ -485,8 +490,12 @@ function initProject(pageID) {
 		});
 
 		// create images
+		var imgAlt = project["text"][0]["content"] + " by Ben Snell";
 		var getVisualElement = function(el) {
-			return el["bVideo"] ? getVimeoElement(el["id"].split("_")[0], el["id"], ["async"], false) : getImageElement(el["id"], el["path"], "", ["async"], false);
+			if (el["bVideo"]) return getVimeoElement(el["id"].split("_")[0], el["id"], ["async"], false);
+			var img = getImageElement(el["id"], el["path"], "", ["async"], false);
+			img.setAttribute("alt", imgAlt);
+			return img;
 		};
 		$.each(project["images"], function(index, element) {
 			if (isArray(element)) {
@@ -595,16 +604,17 @@ function markPageUnvisited(pageID) {
 
 function setPageTitle(pageID) {
 
+	// keep these in sync with the <title> in _includes/head.html
 	if (pageID == "home") {
-		document.title = "Ben Snell";
+		document.title = "Ben Snell — Artist";
 	} else if (pageID == "about") {
-		document.title = "About | Ben Snell";
+		document.title = "About — Ben Snell";
 	} else if (pageID == "inquire") {
-		document.title = "Inquire | Ben Snell";
+		document.title = "Inquire — Ben Snell";
 	} else if (pageID == "news") {
-		document.title = "News | Ben Snell";
+		document.title = "News — Ben Snell";
 	} else {
-		document.title = findElementWithKeyValueInArray(project["text"], "id", "title")["content"] + " | Ben Snell";
+		document.title = findElementWithKeyValueInArray(project["text"], "id", "title")["content"] + " — Ben Snell";
 	}
 }
 
@@ -1429,6 +1439,9 @@ function showAllItems(pageID, bLayoutOnly=false) {
 }
 function show(pageID, bLayoutOnly=false) {
 
+	// remove the plain version of the page (for search engines and archives) before laying out
+	$( "#static" ).remove();
+
 	// recompute all parameters
 	w.recompute();
 
@@ -1510,6 +1523,12 @@ $( window ).on("load", function() {
 // When the window is ready, initialize fonts and load the page
 $.when( windowReady, windowLoaded ).done( loadFonts, loadIcons, loadPage ).promise();
 
+// If the page's data can't be loaded (e.g. in an archived copy of the site),
+// show the plain version of the page (#static) instead
+$( document ).ajaxError( function() {
+	$( document.documentElement ).removeClass( "js" );
+});
+
 // load new page if the forward or back button is pressed
 $( window ).on('popstate', function() {
 
@@ -1553,3 +1572,6 @@ $( window ).on("orientationchange", function() {
 		return resizePage();
 	}, 200);
 });
+
+// Tells the page (see _includes/head.html) that this script ran to the end
+window.siteScriptLoaded = true;

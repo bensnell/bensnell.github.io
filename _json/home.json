@@ -1,71 +1,37 @@
+---
+# Generated from _data/homepage.yml and _projects/. Don't edit the output; edit those instead.
+layout: null
+sitemap: false
+---
+{%- capture newline %}
+{% endcapture -%}
+{%- assign entries = "" | split: "" -%}
+{%- assign slugs = site.data.homepage -%}
+{%- for project in site.projects -%}
+	{%- assign slug = project.url | remove: "/" -%}
+	{%- unless slugs contains slug -%}{%- assign slugs = slugs | push: slug -%}{%- endunless -%}
+{%- endfor -%}
+{%- for slug in slugs -%}
+	{%- assign project_url = "/" | append: slug | append: "/" -%}
+	{%- assign project = site.projects | where: "url", project_url | first -%}
+	{%- if project -%}
+		{%- capture title -%}{{ project.home.title | default: project.title }}{{ newline }}\ {{ project.home.subtitle }}{{ newline }}{{ project.home.year | default: project.year }}{%- endcapture -%}
+		{%- capture entry -%}
+		{
+			"projectID": {{ project.number | append: "" | jsonify }},
+			"title": {{ title | jsonify }},
+			"url": {{ "https://bensnell.io/" | append: slug | jsonify }}
+			{%- unless site.data.homepage contains slug -%},
+			"unlisted": true
+			{%- endunless %}
+		}
+		{%- endcapture -%}
+		{%- assign entries = entries | push: entry -%}
+	{%- endif -%}
+{%- endfor -%}
 {
 	"homeFolderName": "_assets/home",
 	"imgExt": "jpg",
-	"projects": [
-		{
-			"projectID": "023",
-			"title": "Gaia\n\\ On cyclical materialities.\n2023",
-			"url": "http://bensnell.io/gaia"
-		},
-		{
-			"projectID": "022",
-			"title": "tied up, tied down, let loose, unwound\n\\ On utility and ability.\n2023",
-			"url": "http://bensnell.io/tied-up-tied-down-let-loose-unwound"
-		},
-		{
-			"projectID": "021",
-			"title": "Cattleya\n\\ An ode to orchids.\n2022",
-			"url": "http://bensnell.io/cattleya"
-		},
-		{
-			"projectID": "013",
-			"title": "Inheritance II\n\\ On the legacy of ancestral computers.\n2020",
-			"url": "http://bensnell.io/inheritance-ii"
-		},
-		{
-			"projectID": "020",
-			"title": "Ritual Nature\n\\ On finding one's nature.\n2021 - 2022",
-			"url": "http://bensnell.io/ritual-nature"
-		},
-		{
-			"projectID": "015",
-			"title": "G53 Dorna\n\\ On a machine's silent soliloquies.\n2020",
-			"url": "http://bensnell.io/g53-dorna"
-		},
-		{
-			"projectID": "010",
-			"title": "Inheritance\n\\ On intergenerational knowledge transfer.\n2019 - 2020",
-			"url": "http://bensnell.io/inheritance"
-		},
-		{
-			"projectID": "004",
-			"title": "G53 DMS\n\\ On mechanical signatures, fingerprints.\n2019",
-			"url": "http://bensnell.io/g53-dms"
-		},
-		{
-			"projectID": "005",
-			"title": "Dio\n\\ On the becoming of one's creation.\n2018",
-			"url": "http://bensnell.io/dio"
-		},
-		{
-			"projectID": "006",
-			"title": "G53 UR10\n\\ On behavioral fingerprints.\n2019",
-			"url": "http://bensnell.io/g53-ur10"
-		},
-		{
-			"projectID": "003",
-			"title": "Jenny's Dreams\n\\ On originality and authorship.\n2018",
-			"url": "http://bensnell.io/jenny"
-		},
-		{
-			"projectID": "002",
-			"title": "LIDAR Photography\n\\ On intertwinedness of observer and observed.\n2018",
-			"url": "http://bensnell.io/lidar-photography"
-		},
-		{
-			"projectID": "001",
-			"title": "G53 UR5\n\\ On mechanical signatures, fingerprints.\n2018",
-			"url": "http://bensnell.io/g53-ur5"
-		}
+	"projects": [{{ entries | join: "," }}
 	]
 }

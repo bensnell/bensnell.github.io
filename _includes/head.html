@@ -1,0 +1,93 @@
+{%- comment -%}
+  The <head> of every page: title, description, links for Google and social
+  sharing, structured data, analytics, and the scripts that draw the site.
+{%- endcomment -%}
+{%- assign is_home = false -%}
+{%- if page.url == "/" -%}{%- assign is_home = true -%}{%- endif -%}
+{%- assign is_project = false -%}
+{%- if page.collection == "projects" -%}{%- assign is_project = true -%}{%- endif -%}
+
+{%- if is_home -%}
+  {%- capture page_title -%}{{ site.author.name }} — {{ site.author.job_title }}{%- endcapture -%}
+{%- else -%}
+  {%- capture page_title -%}{{ page.title }} — {{ site.author.name }}{%- endcapture -%}
+{%- endif -%}
+
+{%- if page.search_description -%}
+  {%- assign description = page.search_description -%}
+{%- elsif is_project -%}
+  {%- capture description -%}{{ page.title }} ({{ page.year }}) by {{ site.author.name }} — {{ page.material }}. {{ page.content | strip_html | normalize_whitespace }}{%- endcapture -%}
+  {%- if description.size > 160 -%}
+    {%- comment -%} Cut to about 160 characters, at the end of a word {%- endcomment -%}
+    {%- assign description = description | truncate: 160, "" | split: " " | pop | join: " " | append: "…" -%}
+  {%- endif -%}
+{%- else -%}
+  {%- assign description = site.author.description -%}
+{%- endif -%}
+
+{%- assign canonical = page.url | absolute_url -%}
+
+{%- assign share_image = site.author.image -%}
+{%- if is_project -%}
+  {%- include project-image-numbers.html images=page.images -%}
+  {%- assign first_number = image_numbers | first -%}
+  {%- if first_number != nil -%}
+    {%- include image-path.html number=page.number image=first_number -%}
+    {%- assign share_image = image_path -%}
+  {%- endif -%}
+{%- endif %}
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>{{ page_title | escape }}</title>
+	<meta name="description" content="{{ description | escape }}">
+	<meta name="author" content="{{ site.author.name }}">
+	<link rel="canonical" href="{{ canonical }}">
+	<link rel="icon" href="/_assets/site/favicon.png" type="image/png" sizes="32x32">
+
+	<!-- How the page looks when shared -->
+	<meta property="og:site_name" content="{{ site.author.name }}">
+	<meta property="og:type" content="{% if is_home %}website{% else %}article{% endif %}">
+	<meta property="og:title" content="{{ page_title | escape }}">
+	<meta property="og:description" content="{{ description | escape }}">
+	<meta property="og:url" content="{{ canonical }}">
+	<meta property="og:image" content="{{ share_image | absolute_url }}">
+	<meta name="twitter:card" content="summary_large_image">
+
+	<!-- Plain version of the page (#static) for search engines, archives and
+	     browsers without JavaScript. The animated site replaces it. -->
+	<script>
+		document.documentElement.className += " js";
+		// If the site's scripts failed to load, show the plain version instead
+		document.addEventListener("DOMContentLoaded", function() {
+			if (!window.siteScriptLoaded) document.documentElement.className = document.documentElement.className.replace(/\s*\bjs\b/, "");
+		});
+	</script>
+	<style>.js #static { display: none; }</style>
+	{%- include static-style.html %}
+{%- if site.ga4_id and site.ga4_id != "" %}
+
+	<!-- Google Analytics 4 -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id={{ site.ga4_id }}"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+
+		gtag('config', '{{ site.ga4_id }}');
+	</script>
+{%- endif %}
+
+	<!-- Structured data: who this site is about -->
+	<script type="application/ld+json">
+	{%- include structured-data.json is_home=is_home is_project=is_project description=description canonical=canonical %}
+	</script>
+
+	<!-- load scripts -->
+	<link rel="stylesheet" href="/_lib/jquery-ui.css">
+	<script src="/_lib/jquery-3.3.1.js"></script>
+	<script src="/_lib/jquery-ui.js"></script>
+
+	<script src="/_scripts/utils.js"></script>
+	<script src="/_scripts/layout.js"></script>
+	<script src="/_scripts/params.js"></script>
+	<script src="/_scripts/script.js"></script>

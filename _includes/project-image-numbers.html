@@ -1,0 +1,15 @@
+{%- comment -%}
+  Sets `image_numbers`: every image number in a project's `images` list, in
+  order, with flip-through sets expanded and videos skipped.
+{%- endcomment -%}
+{%- assign image_numbers = "" | split: "" -%}
+{%- for img in include.images -%}
+  {%- if img.set -%}
+    {%- for n in img.set -%}{%- assign image_numbers = image_numbers | push: n -%}{%- endfor -%}
+  {%- elsif img.video -%}
+  {%- elsif img.image -%}
+    {%- assign image_numbers = image_numbers | push: img.image -%}
+  {%- else -%}
+    {%- assign image_numbers = image_numbers | push: img -%}
+  {%- endif -%}
+{%- endfor -%}

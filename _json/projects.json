@@ -1,0 +1,42 @@
+---
+# Generated from _projects/. Don't edit the output; edit the project files instead.
+layout: null
+sitemap: false
+---
+{
+{%- for project in site.projects %}
+	{{ project.number | append: "" | jsonify }}: {
+		"title": {{ project.title | append: "" | jsonify }},
+		"dimensions": {{ project.dimensions | append: "" | jsonify }},
+		"material": {{ project.material | append: "" | jsonify }},
+		"date": {{ project.year | append: "" | jsonify }},
+		"description": {{ project.content | strip | jsonify }},
+		"globalExt": "jpg",
+		"numDigits": 3,
+		"images": [
+		{%- for img in project.images -%}
+			{%- if img.set -%}[{{ img.set | join: ", " }}]
+			{%- elsif img.video -%}"{{ img.video }}_{{ img.size[0] }}_{{ img.size[1] }}"
+			{%- elsif img.image -%}{{ img.image }}
+			{%- else -%}{{ img }}
+			{%- endif -%}
+			{%- unless forloop.last %}, {% endunless -%}
+		{%- endfor -%}
+		],
+		"captions": {
+		{%- assign first_caption = true -%}
+		{%- for img in project.images -%}
+			{%- if img.caption -%}
+				{%- if img.set -%}{%- assign key = img.set | first -%}
+				{%- elsif img.video -%}{%- assign key = img.video -%}
+				{%- else -%}{%- assign key = img.image -%}
+				{%- endif -%}
+				{%- unless first_caption -%},{%- endunless %}
+			"{{ key }}": {{ img.caption | jsonify }}
+				{%- assign first_caption = false -%}
+			{%- endif -%}
+		{%- endfor %}
+		}
+	}{% unless forloop.last %},{% endunless %}
+{%- endfor %}
+}
