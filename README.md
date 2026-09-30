@@ -77,10 +77,26 @@ The GA4 measurement ID is `ga4_id` in `_config.yml`. Set it to `""` to turn anal
 
 ## Preview locally (optional)
 
-To see changes before pushing:
+To see changes before pushing, or to try out a branch before merging it:
 
-1. Install Ruby once (on a Mac: `brew install ruby`).
-2. Run `bundle install` in this folder once.
-3. Run `bundle exec jekyll serve`, then open http://localhost:4000. The site rebuilds each time you save a file.
+1. Switch to the branch you want to see, e.g. `git fetch origin` and then `git checkout <branch>`.
+2. Set up once. Use Ruby 3.3, because GitHub Pages' version of Jekyll (3.10) may not work with the newest Ruby. On a Mac with Homebrew:
+   ```sh
+   brew install ruby@3.3
+   echo 'export PATH="$(brew --prefix ruby@3.3)/bin:$PATH"' >> ~/.zshrc
+   ```
+   Open a new terminal window and check that `ruby -v` shows 3.3. Then, in this folder:
+   ```sh
+   bundle config set --local path vendor/bundle
+   bundle install
+   ```
+   This keeps Jekyll and its dependencies inside this folder, in `vendor/`, which git ignores.
+3. Each time:
+   ```sh
+   bundle exec jekyll serve --livereload
+   ```
+   Open http://localhost:4000. The site rebuilds and the browser refreshes each time you save a file. Press Ctrl+C to stop. Warnings about "GitHub Metadata" or "faraday-retry" are harmless.
+
+To see what search engines read, view the page source, or turn off JavaScript in the browser (in Chrome's developer tools, press Cmd+Shift+P and choose "Disable JavaScript") and reload.
 
 The preview is built in `_site/`, which git ignores.
