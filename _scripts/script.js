@@ -1489,16 +1489,9 @@ function loadURL(toUrl) {
 		// Reset the scrollTop
 		markPageUnvisited(pageID);
 
-		// Change the state of the page
+		// Change the state of the page (always the page's final address, with a trailing slash)
 		if (getThisPage() == pageID) return;
-		if (getThisPage() == "home") {
-			// if (pageID == "home") return;
-			// else history.pushState( {}, "", pageID );
-			history.pushState( {}, "", pageID );
-		} else {
-			if (pageID == "home") history.pushState( {}, "", "../");
-			else history.pushState( {}, "", "../"+pageID);
-		}
+		history.pushState( {}, "", pageID == "home" ? "/" : "/" + pageID + "/" );
 		exitAndLoad( pageID );
 
 	} else {

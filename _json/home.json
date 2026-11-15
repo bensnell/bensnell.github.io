@@ -20,7 +20,7 @@ sitemap: false
 		{
 			"projectID": {{ project.number | append: "" | jsonify }},
 			"title": {{ title | jsonify }},
-			"url": {{ "https://bensnell.io/" | append: slug | jsonify }}
+			"url": {{ "https://bensnell.io/" | append: slug | append: "/" | jsonify }}
 			{%- unless site.data.homepage contains slug -%},
 			"unlisted": true
 			{%- endunless %}
